@@ -1,0 +1,708 @@
+{
+  ".svelte-kit/generated/server/internal.js": {
+    "file": "internal.js",
+    "name": "internal",
+    "src": ".svelte-kit/generated/server/internal.js",
+    "isEntry": true,
+    "imports": [
+      "_internal.js",
+      "_environment.js"
+    ]
+  },
+  "_Badge.svelte_svelte_type_style_lang.js": {
+    "file": "_app/immutable/assets/Badge.DTOck518.css",
+    "src": "_Badge.svelte_svelte_type_style_lang.js"
+  },
+  "_Button.js": {
+    "file": "chunks/Button.js",
+    "name": "Button",
+    "imports": [
+      "_index2.js"
+    ],
+    "css": [
+      "_app/immutable/assets/Button.CSdKk43z.css"
+    ]
+  },
+  "_Card.js": {
+    "file": "chunks/Card.js",
+    "name": "Card",
+    "imports": [
+      "_index2.js"
+    ],
+    "css": [
+      "_app/immutable/assets/Card.C-I70jqP.css"
+    ]
+  },
+  "_EmptyState.svelte_svelte_type_style_lang.js": {
+    "file": "chunks/EmptyState.svelte_svelte_type_style_lang.js",
+    "name": "EmptyState.svelte_svelte_type_style_lang",
+    "imports": [
+      "_index2.js",
+      "_Icon.js"
+    ],
+    "css": [
+      "_app/immutable/assets/EmptyState.DjFvHDS8.css"
+    ]
+  },
+  "_Icon.js": {
+    "file": "chunks/Icon.js",
+    "name": "Icon",
+    "imports": [
+      "_index2.js",
+      "_utils2.js"
+    ]
+  },
+  "_Input.js": {
+    "file": "chunks/Input.js",
+    "name": "Input",
+    "imports": [
+      "_index2.js",
+      "_context.js"
+    ],
+    "css": [
+      "_app/immutable/assets/Input.Bt20OOPa.css"
+    ]
+  },
+  "_Input.svelte_svelte_type_style_lang.js": {
+    "file": "_app/immutable/assets/Input.Bt20OOPa.css",
+    "src": "_Input.svelte_svelte_type_style_lang.js"
+  },
+  "_Select.js": {
+    "file": "chunks/Select.js",
+    "name": "Select",
+    "imports": [
+      "_index2.js",
+      "_context.js"
+    ],
+    "css": [
+      "_app/immutable/assets/Select.vHgShFTr.css"
+    ]
+  },
+  "_Skeleton.js": {
+    "file": "chunks/Skeleton.js",
+    "name": "Skeleton",
+    "imports": [
+      "_index2.js",
+      "_Icon.js"
+    ],
+    "css": [
+      "_app/immutable/assets/Skeleton.COxKAC8U.css"
+    ]
+  },
+  "_Spinner.svelte_svelte_type_style_lang.js": {
+    "file": "_app/immutable/assets/Spinner.BDr8IznX.css",
+    "src": "_Spinner.svelte_svelte_type_style_lang.js"
+  },
+  "_Tabs.js": {
+    "file": "chunks/Tabs.js",
+    "name": "Tabs",
+    "imports": [
+      "_index2.js",
+      "_Icon.js",
+      "_EmptyState.svelte_svelte_type_style_lang.js",
+      "_context.js",
+      "_utils2.js"
+    ],
+    "css": [
+      "_app/immutable/assets/Tabs.BDqTTvAb.css",
+      "_app/immutable/assets/Badge.DTOck518.css"
+    ]
+  },
+  "_arrow-left.js": {
+    "file": "chunks/arrow-left.js",
+    "name": "arrow-left",
+    "imports": [
+      "_index2.js",
+      "_Icon.js"
+    ]
+  },
+  "_client.js": {
+    "file": "chunks/client.js",
+    "name": "client",
+    "imports": [
+      "_exports.js",
+      "_utils.js",
+      "_index.js",
+      "_state.svelte.js"
+    ]
+  },
+  "_clients.js": {
+    "file": "chunks/clients.js",
+    "name": "clients"
+  },
+  "_context.js": {
+    "file": "chunks/context.js",
+    "name": "context"
+  },
+  "_environment.js": {
+    "file": "chunks/environment.js",
+    "name": "environment"
+  },
+  "_exports.js": {
+    "file": "chunks/exports.js",
+    "name": "exports"
+  },
+  "_false.js": {
+    "file": "chunks/false.js",
+    "name": "false"
+  },
+  "_file-text.js": {
+    "file": "chunks/file-text.js",
+    "name": "file-text",
+    "imports": [
+      "_index2.js",
+      "_Icon.js"
+    ]
+  },
+  "_index.js": {
+    "file": "chunks/index.js",
+    "name": "index",
+    "imports": [
+      "_utils2.js",
+      "_context.js"
+    ]
+  },
+  "_index2.js": {
+    "file": "chunks/index2.js",
+    "name": "index",
+    "imports": [
+      "_context.js",
+      "_utils2.js",
+      "_false.js"
+    ]
+  },
+  "_internal.js": {
+    "file": "chunks/internal.js",
+    "name": "internal",
+    "imports": [
+      "_index2.js",
+      "_utils2.js",
+      "_context.js",
+      "_environment.js"
+    ],
+    "dynamicImports": [
+      "src/hooks.server.ts"
+    ]
+  },
+  "_notifications.js": {
+    "file": "chunks/notifications.js",
+    "name": "notifications",
+    "imports": [
+      "_toast-state.svelte.js"
+    ]
+  },
+  "_policies.js": {
+    "file": "chunks/policies.js",
+    "name": "policies"
+  },
+  "_save.js": {
+    "file": "chunks/save.js",
+    "name": "save",
+    "imports": [
+      "_index2.js",
+      "_Icon.js"
+    ]
+  },
+  "_shared.js": {
+    "file": "chunks/shared.js",
+    "name": "shared",
+    "imports": [
+      "_utils.js"
+    ]
+  },
+  "_state.svelte.js": {
+    "file": "chunks/state.svelte.js",
+    "name": "state.svelte",
+    "imports": [
+      "_utils2.js"
+    ]
+  },
+  "_theme.js": {
+    "file": "chunks/theme.js",
+    "name": "theme",
+    "imports": [
+      "_index.js"
+    ]
+  },
+  "_toast-state.svelte.js": {
+    "file": "chunks/toast-state.svelte.js",
+    "name": "toast-state.svelte",
+    "imports": [
+      "_index2.js",
+      "_utils2.js"
+    ]
+  },
+  "_user.js": {
+    "file": "chunks/user.js",
+    "name": "user",
+    "imports": [
+      "_index2.js",
+      "_Icon.js"
+    ]
+  },
+  "_users.js": {
+    "file": "chunks/users.js",
+    "name": "users",
+    "imports": [
+      "_index2.js",
+      "_Icon.js"
+    ]
+  },
+  "_utils.js": {
+    "file": "chunks/utils.js",
+    "name": "utils"
+  },
+  "_utils2.js": {
+    "file": "chunks/utils2.js",
+    "name": "utils"
+  },
+  "_x.js": {
+    "file": "chunks/x.js",
+    "name": "x",
+    "imports": [
+      "_index2.js",
+      "_Icon.js"
+    ]
+  },
+  "node_modules/@sveltejs/kit/src/runtime/app/server/remote/index.js": {
+    "file": "remote-entry.js",
+    "name": "remote-entry",
+    "src": "node_modules/@sveltejs/kit/src/runtime/app/server/remote/index.js",
+    "isEntry": true,
+    "imports": [
+      "_shared.js",
+      "_utils2.js",
+      "_false.js",
+      "_environment.js"
+    ]
+  },
+  "node_modules/@sveltejs/kit/src/runtime/components/svelte-5/error.svelte": {
+    "file": "entries/fallbacks/error.svelte.js",
+    "name": "entries/fallbacks/error.svelte",
+    "src": "node_modules/@sveltejs/kit/src/runtime/components/svelte-5/error.svelte",
+    "isEntry": true,
+    "imports": [
+      "_context.js",
+      "_state.svelte.js",
+      "_client.js"
+    ]
+  },
+  "node_modules/@sveltejs/kit/src/runtime/server/index.js": {
+    "file": "index.js",
+    "name": "index",
+    "src": "node_modules/@sveltejs/kit/src/runtime/server/index.js",
+    "isEntry": true,
+    "imports": [
+      "_false.js",
+      "_environment.js",
+      "_exports.js",
+      "_utils.js",
+      "_index.js",
+      "_internal.js",
+      "_shared.js"
+    ]
+  },
+  "src/hooks.server.ts": {
+    "file": "chunks/hooks.server.js",
+    "name": "hooks.server",
+    "src": "src/hooks.server.ts",
+    "isDynamicEntry": true
+  },
+  "src/routes/(app)/+layout.server.ts": {
+    "file": "entries/pages/(app)/_layout.server.ts.js",
+    "name": "entries/pages/(app)/_layout.server.ts",
+    "src": "src/routes/(app)/+layout.server.ts",
+    "isEntry": true
+  },
+  "src/routes/(app)/+layout.svelte": {
+    "file": "entries/pages/(app)/_layout.svelte.js",
+    "name": "entries/pages/(app)/_layout.svelte",
+    "src": "src/routes/(app)/+layout.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_context.js",
+      "_exports.js",
+      "_utils.js",
+      "_state.svelte.js",
+      "_index.js",
+      "_Icon.js",
+      "_users.js",
+      "_file-text.js",
+      "_theme.js",
+      "_notifications.js",
+      "_user.js",
+      "_x.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_layout.3zEUps4v.css"
+    ]
+  },
+  "src/routes/(app)/clientes/+page.svelte": {
+    "file": "entries/pages/(app)/clientes/_page.svelte.js",
+    "name": "entries/pages/(app)/clientes/_page.svelte",
+    "src": "src/routes/(app)/clientes/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_client.js",
+      "_Button.js",
+      "_EmptyState.svelte_svelte_type_style_lang.js",
+      "_Skeleton.js",
+      "_notifications.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.24AxuWnu.css",
+      "_app/immutable/assets/Input.Bt20OOPa.css"
+    ]
+  },
+  "src/routes/(app)/clientes/[id]/+page.server.ts": {
+    "file": "entries/pages/(app)/clientes/_id_/_page.server.ts.js",
+    "name": "entries/pages/(app)/clientes/_id_/_page.server.ts",
+    "src": "src/routes/(app)/clientes/[id]/+page.server.ts",
+    "isEntry": true
+  },
+  "src/routes/(app)/clientes/[id]/+page.svelte": {
+    "file": "entries/pages/(app)/clientes/_id_/_page.svelte.js",
+    "name": "entries/pages/(app)/clientes/_id_/_page.svelte",
+    "src": "src/routes/(app)/clientes/[id]/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_client.js",
+      "_Button.js",
+      "_Card.js",
+      "_Tabs.js",
+      "_arrow-left.js",
+      "_Icon.js",
+      "_file-text.js",
+      "_EmptyState.svelte_svelte_type_style_lang.js",
+      "_context.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.DodXo-DW.css"
+    ]
+  },
+  "src/routes/(app)/clientes/[id]/editar/+page.server.ts": {
+    "file": "entries/pages/(app)/clientes/_id_/editar/_page.server.ts.js",
+    "name": "entries/pages/(app)/clientes/_id_/editar/_page.server.ts",
+    "src": "src/routes/(app)/clientes/[id]/editar/+page.server.ts",
+    "isEntry": true
+  },
+  "src/routes/(app)/clientes/[id]/editar/+page.svelte": {
+    "file": "entries/pages/(app)/clientes/_id_/editar/_page.svelte.js",
+    "name": "entries/pages/(app)/clientes/_id_/editar/_page.svelte",
+    "src": "src/routes/(app)/clientes/[id]/editar/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_client.js",
+      "_Button.js",
+      "_Input.js",
+      "_Card.js",
+      "_notifications.js",
+      "_arrow-left.js",
+      "_save.js",
+      "_context.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.Uhkp4Z3D.css"
+    ]
+  },
+  "src/routes/(app)/clientes/nuevo/+page.svelte": {
+    "file": "entries/pages/(app)/clientes/nuevo/_page.svelte.js",
+    "name": "entries/pages/(app)/clientes/nuevo/_page.svelte",
+    "src": "src/routes/(app)/clientes/nuevo/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_client.js",
+      "_Button.js",
+      "_Input.js",
+      "_Card.js",
+      "_notifications.js",
+      "_arrow-left.js",
+      "_save.js",
+      "_context.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.CAkVYfDO.css"
+    ]
+  },
+  "src/routes/(app)/configuracion/+page.server.ts": {
+    "file": "entries/pages/(app)/configuracion/_page.server.ts.js",
+    "name": "entries/pages/(app)/configuracion/_page.server.ts",
+    "src": "src/routes/(app)/configuracion/+page.server.ts",
+    "isEntry": true
+  },
+  "src/routes/(app)/configuracion/+page.svelte": {
+    "file": "entries/pages/(app)/configuracion/_page.svelte.js",
+    "name": "entries/pages/(app)/configuracion/_page.svelte",
+    "src": "src/routes/(app)/configuracion/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_Card.js",
+      "_Tabs.js",
+      "_Button.js",
+      "_Input.js",
+      "_notifications.js",
+      "_user.js",
+      "_Icon.js",
+      "_EmptyState.svelte_svelte_type_style_lang.js",
+      "_users.js",
+      "_context.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.DUha1CeG.css"
+    ]
+  },
+  "src/routes/(app)/dashboard/+page.server.ts": {
+    "file": "entries/pages/(app)/dashboard/_page.server.ts.js",
+    "name": "entries/pages/(app)/dashboard/_page.server.ts",
+    "src": "src/routes/(app)/dashboard/+page.server.ts",
+    "isEntry": true
+  },
+  "src/routes/(app)/dashboard/+page.svelte": {
+    "file": "entries/pages/(app)/dashboard/_page.svelte.js",
+    "name": "entries/pages/(app)/dashboard/_page.svelte",
+    "src": "src/routes/(app)/dashboard/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_Card.js",
+      "_Button.js",
+      "_users.js",
+      "_file-text.js",
+      "_Icon.js",
+      "_context.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.BJph8LU6.css",
+      "_app/immutable/assets/Badge.DTOck518.css"
+    ]
+  },
+  "src/routes/(app)/polizas/+page.svelte": {
+    "file": "entries/pages/(app)/polizas/_page.svelte.js",
+    "name": "entries/pages/(app)/polizas/_page.svelte",
+    "src": "src/routes/(app)/polizas/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_client.js",
+      "_Button.js",
+      "_EmptyState.svelte_svelte_type_style_lang.js",
+      "_Skeleton.js",
+      "_Select.js",
+      "_Icon.js",
+      "_x.js",
+      "_context.js",
+      "_notifications.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.BTnXOgS0.css",
+      "_app/immutable/assets/Badge.DTOck518.css"
+    ]
+  },
+  "src/routes/(app)/polizas/[id]/editar/+page.server.ts": {
+    "file": "entries/pages/(app)/polizas/_id_/editar/_page.server.ts.js",
+    "name": "entries/pages/(app)/polizas/_id_/editar/_page.server.ts",
+    "src": "src/routes/(app)/polizas/[id]/editar/+page.server.ts",
+    "isEntry": true
+  },
+  "src/routes/(app)/polizas/[id]/editar/+page.svelte": {
+    "file": "entries/pages/(app)/polizas/_id_/editar/_page.svelte.js",
+    "name": "entries/pages/(app)/polizas/_id_/editar/_page.svelte",
+    "src": "src/routes/(app)/polizas/[id]/editar/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_client.js",
+      "_Button.js",
+      "_Input.js",
+      "_Select.js",
+      "_Card.js",
+      "_notifications.js",
+      "_arrow-left.js",
+      "_save.js",
+      "_context.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.CYw0QQXA.css"
+    ]
+  },
+  "src/routes/(app)/polizas/nuevo/+page.server.ts": {
+    "file": "entries/pages/(app)/polizas/nuevo/_page.server.ts.js",
+    "name": "entries/pages/(app)/polizas/nuevo/_page.server.ts",
+    "src": "src/routes/(app)/polizas/nuevo/+page.server.ts",
+    "isEntry": true
+  },
+  "src/routes/(app)/polizas/nuevo/+page.svelte": {
+    "file": "entries/pages/(app)/polizas/nuevo/_page.svelte.js",
+    "name": "entries/pages/(app)/polizas/nuevo/_page.svelte",
+    "src": "src/routes/(app)/polizas/nuevo/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_client.js",
+      "_Button.js",
+      "_Input.js",
+      "_Select.js",
+      "_Card.js",
+      "_notifications.js",
+      "_arrow-left.js",
+      "_save.js",
+      "_context.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.m1fh2F9u.css"
+    ]
+  },
+  "src/routes/+layout.server.ts": {
+    "file": "entries/pages/_layout.server.ts.js",
+    "name": "entries/pages/_layout.server.ts",
+    "src": "src/routes/+layout.server.ts",
+    "isEntry": true
+  },
+  "src/routes/+layout.svelte": {
+    "file": "entries/pages/_layout.svelte.js",
+    "name": "entries/pages/_layout.svelte",
+    "src": "src/routes/+layout.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_exports.js",
+      "_utils.js",
+      "_state.svelte.js",
+      "_utils2.js",
+      "_toast-state.svelte.js",
+      "_context.js",
+      "_theme.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_layout.Zfxy3rjs.css"
+    ]
+  },
+  "src/routes/+page.svelte": {
+    "file": "entries/pages/_page.svelte.js",
+    "name": "entries/pages/_page.svelte",
+    "src": "src/routes/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_exports.js",
+      "_utils.js",
+      "_state.svelte.js",
+      "_index2.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.Cuu1qz6V.css",
+      "_app/immutable/assets/Spinner.BDr8IznX.css"
+    ]
+  },
+  "src/routes/api/clients/+server.ts": {
+    "file": "entries/endpoints/api/clients/_server.ts.js",
+    "name": "entries/endpoints/api/clients/_server.ts",
+    "src": "src/routes/api/clients/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_clients.js"
+    ]
+  },
+  "src/routes/api/clients/[id]/+server.ts": {
+    "file": "entries/endpoints/api/clients/_id_/_server.ts.js",
+    "name": "entries/endpoints/api/clients/_id_/_server.ts",
+    "src": "src/routes/api/clients/[id]/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_clients.js"
+    ]
+  },
+  "src/routes/api/invitations/+server.ts": {
+    "file": "entries/endpoints/api/invitations/_server.ts.js",
+    "name": "entries/endpoints/api/invitations/_server.ts",
+    "src": "src/routes/api/invitations/+server.ts",
+    "isEntry": true
+  },
+  "src/routes/api/invitations/validate/+server.ts": {
+    "file": "entries/endpoints/api/invitations/validate/_server.ts.js",
+    "name": "entries/endpoints/api/invitations/validate/_server.ts",
+    "src": "src/routes/api/invitations/validate/+server.ts",
+    "isEntry": true
+  },
+  "src/routes/api/policies/+server.ts": {
+    "file": "entries/endpoints/api/policies/_server.ts.js",
+    "name": "entries/endpoints/api/policies/_server.ts",
+    "src": "src/routes/api/policies/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_policies.js"
+    ]
+  },
+  "src/routes/api/policies/[id]/+server.ts": {
+    "file": "entries/endpoints/api/policies/_id_/_server.ts.js",
+    "name": "entries/endpoints/api/policies/_id_/_server.ts",
+    "src": "src/routes/api/policies/[id]/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_policies.js"
+    ]
+  },
+  "src/routes/auth/callback/+server.ts": {
+    "file": "entries/endpoints/auth/callback/_server.ts.js",
+    "name": "entries/endpoints/auth/callback/_server.ts",
+    "src": "src/routes/auth/callback/+server.ts",
+    "isEntry": true
+  },
+  "src/routes/auth/login/+page.server.ts": {
+    "file": "entries/pages/auth/login/_page.server.ts.js",
+    "name": "entries/pages/auth/login/_page.server.ts",
+    "src": "src/routes/auth/login/+page.server.ts",
+    "isEntry": true
+  },
+  "src/routes/auth/login/+page.svelte": {
+    "file": "entries/pages/auth/login/_page.svelte.js",
+    "name": "entries/pages/auth/login/_page.svelte",
+    "src": "src/routes/auth/login/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_context.js",
+      "_exports.js",
+      "_utils.js",
+      "_state.svelte.js",
+      "_notifications.js",
+      "_Button.js",
+      "_Input.js",
+      "_Card.js",
+      "_index2.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.BqGD_MKX.css"
+    ]
+  },
+  "src/routes/auth/signup/+page.server.ts": {
+    "file": "entries/pages/auth/signup/_page.server.ts.js",
+    "name": "entries/pages/auth/signup/_page.server.ts",
+    "src": "src/routes/auth/signup/+page.server.ts",
+    "isEntry": true
+  },
+  "src/routes/auth/signup/+page.svelte": {
+    "file": "entries/pages/auth/signup/_page.svelte.js",
+    "name": "entries/pages/auth/signup/_page.svelte",
+    "src": "src/routes/auth/signup/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_exports.js",
+      "_utils.js",
+      "_state.svelte.js",
+      "_Button.js",
+      "_Input.js",
+      "_Card.js",
+      "_notifications.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.RU0AHYn5.css",
+      "_app/immutable/assets/Spinner.BDr8IznX.css"
+    ]
+  }
+}

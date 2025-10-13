@@ -1,0 +1,200 @@
+@use './variables';
+@use './mixins' as *;
+
+// =====================================================
+// Reset & Base Styles
+// =====================================================
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  min-height: 100%;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  transition: background-color var(--transition-base), color var(--transition-base);
+}
+
+#svelte {
+  min-height: 100vh;
+}
+
+// =====================================================
+// Typography
+// =====================================================
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: var(--font-semibold);
+  line-height: var(--leading-tight);
+  color: var(--text-primary);
+}
+
+h1 {
+  font-size: var(--text-4xl);
+  
+  @include mobile {
+    font-size: var(--text-3xl);
+  }
+}
+
+h2 {
+  font-size: var(--text-3xl);
+  
+  @include mobile {
+    font-size: var(--text-2xl);
+  }
+}
+
+h3 {
+  font-size: var(--text-2xl);
+  
+  @include mobile {
+    font-size: var(--text-xl);
+  }
+}
+
+h4 {
+  font-size: var(--text-xl);
+}
+
+h5 {
+  font-size: var(--text-lg);
+}
+
+h6 {
+  font-size: var(--text-base);
+}
+
+p {
+  margin-bottom: var(--space-4);
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+a {
+  color: var(--primary-600);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+  
+  &:hover {
+    color: var(--primary-700);
+    text-decoration: underline;
+  }
+  
+  &:focus-visible {
+    @include focus-ring;
+    border-radius: var(--radius-sm);
+  }
+}
+
+strong {
+  font-weight: var(--font-semibold);
+}
+
+small {
+  font-size: var(--text-sm);
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  padding: 0.125rem 0.25rem;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+}
+
+// =====================================================
+// Forms
+// =====================================================
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+input, select, textarea {
+  font-family: inherit;
+}
+
+label {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+  margin-bottom: var(--space-1);
+}
+
+// =====================================================
+// Utility Classes
+// =====================================================
+
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+  
+  @include mobile {
+    padding: 0 var(--space-3);
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.fade-in {
+  @include fade-in;
+}
+
+.slide-in {
+  @include slide-in-from-bottom;
+}
+
+.scale-in {
+  @include scale-in;
+}
+
+// =====================================================
+// Scrollbar
+// =====================================================
+
+* {
+  @include scrollbar;
+}
+
+// =====================================================
+// Selection
+// =====================================================
+
+::selection {
+  background: var(--primary-100);
+  color: var(--primary-900);
+}
+
+[data-theme="dark"] ::selection {
+  background: var(--primary-900);
+  color: var(--primary-100);
+}

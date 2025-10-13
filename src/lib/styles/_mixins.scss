@@ -1,0 +1,267 @@
+// =====================================================
+// Mixins
+// =====================================================
+
+// Responsive Breakpoints
+@mixin responsive($breakpoint) {
+  @if $breakpoint == sm-down {
+    @media (max-width: 639px) {
+      @content;
+    }
+  } @else if $breakpoint == md-down {
+    @media (max-width: 767px) {
+      @content;
+    }
+  } @else if $breakpoint == lg-down {
+    @media (max-width: 1023px) {
+      @content;
+    }
+  } @else if $breakpoint == xl-down {
+    @media (max-width: 1279px) {
+      @content;
+    }
+  } @else if $breakpoint == sm-up {
+    @media (min-width: 640px) {
+      @content;
+    }
+  } @else if $breakpoint == md-up {
+    @media (min-width: 768px) {
+      @content;
+    }
+  } @else if $breakpoint == lg-up {
+    @media (min-width: 1024px) {
+      @content;
+    }
+  } @else if $breakpoint == xl-up {
+    @media (min-width: 1280px) {
+      @content;
+    }
+  }
+}
+
+@mixin mobile {
+  @media (max-width: 767px) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: 768px) and (max-width: 1023px) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: 1024px) {
+    @content;
+  }
+}
+
+@mixin mobile-tablet {
+  @media (max-width: 1023px) {
+    @content;
+  }
+}
+
+// Focus Ring
+@mixin focus-ring {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
+  border-color: var(--border-focus);
+}
+
+// Button Base
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  line-height: var(--leading-normal);
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  white-space: nowrap;
+  user-select: none;
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+// Card Base
+@mixin card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base);
+}
+
+// Input Base
+@mixin input-base {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
+  
+  &::placeholder {
+    color: var(--text-tertiary);
+  }
+  
+  &:hover:not(:disabled) {
+    border-color: var(--border-secondary);
+  }
+  
+  &:focus {
+    @include focus-ring;
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--bg-tertiary);
+  }
+  
+  &.error {
+    border-color: var(--error-500);
+    
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3);
+    }
+  }
+}
+
+@mixin input-focus {
+  @include focus-ring;
+}
+
+@mixin input-error {
+  border-color: var(--error-500);
+  
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3);
+  }
+}
+
+// Truncate Text
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Flexbox Center
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Grid Auto Fit
+@mixin grid-auto-fit($min-width: 250px, $gap: var(--space-4)) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax($min-width, 1fr));
+  gap: $gap;
+}
+
+// Scrollbar Styling
+@mixin scrollbar {
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: var(--neutral-300);
+    border-radius: var(--radius-full);
+    
+    &:hover {
+      background: var(--neutral-400);
+    }
+  }
+}
+
+// Animation Keyframes
+@mixin fade-in($duration: 200ms) {
+  animation: fadeIn $duration ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@mixin slide-in-from-bottom($duration: 300ms) {
+  animation: slideInFromBottom $duration ease-out;
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@mixin scale-in($duration: 200ms) {
+  animation: scaleIn $duration ease-out;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Skeleton Loading
+@mixin skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-tertiary) 0%,
+    var(--neutral-200) 50%,
+    var(--bg-tertiary) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
