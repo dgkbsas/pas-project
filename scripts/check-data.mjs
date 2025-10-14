@@ -19,7 +19,7 @@ async function main() {
 
 	if (!authUser) {
 		console.log('❌ Usuario NO encontrado en auth.users');
-		console.log('   Debes crear la cuenta primero en /signup');
+		console.log('   Debes crear la cuenta primero desde el panel admin');
 		return;
 	}
 

@@ -54,8 +54,8 @@
 </script>
 
 <div class="phone-input-argentina" class:has-error={error}>
+  <span class="prefix">+54 9</span>
   <div class="input-group">
-    <span class="prefix">+54 9</span>
     <input
       type="text"
       class="area-code-input"
@@ -66,6 +66,10 @@
       {required}
       maxlength="4"
     />
+  </div>
+  <span class="prefix">15</span>
+
+  <div class="input-group" style="width: 100%;">
     <input
       type="text"
       class="phone-number-input"
@@ -80,14 +84,13 @@
   {#if error}
     <span class="error-message">{error}</span>
   {/if}
-  <div class="help-text">Formato: +54 9 [código de área] [número]</div>
 </div>
 
 <style lang="scss">
   .phone-input-argentina {
     display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
+    align-items: center;
+    gap: var(--space-2);
   }
 
   .input-group {
@@ -103,6 +106,12 @@
     &:focus-within {
       border-color: var(--primary-500);
       box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+    }
+
+    &:has(input:disabled) {
+      background: var(--bg-secondary);
+      cursor: not-allowed;
+      opacity: 0.8;
     }
   }
 
@@ -136,19 +145,17 @@
     }
 
     &:disabled {
-      color: var(--text-tertiary);
+      color: var(--text-secondary);
       cursor: not-allowed;
     }
   }
 
   .area-code-input {
-    width: 50px;
-    border-right: 1px solid var(--border-primary);
-    padding-right: var(--space-2);
+    width: 32px;
   }
 
   .phone-number-input {
-    flex: 1;
+    width: 100%;
     min-width: 0;
   }
 

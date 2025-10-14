@@ -27,9 +27,11 @@
     ArrowDown,
     Filter,
     X,
+    MessageCircle,
   } from "lucide-svelte";
   import { debounce } from "$lib/utils";
   import type { Client } from "$lib/types/database.types";
+  import { isMobileNumber, getWhatsAppUrl } from "$lib/utils/phone";
 
   type ClientWithCount = Client & {
     active_policies_count?: number;
@@ -42,8 +44,10 @@
   let loadingMore = $state(false);
   let search = $state("");
   let showInactive = $state(false);
-  let sortBy = $state<'first_name' | 'last_name' | 'created_at' | 'updated_at' | 'policy_count'>('first_name');
-  let sortOrder = $state<'asc' | 'desc'>('asc');
+  let sortBy = $state<
+    "first_name" | "last_name" | "created_at" | "updated_at" | "policy_count"
+  >("first_name");
+  let sortOrder = $state<"asc" | "desc">("asc");
   let currentPage = $state(1);
   let limit = $state(30);
   let total = $state(0);
@@ -53,13 +57,15 @@
     cities: [],
     hasEmail: undefined,
     hasPhone: undefined,
-    dateFrom: '',
-    dateTo: '',
+    dateFrom: "",
+    dateTo: "",
   });
 
   // Modal state from URL
-  let clientId = $derived($page.url.searchParams.get('clientId'));
-  let modalMode = $derived($page.url.searchParams.get('mode') as 'view' | 'edit' || 'view');
+  let clientId = $derived($page.url.searchParams.get("clientId"));
+  let modalMode = $derived(
+    ($page.url.searchParams.get("mode") as "view" | "edit") || "view"
+  );
 
   onMount(() => {
     // Cargar preferencia de localStorage
@@ -88,7 +94,7 @@
     } else {
       loading = true;
     }
-    
+
     try {
       const params = new URLSearchParams({
         page: currentPage.toString(),
@@ -108,32 +114,32 @@
       params.append("sort_order", sortOrder);
 
       // Add filters
-      appliedFilters.cities.forEach(city => {
-        params.append('city', city);
+      appliedFilters.cities.forEach((city) => {
+        params.append("city", city);
       });
 
       if (appliedFilters.hasEmail !== undefined) {
-        params.append('has_email', appliedFilters.hasEmail.toString());
+        params.append("has_email", appliedFilters.hasEmail.toString());
       }
 
       if (appliedFilters.hasPhone !== undefined) {
-        params.append('has_phone', appliedFilters.hasPhone.toString());
+        params.append("has_phone", appliedFilters.hasPhone.toString());
       }
 
       if (appliedFilters.dateFrom) {
-        params.append('date_from', appliedFilters.dateFrom);
+        params.append("date_from", appliedFilters.dateFrom);
       }
 
       if (appliedFilters.dateTo) {
-        params.append('date_to', appliedFilters.dateTo);
+        params.append("date_to", appliedFilters.dateTo);
       }
 
-      console.log('Fetching clients:', `/api/clients?${params}`);
+      console.log("Fetching clients:", `/api/clients?${params}`);
       const response = await fetch(`/api/clients?${params}`);
-      console.log('Response status:', response.status);
+      console.log("Response status:", response.status);
 
       const result = await response.json();
-      console.log('Result:', result);
+      console.log("Result:", result);
 
       if (response.ok) {
         if (append) {
@@ -144,11 +150,14 @@
         total = result.pagination?.total || 0;
         hasMore = clients.length < total;
       } else {
-        showToast({ type: "error", message: result.message || "Error al cargar clientes" });
+        showToast({
+          type: "error",
+          message: result.message || "Error al cargar clientes",
+        });
         clients = [];
       }
     } catch (err) {
-      console.error('Error loading clients:', err);
+      console.error("Error loading clients:", err);
       showToast({ type: "error", message: "Error al cargar clientes" });
       clients = [];
     } finally {
@@ -183,17 +192,17 @@
     }
   }
 
-  function openClientModal(id: string, mode: 'view' | 'edit' = 'view') {
+  function openClientModal(id: string, mode: "view" | "edit" = "view") {
     const url = new URL(window.location.href);
-    url.searchParams.set('clientId', id);
-    url.searchParams.set('mode', mode);
+    url.searchParams.set("clientId", id);
+    url.searchParams.set("mode", mode);
     goto(url.pathname + url.search, { replaceState: false, noScroll: true });
   }
 
   function closeClientModal(saved?: boolean) {
     const url = new URL(window.location.href);
-    url.searchParams.delete('clientId');
-    url.searchParams.delete('mode');
+    url.searchParams.delete("clientId");
+    url.searchParams.delete("mode");
     goto(url.pathname + url.search, { replaceState: false, noScroll: true });
     // Only refresh if changes were saved
     if (saved) {
@@ -203,10 +212,10 @@
 
   function handleSort(column: typeof sortBy) {
     if (sortBy === column) {
-      sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+      sortOrder = sortOrder === "asc" ? "desc" : "asc";
     } else {
       sortBy = column;
-      sortOrder = 'asc';
+      sortOrder = "asc";
     }
     currentPage = 1;
     clients = [];
@@ -214,7 +223,7 @@
   }
 
   function toggleSort() {
-    sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+    sortOrder = sortOrder === "asc" ? "desc" : "asc";
     currentPage = 1;
     clients = [];
     loadClients();
@@ -232,8 +241,8 @@
       cities: [],
       hasEmail: undefined,
       hasPhone: undefined,
-      dateFrom: '',
-      dateTo: '',
+      dateFrom: "",
+      dateTo: "",
     };
     currentPage = 1;
     clients = [];
@@ -254,8 +263,15 @@
   function formatAddress(client: ClientWithCount): string {
     const parts = [];
 
-    if (client.address) {
-      parts.push(client.address);
+    // Construir dirección desde campos individuales
+    const streetParts = [];
+    if (client.street) streetParts.push(client.street);
+    if (client.street_number) streetParts.push(client.street_number);
+    if (client.floor) streetParts.push(`Piso ${client.floor}`);
+    if (client.apartment) streetParts.push(`Depto ${client.apartment}`);
+    
+    if (streetParts.length > 0) {
+      parts.push(streetParts.join(" "));
     }
 
     if (client.city) {
@@ -270,7 +286,7 @@
       parts.push(`(CP ${client.postal_code})`);
     }
 
-    return parts.length > 0 ? parts.join(', ') : '-';
+    return parts.length > 0 ? parts.join(", ") : "-";
   }
 
   // Copiar al clipboard
@@ -279,12 +295,12 @@
       await navigator.clipboard.writeText(text);
       showToast({
         type: "success",
-        message: `${label} copiado al portapapeles`
+        message: `${label} copiado al portapapeles`,
       });
     } catch (err) {
       showToast({
         type: "error",
-        message: "Error al copiar"
+        message: "Error al copiar",
       });
     }
   }
@@ -313,10 +329,10 @@
     </div>
 
     <div class="toolbar-actions">
-      <button 
-        class="filter-btn" 
+      <button
+        class="filter-btn"
         class:active={filtersOpen || activeFiltersCount() > 0}
-        onclick={() => filtersOpen = !filtersOpen}
+        onclick={() => (filtersOpen = !filtersOpen)}
         title="Filtros"
       >
         <Filter size={18} />
@@ -326,8 +342,8 @@
       </button>
 
       {#if activeFiltersCount() > 0}
-        <button 
-          class="clear-filters-btn" 
+        <button
+          class="clear-filters-btn"
           onclick={clearFilters}
           title="Limpiar filtros"
         >
@@ -356,8 +372,8 @@
 
       <div class="sort-select">
         <label for="sort-by">Ordenar por:</label>
-        <select 
-          id="sort-by" 
+        <select
+          id="sort-by"
           bind:value={sortBy}
           onchange={() => {
             currentPage = 1;
@@ -371,19 +387,19 @@
           <option value="created_at">Fecha creación</option>
           <option value="updated_at">Última actualización</option>
         </select>
-        <button 
-          class="sort-order-btn" 
+        <button
+          class="sort-order-btn"
           onclick={toggleSort}
-          title={sortOrder === 'asc' ? 'Ascendente' : 'Descendente'}
+          title={sortOrder === "asc" ? "Ascendente" : "Descendente"}
         >
-          {#if sortOrder === 'asc'}
+          {#if sortOrder === "asc"}
             <ArrowUp size={16} />
           {:else}
             <ArrowDown size={16} />
           {/if}
         </button>
       </div>
-      
+
       <div class="results-count">
         {#if loading && clients.length === 0}
           <span class="count-skeleton"></span>
@@ -420,6 +436,7 @@
           <th>Nombre</th>
           <th>DNI/CUIT</th>
           <th>Email</th>
+          <th>Celular</th>
           <th>Teléfono</th>
           <th>Domicilio</th>
           <th>Creado</th>
@@ -433,7 +450,11 @@
             <td>
               <button
                 class="copyable-btn name-cell"
-                onclick={() => copyToClipboard(`${client.first_name} ${client.last_name}`, 'Nombre')}
+                onclick={() =>
+                  copyToClipboard(
+                    `${client.first_name} ${client.last_name}`,
+                    "Nombre"
+                  )}
                 title="Click para copiar nombre"
               >
                 {client.first_name}
@@ -444,7 +465,8 @@
               {#if client.document_number}
                 <button
                   class="copyable-btn id-cell"
-                  onclick={() => copyToClipboard(client.document_number!, 'DNI/CUIT')}
+                  onclick={() =>
+                    copyToClipboard(client.document_number!, "DNI/CUIT")}
                   title="Click para copiar DNI/CUIT"
                 >
                   {client.document_number}
@@ -457,7 +479,8 @@
               {#if client.email_primary}
                 <button
                   class="copyable-btn email"
-                  onclick={() => copyToClipboard(client.email_primary!, 'Email')}
+                  onclick={() =>
+                    copyToClipboard(client.email_primary!, "Email")}
                   title="Click para copiar"
                 >
                   <Mail size={14} />
@@ -469,23 +492,52 @@
             </td>
             <td>
               {#if client.phone}
+                <div class="phone-cell">
+                  <button
+                    class="copyable-btn phone"
+                    onclick={() => copyToClipboard(client.phone!, "Celular")}
+                    title="Click para copiar"
+                  >
+                    <Phone size={14} />
+                    {client.phone}
+                  </button>
+                  {#if isMobileNumber(client.phone)}
+                    <a
+                      href={getWhatsAppUrl(client.phone)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="whatsapp-btn"
+                      title="Abrir en WhatsApp"
+                    >
+                      <MessageCircle size={20} fill="#25d36690" />
+                    </a>
+                  {/if}
+                </div>
+              {:else}
+                <span class="text-muted">-</span>
+              {/if}
+            </td>
+            <td>
+              {#if client.phone_landline}
                 <button
                   class="copyable-btn phone"
-                  onclick={() => copyToClipboard(client.phone!, 'Teléfono')}
+                  onclick={() =>
+                    copyToClipboard(client.phone_landline!, "Teléfono")}
                   title="Click para copiar"
                 >
                   <Phone size={14} />
-                  {client.phone}
+                  {client.phone_landline}
                 </button>
               {:else}
                 <span class="text-muted">-</span>
               {/if}
             </td>
             <td>
-              {#if formatAddress(client) !== '-'}
+              {#if formatAddress(client) !== "-"}
                 <button
                   class="copyable-btn address-cell"
-                  onclick={() => copyToClipboard(formatAddress(client), 'Dirección')}
+                  onclick={() =>
+                    copyToClipboard(formatAddress(client), "Dirección")}
                   title="Click para copiar"
                 >
                   {formatAddress(client)}
@@ -495,10 +547,10 @@
               {/if}
             </td>
             <td class="text-nowrap">
-              {new Date(client.created_at).toLocaleDateString('es-ES', { 
-                year: 'numeric', 
-                month: 'short', 
-                day: 'numeric' 
+              {new Date(client.created_at).toLocaleDateString("es-ES", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
               })}
             </td>
             <td class="text-center">
@@ -511,7 +563,7 @@
               <div class="actions">
                 <button
                   class="action-btn view-btn"
-                  onclick={() => openClientModal(client.id, 'view')}
+                  onclick={() => openClientModal(client.id, "view")}
                   title="Ver detalles"
                 >
                   <Eye size={16} />
@@ -540,16 +592,12 @@
 </div>
 
 <!-- Client Modal -->
-<ClientModal 
-  clientId={clientId} 
-  mode={modalMode} 
-  onClose={closeClientModal} 
-/>
+<ClientModal {clientId} mode={modalMode} onClose={closeClientModal} />
 
 <!-- Filters Panel -->
-<ClientFilters 
+<ClientFilters
   open={filtersOpen}
-  onClose={() => filtersOpen = false}
+  onClose={() => (filtersOpen = false)}
   onApply={handleFiltersApply}
   initialFilters={appliedFilters}
 />
@@ -691,7 +739,6 @@
       color: var(--danger);
     }
   }
-
 
   .sort-select {
     display: flex;
@@ -838,23 +885,6 @@
     gap: var(--space-3);
   }
 
-  .client-name-btn {
-    background: none;
-    border: none;
-    padding: 0;
-    color: var(--primary-600);
-    font-weight: var(--font-medium);
-    text-decoration: none;
-    cursor: pointer;
-    font-size: inherit;
-    font-family: inherit;
-    text-align: left;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-
   .copyable-btn {
     display: flex;
     align-items: center;
@@ -917,6 +947,34 @@
     color: var(--text-secondary);
   }
 
+  .phone-cell {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    white-space: nowrap;
+  }
+
+  .whatsapp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-1);
+    color: white;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+    text-decoration: none;
+    flex-shrink: 0;
+
+    &:hover {
+      background: var(--primary-50);
+      transform: scale(1.1);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+
   .policies-count {
     display: inline-flex;
     align-items: center;
@@ -958,7 +1016,7 @@
     transition: all var(--transition-fast);
 
     &:hover {
-      background: var(--bg-secondary);
+      background: var(--primary-50);
       color: var(--primary-600);
     }
 

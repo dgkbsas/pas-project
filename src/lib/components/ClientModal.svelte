@@ -8,9 +8,20 @@
   import { page } from "$app/stores";
   import Button from "$lib/components/ui/Button.svelte";
   import Input from "$lib/components/ui/Input.svelte";
+  import PhoneInputArgentina from "$lib/components/form/PhoneInputArgentina.svelte";
   import { showToast } from "$lib/stores/notifications";
-  import { X, Save, Edit2, User, FileText, Plus, ArrowLeft } from "lucide-svelte";
+  import {
+    X,
+    Save,
+    Edit2,
+    User,
+    FileText,
+    Plus,
+    ArrowLeft,
+    MessageCircle,
+  } from "lucide-svelte";
   import type { ClientWithPolicies } from "$lib/types";
+  import { isMobileNumber, getWhatsAppUrl } from "$lib/utils/phone";
 
   // Props
   interface Props {
@@ -36,7 +47,12 @@
     email_primary: "",
     email_secondary: "",
     phone: "",
+    phone_landline: "",
     address: "",
+    street: "",
+    street_number: "",
+    floor: "",
+    apartment: "",
     postal_code: "",
     city: "",
     province: "",
@@ -47,9 +63,10 @@
 
   let errors = $state<Record<string, string>>({});
 
-  // Load client data when clientId changes
+  // Reset edit mode when clientId changes or modal reopens
   $effect(() => {
     if (clientId) {
+      isEditMode = mode === "edit";
       loadClient();
     }
   });
@@ -75,7 +92,12 @@
           email_primary: client?.email_primary || "",
           email_secondary: client?.email_secondary || "",
           phone: client?.phone || "",
+          phone_landline: client?.phone_landline || "",
           address: client?.address || "",
+          street: client?.street || "",
+          street_number: client?.street_number || "",
+          floor: client?.floor || "",
+          apartment: client?.apartment || "",
           postal_code: client?.postal_code || "",
           city: client?.city || "",
           province: client?.province || "",
@@ -146,7 +168,12 @@
         email_primary: client.email_primary || "",
         email_secondary: client.email_secondary || "",
         phone: client.phone || "",
+        phone_landline: client.phone_landline || "",
         address: client.address || "",
+        street: client.street || "",
+        street_number: client.street_number || "",
+        floor: client.floor || "",
+        apartment: client.apartment || "",
         postal_code: client.postal_code || "",
         city: client.city || "",
         province: client.province || "",
@@ -174,11 +201,11 @@
     <!-- Header -->
     <div class="modal-header">
       <div class="header-content">
-        {#if $page.url.searchParams.get('from') === 'policy'}
-          <button 
-            class="back-btn" 
+        {#if $page.url.searchParams.get("from") === "policy"}
+          <button
+            class="back-btn"
             onclick={() => {
-              const policyId = $page.url.searchParams.get('fromId');
+              const policyId = $page.url.searchParams.get("fromId");
               if (policyId) {
                 onClose();
                 goto(`/polizas?policyId=${policyId}&mode=view`);
@@ -195,7 +222,7 @@
         <div>
           <h2>
             {#if loading}
-              Loading...
+              Cargando...
             {:else if client}
               {client.first_name} {client.last_name}
             {/if}
@@ -222,7 +249,7 @@
     <div class="modal-content">
       {#if loading}
         <div class="loading-state">
-          <p>Loading client details...</p>
+          <p>Cargando datos del cliente...</p>
         </div>
       {:else if client}
         <form
@@ -233,206 +260,230 @@
         >
           <!-- Personal Information -->
           <section class="form-section">
-            <h3>Personal Information</h3>
+            <h3>Información Personal</h3>
 
             <div class="form-row">
               <div class="form-field">
-                <label for="first_name">First Name *</label>
-                {#if isEditMode}
-                  <Input
-                    id="first_name"
-                    bind:value={formData.first_name}
-                    error={errors.first_name}
-                    required
-                  />
-                {:else}
-                  <p class="field-value">{client.first_name}</p>
-                {/if}
+                <label for="first_name">Nombre *</label>
+                <Input
+                  id="first_name"
+                  bind:value={formData.first_name}
+                  error={errors.first_name}
+                  required
+                  disabled={!isEditMode}
+                />
               </div>
 
               <div class="form-field">
-                <label for="last_name">Last Name *</label>
-                {#if isEditMode}
-                  <Input
-                    id="last_name"
-                    bind:value={formData.last_name}
-                    error={errors.last_name}
-                    required
-                  />
-                {:else}
-                  <p class="field-value">{client.last_name}</p>
-                {/if}
+                <label for="last_name">Apellido *</label>
+                <Input
+                  id="last_name"
+                  bind:value={formData.last_name}
+                  error={errors.last_name}
+                  required
+                  disabled={!isEditMode}
+                />
               </div>
             </div>
 
             <div class="form-row">
               <div class="form-field">
-                <label for="document_number">Document Number</label>
-                {#if isEditMode}
-                  <Input
-                    id="document_number"
-                    bind:value={formData.document_number}
-                    error={errors.document_number}
-                  />
-                {:else}
-                  <p class="field-value">{client.document_number || "N/A"}</p>
-                {/if}
+                <label for="document_number">DNI/CUIT</label>
+                <Input
+                  id="document_number"
+                  bind:value={formData.document_number}
+                  error={errors.document_number}
+                  disabled={!isEditMode}
+                />
               </div>
 
               <div class="form-field">
-                <label for="birth_date">Birth Date</label>
-                {#if isEditMode}
-                  <Input
-                    id="birth_date"
-                    type="date"
-                    bind:value={formData.birth_date}
-                    error={errors.birth_date}
-                  />
-                {:else}
-                  <p class="field-value">{formatDate(client.birth_date)}</p>
-                {/if}
+                <label for="birth_date">Fecha de Nacimiento</label>
+                <Input
+                  id="birth_date"
+                  type="date"
+                  bind:value={formData.birth_date}
+                  error={errors.birth_date}
+                  disabled={!isEditMode}
+                />
               </div>
             </div>
           </section>
 
           <!-- Contact Information -->
           <section class="form-section">
-            <h3>Contact Information</h3>
+            <h3>Información de Contacto</h3>
 
             <div class="form-field">
-              <label for="email_primary">Primary Email</label>
-              {#if isEditMode}
-                <Input
-                  id="email_primary"
-                  type="email"
-                  bind:value={formData.email_primary}
-                  error={errors.email_primary}
-                />
-              {:else}
-                <p class="field-value">{client.email_primary || "N/A"}</p>
-              {/if}
+              <label for="email_primary">Email Principal</label>
+              <Input
+                id="email_primary"
+                type="email"
+                bind:value={formData.email_primary}
+                error={errors.email_primary}
+                disabled={!isEditMode}
+              />
             </div>
 
             <div class="form-field">
-              <label for="email_secondary">Secondary Email</label>
-              {#if isEditMode}
-                <Input
-                  id="email_secondary"
-                  type="email"
-                  bind:value={formData.email_secondary}
-                  error={errors.email_secondary}
-                />
-              {:else}
-                <p class="field-value">{client.email_secondary || "N/A"}</p>
-              {/if}
+              <label for="email_secondary">Email Secundario</label>
+              <Input
+                id="email_secondary"
+                type="email"
+                bind:value={formData.email_secondary}
+                error={errors.email_secondary}
+                disabled={!isEditMode}
+              />
             </div>
 
-            <div class="form-field">
-              <label for="phone">Phone</label>
-              {#if isEditMode}
+            <div class="form-row">
+              <div class="form-field">
+                <label for="phone">Celular</label>
+                <div class="phone-input-wrapper">
+                  <PhoneInputArgentina
+                    bind:value={formData.phone}
+                    error={errors.phone}
+                    disabled={!isEditMode}
+                  />
+                  {#if !isEditMode && client.phone && isMobileNumber(client.phone)}
+                    <a
+                      href={getWhatsAppUrl(client.phone)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="whatsapp-btn"
+                      title="Abrir en WhatsApp"
+                    >
+                      <MessageCircle size={14} />
+                    </a>
+                  {/if}
+                </div>
+              </div>
+
+              <div class="form-field">
+                <label for="phone_landline">Teléfono</label>
                 <Input
-                  id="phone"
+                  id="phone_landline"
                   type="tel"
-                  bind:value={formData.phone}
-                  error={errors.phone}
+                  bind:value={formData.phone_landline}
+                  error={errors.phone_landline}
+                  disabled={!isEditMode}
                 />
-              {:else}
-                <p class="field-value">{client.phone || "N/A"}</p>
-              {/if}
+              </div>
             </div>
           </section>
 
           <!-- Address -->
           <section class="form-section">
-            <h3>Address</h3>
+            <h3>Dirección</h3>
 
-            <div class="form-field">
-              <label for="address">Street Address</label>
-              {#if isEditMode}
+            <div class="form-row">
+              <div class="form-field">
+                <label for="street">Calle</label>
                 <Input
-                  id="address"
-                  bind:value={formData.address}
-                  error={errors.address}
+                  id="street"
+                  bind:value={formData.street}
+                  error={errors.street}
+                  disabled={!isEditMode}
+                  placeholder="Nombre de la calle"
                 />
-              {:else}
-                <p class="field-value">{client.address || "N/A"}</p>
-              {/if}
+              </div>
+
+              <div class="form-field">
+                <label for="street_number">Número</label>
+                <Input
+                  id="street_number"
+                  bind:value={formData.street_number}
+                  error={errors.street_number}
+                  disabled={!isEditMode}
+                  placeholder="1234"
+                />
+              </div>
+
+              <div class="form-field">
+                <label for="floor">Piso</label>
+                <Input
+                  id="floor"
+                  bind:value={formData.floor}
+                  error={errors.floor}
+                  disabled={!isEditMode}
+                  placeholder="5"
+                />
+              </div>
+
+              <div class="form-field">
+                <label for="apartment">Depto</label>
+                <Input
+                  id="apartment"
+                  bind:value={formData.apartment}
+                  error={errors.apartment}
+                  disabled={!isEditMode}
+                  placeholder="A"
+                />
+              </div>
             </div>
 
             <div class="form-row">
               <div class="form-field">
-                <label for="city">City</label>
-                {#if isEditMode}
-                  <Input
-                    id="city"
-                    bind:value={formData.city}
-                    error={errors.city}
-                  />
-                {:else}
-                  <p class="field-value">{client.city || "N/A"}</p>
-                {/if}
+                <label for="city">Ciudad</label>
+                <Input
+                  id="city"
+                  bind:value={formData.city}
+                  error={errors.city}
+                  disabled={!isEditMode}
+                  placeholder="Ciudad"
+                />
               </div>
 
               <div class="form-field">
-                <label for="postal_code">Postal Code</label>
-                {#if isEditMode}
-                  <Input
-                    id="postal_code"
-                    bind:value={formData.postal_code}
-                    error={errors.postal_code}
-                  />
-                {:else}
-                  <p class="field-value">{client.postal_code || "N/A"}</p>
-                {/if}
+                <label for="province">Provincia</label>
+                <Input
+                  id="province"
+                  bind:value={formData.province}
+                  error={errors.province}
+                  disabled={!isEditMode}
+                  placeholder="Provincia"
+                />
               </div>
 
               <div class="form-field">
-                <label for="province">Province</label>
-                {#if isEditMode}
-                  <Input
-                    id="province"
-                    bind:value={formData.province}
-                    error={errors.province}
-                  />
-                {:else}
-                  <p class="field-value">{client.province || "N/A"}</p>
-                {/if}
+                <label for="postal_code">Código Postal</label>
+                <Input
+                  id="postal_code"
+                  bind:value={formData.postal_code}
+                  error={errors.postal_code}
+                  disabled={!isEditMode}
+                  placeholder="1234"
+                />
               </div>
             </div>
           </section>
 
           <!-- Additional Information -->
           <section class="form-section">
-            <h3>Additional Information</h3>
+            <h3>Información Adicional</h3>
 
             <div class="form-field">
-              <label for="alias_pas">PAS Alias</label>
-              {#if isEditMode}
-                <Input
-                  id="alias_pas"
-                  bind:value={formData.alias_pas}
-                  error={errors.alias_pas}
-                />
-              {:else}
-                <p class="field-value">{client.alias_pas || "N/A"}</p>
-              {/if}
+              <label for="alias_pas">Alias PAS</label>
+              <Input
+                id="alias_pas"
+                bind:value={formData.alias_pas}
+                error={errors.alias_pas}
+                disabled={!isEditMode}
+              />
             </div>
 
             <div class="form-field">
-              <label for="referred_by">Referred By</label>
-              {#if isEditMode}
-                <Input
-                  id="referred_by"
-                  bind:value={formData.referred_by}
-                  error={errors.referred_by}
-                />
-              {:else}
-                <p class="field-value">{client.referred_by || "N/A"}</p>
-              {/if}
+              <label for="referred_by">Referido Por</label>
+              <Input
+                id="referred_by"
+                bind:value={formData.referred_by}
+                error={errors.referred_by}
+                disabled={!isEditMode}
+              />
             </div>
 
             <div class="form-field">
-              <label for="observations">Observations</label>
+              <label for="observations">Observaciones</label>
               {#if isEditMode}
                 <textarea
                   id="observations"
@@ -442,7 +493,7 @@
                 ></textarea>
               {:else}
                 <p class="field-value preserve-whitespace">
-                  {client.observations || "No observations"}
+                  {client.observations || "Sin observaciones"}
                 </p>
               {/if}
             </div>
@@ -450,7 +501,7 @@
 
           <!-- Policies Section -->
           <!-- Only show policies if NOT coming from back navigation -->
-          {#if !isEditMode && !$page.url.searchParams.get('from')}
+          {#if !isEditMode && !$page.url.searchParams.get("from")}
             <section class="form-section policies-section">
               <div class="section-header-row">
                 <h3>
@@ -469,7 +520,7 @@
                   Nueva Póliza
                 </button>
               </div>
-              
+
               {#if client.policies && client.policies.length > 0}
                 <div class="policies-list">
                   {#each client.policies as policy}
@@ -478,13 +529,21 @@
                       class="policy-card"
                       onclick={() => {
                         onClose();
-                        goto(`/polizas?policyId=${policy.id}&mode=view&from=client&fromId=${client.id}`);
+                        goto(
+                          `/polizas?policyId=${policy.id}&mode=view&from=client&fromId=${client.id}`
+                        );
                       }}
                     >
                       <div class="policy-info">
                         <div class="policy-header">
-                          <strong class="policy-number">{policy.policy_number || "S/N"}</strong>
-                          <span class="policy-status" class:active={policy.active} class:inactive={!policy.active}>
+                          <strong class="policy-number"
+                            >{policy.policy_number || "S/N"}</strong
+                          >
+                          <span
+                            class="policy-status"
+                            class:active={policy.active}
+                            class:inactive={!policy.active}
+                          >
                             {policy.active ? "Activa" : "Inactiva"}
                           </span>
                         </div>
@@ -532,14 +591,14 @@
     {#if isEditMode && !loading}
       <div class="modal-footer">
         <Button variant="ghost" onclick={toggleEdit} disabled={saving}>
-          Cancel
+          Cancelar
         </Button>
         <Button variant="primary" onclick={handleSave} disabled={saving}>
           {#if saving}
-            Saving...
+            Guardando...
           {:else}
             <Save size={18} />
-            Save Changes
+            Guardar Cambios
           {/if}
         </Button>
       </div>
@@ -609,7 +668,7 @@
     border-bottom: 1px solid var(--border-primary);
     gap: var(--space-4);
 
-  .header-content {
+    .header-content {
       display: flex;
       align-items: center;
       gap: var(--space-3);
@@ -755,6 +814,49 @@
 
       &.preserve-whitespace {
         white-space: pre-wrap;
+      }
+    }
+
+    .phone-with-whatsapp {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+
+      .field-value {
+        padding: 0;
+      }
+    }
+
+    .phone-input-wrapper {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      position: relative;
+
+      :global(.input-wrapper) {
+        flex: 1;
+      }
+    }
+
+    .whatsapp-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-1);
+      background: #25d366;
+      color: white;
+      border-radius: var(--radius-full);
+      transition: all var(--transition-fast);
+      text-decoration: none;
+      flex-shrink: 0;
+
+      &:hover {
+        background: #20ba5a;
+        transform: scale(1.1);
+      }
+
+      &:active {
+        transform: scale(0.95);
       }
     }
 

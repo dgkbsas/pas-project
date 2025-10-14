@@ -75,11 +75,11 @@
   let loadingInsurers = $state(false);
   let editingInsurerId = $state<string | null>(null);
   let insurerFormData = $state({
-    name: '',
-    code: '',
-    contact_email: '',
-    contact_phone: '',
-    website: '',
+    name: "",
+    code: "",
+    contact_email: "",
+    contact_phone: "",
+    website: "",
   });
 
   // Variables de configuración
@@ -94,8 +94,8 @@
   let loadingConfig = $state(false);
   let editingConfigId = $state<string | null>(null);
   let configFormData = $state({
-    config_key: '',
-    config_value: ''
+    config_key: "",
+    config_value: "",
   });
 
   // Invitaciones
@@ -163,7 +163,10 @@
           };
         }
       } else {
-        showToast({ type: "error", message: result.message || "Error al actualizar" });
+        showToast({
+          type: "error",
+          message: result.message || "Error al actualizar",
+        });
       }
     } catch (err) {
       showToast({ type: "error", message: "Error al actualizar empresa" });
@@ -217,9 +220,12 @@
   }
 
   function copyInviteLink(token: string) {
-    const url = `${window.location.origin}/auth/signup?token=${token}`;
-    navigator.clipboard.writeText(url);
-    showToast({ type: "success", message: "Link copiado al portapapeles" });
+    // TODO: Implementar nuevo flujo de registro sin página pública de signup
+    // El alta de usuarios ahora se maneja completamente desde el panel admin
+    showToast({
+      type: "info",
+      message: "Funcionalidad de invitación pendiente de actualizar",
+    });
   }
 
   function formatDate(date: string) {
@@ -230,7 +236,9 @@
     });
   }
 
-  function getRoleBadge(role: string): 'error' | 'success' | 'info' | 'warning' | 'default' {
+  function getRoleBadge(
+    role: string
+  ): "error" | "success" | "info" | "warning" | "default" {
     return role === "admin" ? "default" : "default";
   }
 
@@ -241,15 +249,18 @@
   async function loadInsurers() {
     loadingInsurers = true;
     try {
-      const response = await fetch('/api/insurance-companies');
+      const response = await fetch("/api/insurance-companies");
       const result = await response.json();
       if (response.ok) {
         insurers = result.companies || [];
       } else {
-        showToast({ type: 'error', message: result.message || 'Error al cargar aseguradoras' });
+        showToast({
+          type: "error",
+          message: result.message || "Error al cargar aseguradoras",
+        });
       }
     } catch (err) {
-      showToast({ type: 'error', message: 'Error al cargar aseguradoras' });
+      showToast({ type: "error", message: "Error al cargar aseguradoras" });
     } finally {
       loadingInsurers = false;
     }
@@ -257,36 +268,41 @@
 
   async function saveInsurer() {
     if (!insurerFormData.name.trim()) {
-      showToast({ type: 'error', message: 'El nombre es requerido' });
+      showToast({ type: "error", message: "El nombre es requerido" });
       return;
     }
 
     try {
-      const url = editingInsurerId 
-        ? `/api/insurance-companies/${editingInsurerId}` 
-        : '/api/insurance-companies';
-      
-      const method = editingInsurerId ? 'PUT' : 'POST';
+      const url = editingInsurerId
+        ? `/api/insurance-companies/${editingInsurerId}`
+        : "/api/insurance-companies";
+
+      const method = editingInsurerId ? "PUT" : "POST";
 
       const response = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(insurerFormData),
       });
 
       if (response.ok) {
-        showToast({ 
-          type: 'success', 
-          message: editingInsurerId ? 'Aseguradora actualizada' : 'Aseguradora creada' 
+        showToast({
+          type: "success",
+          message: editingInsurerId
+            ? "Aseguradora actualizada"
+            : "Aseguradora creada",
         });
         resetInsurerForm();
         loadInsurers();
       } else {
         const result = await response.json();
-        showToast({ type: 'error', message: result.message || 'Error al guardar' });
+        showToast({
+          type: "error",
+          message: result.message || "Error al guardar",
+        });
       }
     } catch (err) {
-      showToast({ type: 'error', message: 'Error al guardar aseguradora' });
+      showToast({ type: "error", message: "Error al guardar aseguradora" });
     }
   }
 
@@ -294,10 +310,10 @@
     editingInsurerId = insurer.id;
     insurerFormData = {
       name: insurer.name,
-      code: insurer.code || '',
-      contact_email: insurer.contact_email || '',
-      contact_phone: insurer.contact_phone || '',
-      website: insurer.website || '',
+      code: insurer.code || "",
+      contact_email: insurer.contact_email || "",
+      contact_phone: insurer.contact_phone || "",
+      website: insurer.website || "",
     };
   }
 
@@ -306,35 +322,38 @@
 
     try {
       const response = await fetch(`/api/insurance-companies/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
 
       if (response.ok) {
-        showToast({ type: 'success', message: 'Aseguradora eliminada' });
+        showToast({ type: "success", message: "Aseguradora eliminada" });
         loadInsurers();
       } else {
         const result = await response.json();
-        showToast({ type: 'error', message: result.message || 'Error al eliminar' });
+        showToast({
+          type: "error",
+          message: result.message || "Error al eliminar",
+        });
       }
     } catch (err) {
-      showToast({ type: 'error', message: 'Error al eliminar aseguradora' });
+      showToast({ type: "error", message: "Error al eliminar aseguradora" });
     }
   }
 
   function resetInsurerForm() {
     editingInsurerId = null;
     insurerFormData = {
-      name: '',
-      code: '',
-      contact_email: '',
-      contact_phone: '',
-      website: '',
+      name: "",
+      code: "",
+      contact_email: "",
+      contact_phone: "",
+      website: "",
     };
   }
 
   // Load insurers when tab is active
   $effect(() => {
-    if (activeTab === 'insurers' && insurers.length === 0) {
+    if (activeTab === "insurers" && insurers.length === 0) {
       loadInsurers();
     }
   });
@@ -343,15 +362,18 @@
   async function loadConfigVariables() {
     loadingConfig = true;
     try {
-      const response = await fetch('/api/config');
+      const response = await fetch("/api/config");
       const result = await response.json();
       if (response.ok) {
         configVariables = result.configs || [];
       } else {
-        showToast({ type: 'error', message: result.message || 'Error al cargar configuración' });
+        showToast({
+          type: "error",
+          message: result.message || "Error al cargar configuración",
+        });
       }
     } catch (err) {
-      showToast({ type: 'error', message: 'Error al cargar configuración' });
+      showToast({ type: "error", message: "Error al cargar configuración" });
     } finally {
       loadingConfig = false;
     }
@@ -359,7 +381,7 @@
 
   async function saveConfigVariable() {
     if (!configFormData.config_key.trim()) {
-      showToast({ type: 'error', message: 'La clave es requerida' });
+      showToast({ type: "error", message: "La clave es requerida" });
       return;
     }
 
@@ -372,34 +394,37 @@
         parsedValue = configFormData.config_value;
       }
 
-      const url = editingConfigId 
-        ? `/api/config/${editingConfigId}` 
-        : '/api/config';
-      
-      const method = editingConfigId ? 'PUT' : 'POST';
+      const url = editingConfigId
+        ? `/api/config/${editingConfigId}`
+        : "/api/config";
+
+      const method = editingConfigId ? "PUT" : "POST";
 
       const response = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           config_key: configFormData.config_key,
-          config_value: parsedValue
+          config_value: parsedValue,
         }),
       });
 
       if (response.ok) {
-        showToast({ 
-          type: 'success', 
-          message: editingConfigId ? 'Variable actualizada' : 'Variable creada' 
+        showToast({
+          type: "success",
+          message: editingConfigId ? "Variable actualizada" : "Variable creada",
         });
         resetConfigForm();
         loadConfigVariables();
       } else {
         const result = await response.json();
-        showToast({ type: 'error', message: result.message || 'Error al guardar' });
+        showToast({
+          type: "error",
+          message: result.message || "Error al guardar",
+        });
       }
     } catch (err) {
-      showToast({ type: 'error', message: 'Error al guardar variable' });
+      showToast({ type: "error", message: "Error al guardar variable" });
     }
   }
 
@@ -407,9 +432,10 @@
     editingConfigId = config.id;
     configFormData = {
       config_key: config.config_key,
-      config_value: typeof config.config_value === 'object' 
-        ? JSON.stringify(config.config_value, null, 2) 
-        : String(config.config_value)
+      config_value:
+        typeof config.config_value === "object"
+          ? JSON.stringify(config.config_value, null, 2)
+          : String(config.config_value),
     };
   }
 
@@ -418,31 +444,34 @@
 
     try {
       const response = await fetch(`/api/config/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
 
       if (response.ok) {
-        showToast({ type: 'success', message: 'Variable eliminada' });
+        showToast({ type: "success", message: "Variable eliminada" });
         loadConfigVariables();
       } else {
         const result = await response.json();
-        showToast({ type: 'error', message: result.message || 'Error al eliminar' });
+        showToast({
+          type: "error",
+          message: result.message || "Error al eliminar",
+        });
       }
     } catch (err) {
-      showToast({ type: 'error', message: 'Error al eliminar variable' });
+      showToast({ type: "error", message: "Error al eliminar variable" });
     }
   }
 
   function resetConfigForm() {
     editingConfigId = null;
     configFormData = {
-      config_key: '',
-      config_value: ''
+      config_key: "",
+      config_value: "",
     };
   }
 
   function formatConfigValue(value: any): string {
-    if (typeof value === 'object') {
+    if (typeof value === "object") {
       return JSON.stringify(value);
     }
     return String(value);
@@ -450,7 +479,7 @@
 
   // Load config variables when tab is active
   $effect(() => {
-    if (activeTab === 'variables' && configVariables.length === 0) {
+    if (activeTab === "variables" && configVariables.length === 0) {
       loadConfigVariables();
     }
   });
@@ -702,9 +731,11 @@
                     </td>
                     <td>
                       {#if insurer.contact_email}
-                        <span class="contact-info">{insurer.contact_email}</span>
+                        <span class="contact-info">{insurer.contact_email}</span
+                        >
                       {:else if insurer.contact_phone}
-                        <span class="contact-info">{insurer.contact_phone}</span>
+                        <span class="contact-info">{insurer.contact_phone}</span
+                        >
                       {:else}
                         <span class="text-muted">Sin contacto</span>
                       {/if}
@@ -720,7 +751,8 @@
                         </button>
                         <button
                           class="action-btn danger"
-                          onclick={() => deleteInsurer(insurer.id, insurer.name)}
+                          onclick={() =>
+                            deleteInsurer(insurer.id, insurer.name)}
                           title="Eliminar"
                         >
                           <Trash size={16} />
@@ -893,7 +925,7 @@
       border-radius: var(--radius-lg);
       background: var(--primary-100);
       color: var(--primary-600);
-      flex-shrink: 0;
+      flex: unset;
     }
 
     h2 {
@@ -1107,7 +1139,7 @@
       padding: var(--space-3);
       border: 1px solid var(--border-primary);
       border-radius: var(--radius-md);
-      font-family: 'Courier New', monospace;
+      font-family: "Courier New", monospace;
       font-size: var(--text-sm);
       color: var(--text-primary);
       background: var(--bg-primary);
@@ -1131,7 +1163,7 @@
     background: var(--bg-secondary);
     color: var(--primary-700);
     font-size: var(--text-xs);
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     font-weight: var(--font-medium);
     border-radius: var(--radius-sm);
     border: 1px solid var(--border-primary);
@@ -1140,7 +1172,7 @@
   .config-value {
     font-size: var(--text-sm);
     color: var(--text-secondary);
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     max-width: 400px;
     overflow: hidden;
     text-overflow: ellipsis;

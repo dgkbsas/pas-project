@@ -89,9 +89,14 @@ export interface Client {
 	email_primary: string | null;
 	email_secondary: string | null;
 	phone: string | null;
+	phone_landline: string | null;
 
 	// Address
 	address: string | null;
+	street: string | null;
+	street_number: string | null;
+	floor: string | null;
+	apartment: string | null;
 	postal_code: string | null;
 	city: string | null;
 	province: string | null;

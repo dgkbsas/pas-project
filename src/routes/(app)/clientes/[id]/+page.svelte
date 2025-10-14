@@ -15,8 +15,10 @@
     FileText,
     Plus,
     Calendar,
+    MessageCircle,
   } from "lucide-svelte";
   import type { Client, Policy } from "$lib/types/database.types";
+  import { isMobileNumber, getWhatsAppUrl } from "$lib/utils/phone";
 
   type PageData = {
     client: Client;
@@ -107,32 +109,77 @@
           </div>
 
           <div class="info-list">
-            {#if data.client.email}
+            {#if data.client.email_primary}
               <div class="info-item">
                 <Mail size={18} />
                 <div>
-                  <div class="label">Email</div>
-                  <div class="value">{data.client.email}</div>
+                  <div class="label">Email Principal</div>
+                  <div class="value">{data.client.email_primary}</div>
                 </div>
               </div>
             {/if}
 
-            {#if data.client.phone}
+            {#if data.client.email_secondary}
               <div class="info-item">
-                <Phone size={18} />
+                <Mail size={18} />
                 <div>
-                  <div class="label">Teléfono</div>
-                  <div class="value">{data.client.phone}</div>
+                  <div class="label">Email Secundario</div>
+                  <div class="value">{data.client.email_secondary}</div>
                 </div>
               </div>
             {/if}
 
-            {#if data.client.id_number}
+            <div class="info-row">
+              {#if data.client.phone}
+                <div class="info-item">
+                  <Phone size={18} />
+                  <div class="phone-content">
+                    <div class="label">Celular</div>
+                    <div class="value phone-with-whatsapp">
+                      <span>{data.client.phone}</span>
+                      {#if isMobileNumber(data.client.phone)}
+                        <a
+                          href={getWhatsAppUrl(data.client.phone)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="whatsapp-btn"
+                          title="Abrir en WhatsApp"
+                        >
+                          <MessageCircle size={16} />
+                        </a>
+                      {/if}
+                    </div>
+                  </div>
+                </div>
+              {/if}
+
+              {#if data.client.phone_landline}
+                <div class="info-item">
+                  <Phone size={18} />
+                  <div>
+                    <div class="label">Teléfono</div>
+                    <div class="value">{data.client.phone_landline}</div>
+                  </div>
+                </div>
+              {/if}
+            </div>
+
+            {#if data.client.document_number}
               <div class="info-item">
                 <FileText size={18} />
                 <div>
-                  <div class="label">DNI/NIE</div>
-                  <div class="value">{data.client.id_number}</div>
+                  <div class="label">DNI/CUIT</div>
+                  <div class="value">{data.client.document_number}</div>
+                </div>
+              </div>
+            {/if}
+
+            {#if data.client.birth_date}
+              <div class="info-item">
+                <Calendar size={18} />
+                <div>
+                  <div class="label">Fecha de Nacimiento</div>
+                  <div class="value">{formatDate(data.client.birth_date)}</div>
                 </div>
               </div>
             {/if}
@@ -169,12 +216,40 @@
           </div>
         </Card>
 
-        {#if data.client.notes}
+        <Card class="full-width">
+          <div class="card-header">
+            <h2>Información Adicional</h2>
+          </div>
+
+          <div class="info-list">
+            {#if data.client.alias_pas}
+              <div class="info-item">
+                <FileText size={18} />
+                <div>
+                  <div class="label">Alias PAS</div>
+                  <div class="value">{data.client.alias_pas}</div>
+                </div>
+              </div>
+            {/if}
+
+            {#if data.client.referred_by}
+              <div class="info-item">
+                <FileText size={18} />
+                <div>
+                  <div class="label">Referido Por</div>
+                  <div class="value">{data.client.referred_by}</div>
+                </div>
+              </div>
+            {/if}
+          </div>
+        </Card>
+
+        {#if data.client.observations}
           <Card class="full-width">
             <div class="card-header">
-              <h2>Notas</h2>
+              <h2>Observaciones</h2>
             </div>
-            <p class="notes">{data.client.notes}</p>
+            <p class="notes">{data.client.observations}</p>
           </Card>
         {/if}
       </div>
@@ -320,6 +395,16 @@
     gap: var(--space-4);
   }
 
+  .info-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
   .info-item {
     display: flex;
     gap: var(--space-3);
@@ -328,6 +413,10 @@
       color: var(--primary-600);
       flex-shrink: 0;
       margin-top: 2px;
+    }
+
+    .phone-content {
+      flex: 1;
     }
 
     .label {
@@ -342,6 +431,33 @@
     .value {
       font-size: var(--text-sm);
       color: var(--text-primary);
+    }
+
+    .phone-with-whatsapp {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .whatsapp-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-1);
+      background: #25D366;
+      color: white;
+      border-radius: var(--radius-full);
+      transition: all var(--transition-fast);
+      text-decoration: none;
+
+      &:hover {
+        background: #20BA5A;
+        transform: scale(1.1);
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
     }
   }
 

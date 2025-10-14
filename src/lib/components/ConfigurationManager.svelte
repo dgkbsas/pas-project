@@ -1,11 +1,21 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/Button.svelte';
-  import Input from '$lib/components/ui/Input.svelte';
-  import Card from '$lib/components/ui/Card.svelte';
-  import Badge from '$lib/components/ui/Badge.svelte';
-  import { showToast } from '$lib/stores/notifications';
-  import { Plus, Trash, Edit2, Check, X, DollarSign, FileText, Calendar, Tag } from 'lucide-svelte';
+  import { onMount } from "svelte";
+  import Button from "$lib/components/ui/Button.svelte";
+  import Input from "$lib/components/ui/Input.svelte";
+  import Card from "$lib/components/ui/Card.svelte";
+  import Badge from "$lib/components/ui/Badge.svelte";
+  import { showToast } from "$lib/stores/notifications";
+  import {
+    Plus,
+    Trash,
+    Edit2,
+    Check,
+    X,
+    DollarSign,
+    FileText,
+    Calendar,
+    Tag,
+  } from "lucide-svelte";
 
   type ConfigItem = {
     value: string;
@@ -24,31 +34,31 @@
   let loading = $state(false);
   let sections = $state<ConfigSection[]>([
     {
-      key: 'payment_modes',
-      label: 'Modos de Pago',
+      key: "payment_modes",
+      label: "Modos de Pago",
       icon: DollarSign,
-      description: 'Modalidades de pago disponibles para las pólizas',
-      items: []
+      description: "Modalidades de pago disponibles para las pólizas",
+      items: [],
     },
     {
-      key: 'policy_types',
-      label: 'Tipos de Póliza',
+      key: "policy_types",
+      label: "Tipos de Póliza",
       icon: FileText,
-      description: 'Tipos de pólizas de seguro que se pueden crear',
-      items: []
+      description: "Tipos de pólizas de seguro que se pueden crear",
+      items: [],
     },
     {
-      key: 'followup_types',
-      label: 'Tipos de Seguimiento',
+      key: "followup_types",
+      label: "Tipos de Seguimiento",
       icon: Calendar,
-      description: 'Categorías de seguimientos para las pólizas',
-      items: []
-    }
+      description: "Categorías de seguimientos para las pólizas",
+      items: [],
+    },
   ]);
 
   let editingItem = $state<{ sectionKey: string; index: number } | null>(null);
-  let newItemLabel = $state('');
-  let editItemLabel = $state('');
+  let newItemLabel = $state("");
+  let editItemLabel = $state("");
   let activeSectionKey = $state<string | null>(null);
   let showInactive = $state(false);
 
@@ -59,40 +69,45 @@
   async function loadAllConfigurations() {
     loading = true;
     try {
-      const response = await fetch('/api/config');
+      const response = await fetch("/api/config");
       const result = await response.json();
-      
+
       if (response.ok && result.configs) {
         // Map configs to sections
-        sections = sections.map(section => {
-          const config = result.configs.find((c: any) => c.config_key === section.key);
+        sections = sections.map((section) => {
+          const config = result.configs.find(
+            (c: any) => c.config_key === section.key
+          );
           if (config) {
             // Handle both array format (old) and object format (new with active status)
             let items: ConfigItem[] = [];
-            
+
             if (Array.isArray(config.config_value)) {
               // Old format - all items active by default
               items = config.config_value.map((label: string) => ({
                 value: generateValue(label),
                 label,
-                active: true
+                active: true,
               }));
-            } else if (typeof config.config_value === 'object' && config.config_value.items) {
+            } else if (
+              typeof config.config_value === "object" &&
+              config.config_value.items
+            ) {
               // New format with active status
               items = config.config_value.items;
             }
-            
+
             return {
               ...section,
-              items
+              items,
             };
           }
           return section;
         });
       }
     } catch (err) {
-      console.error('Error loading configurations:', err);
-      showToast({ type: 'error', message: 'Error al cargar configuraciones' });
+      console.error("Error loading configurations:", err);
+      showToast({ type: "error", message: "Error al cargar configuraciones" });
     } finally {
       loading = false;
     }
@@ -102,84 +117,94 @@
     // Generate a slug-like value from the label
     return label
       .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '') // Remove accents
-      .replace(/[^a-z0-9]+/g, '_')      // Replace non-alphanumeric with underscore
-      .replace(/^_+|_+$/g, '');          // Trim underscores
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "") // Remove accents
+      .replace(/[^a-z0-9]+/g, "_") // Replace non-alphanumeric with underscore
+      .replace(/^_+|_+$/g, ""); // Trim underscores
   }
 
   async function addItem(sectionKey: string) {
     if (!newItemLabel.trim()) {
-      showToast({ type: 'error', message: 'El nombre no puede estar vacío' });
+      showToast({ type: "error", message: "El nombre no puede estar vacío" });
       return;
     }
 
-    const section = sections.find(s => s.key === sectionKey);
+    const section = sections.find((s) => s.key === sectionKey);
     if (!section) return;
 
     // Check for duplicate labels
-    if (section.items.some(item => item.label.toLowerCase() === newItemLabel.trim().toLowerCase())) {
-      showToast({ type: 'error', message: 'Este item ya existe' });
+    if (
+      section.items.some(
+        (item) => item.label.toLowerCase() === newItemLabel.trim().toLowerCase()
+      )
+    ) {
+      showToast({ type: "error", message: "Este item ya existe" });
       return;
     }
 
     const newItem: ConfigItem = {
       value: generateValue(newItemLabel),
       label: newItemLabel.trim(),
-      active: true
+      active: true,
     };
 
     const updatedItems = [...section.items, newItem];
-    
+
     await saveConfiguration(sectionKey, updatedItems);
-    newItemLabel = '';
+    newItemLabel = "";
     activeSectionKey = null;
   }
 
   async function updateItem(sectionKey: string, index: number) {
     if (!editItemLabel.trim()) {
-      showToast({ type: 'error', message: 'El nombre no puede estar vacío' });
+      showToast({ type: "error", message: "El nombre no puede estar vacío" });
       return;
     }
 
-    const section = sections.find(s => s.key === sectionKey);
+    const section = sections.find((s) => s.key === sectionKey);
     if (!section) return;
 
     // Check for duplicate labels (excluding current item)
-    if (section.items.some((item, i) => 
-      i !== index && item.label.toLowerCase() === editItemLabel.trim().toLowerCase()
-    )) {
-      showToast({ type: 'error', message: 'Este item ya existe' });
+    if (
+      section.items.some(
+        (item, i) =>
+          i !== index &&
+          item.label.toLowerCase() === editItemLabel.trim().toLowerCase()
+      )
+    ) {
+      showToast({ type: "error", message: "Este item ya existe" });
       return;
     }
 
-    const updatedItems = section.items.map((item, i) => 
-      i === index 
-        ? { value: item.value, label: editItemLabel.trim(), active: item.active ?? true } // Keep original value and status
+    const updatedItems = section.items.map((item, i) =>
+      i === index
+        ? {
+            value: item.value,
+            label: editItemLabel.trim(),
+            active: item.active ?? true,
+          } // Keep original value and status
         : item
     );
 
     await saveConfiguration(sectionKey, updatedItems);
     editingItem = null;
-    editItemLabel = '';
+    editItemLabel = "";
   }
 
   async function toggleItemStatus(sectionKey: string, index: number) {
-    const section = sections.find(s => s.key === sectionKey);
+    const section = sections.find((s) => s.key === sectionKey);
     if (!section) return;
 
     const item = section.items[index];
     const isActive = item.active ?? true;
-    const action = isActive ? 'desactivar' : 'activar';
-    
+    const action = isActive ? "desactivar" : "activar";
+
     if (!confirm(`¿Seguro que deseas ${action} "${item.label}"?`)) return;
 
-    const updatedItems = section.items.map((it, i) => 
-      i === index 
-        ? { ...it, active: !isActive }
-        : it
+    const updatedItems = section.items.map((it, i) =>
+      i === index ? { ...it, active: !isActive } : it
     );
-    
+
     await saveConfiguration(sectionKey, updatedItems);
   }
 
@@ -187,60 +212,63 @@
     try {
       // Save items with their active status
       const config_value = {
-        items: items.map(item => ({
+        items: items.map((item) => ({
           value: item.value,
           label: item.label,
-          active: item.active ?? true
-        }))
+          active: item.active ?? true,
+        })),
       };
-      
-      const response = await fetch('/api/config', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+
+      const response = await fetch("/api/config", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           config_key: sectionKey,
-          config_value
-        })
+          config_value,
+        }),
       });
 
       if (response.ok) {
-        showToast({ type: 'success', message: 'Configuración guardada' });
+        showToast({ type: "success", message: "Configuración guardada" });
         await loadAllConfigurations();
       } else {
         const result = await response.json();
-        showToast({ type: 'error', message: result.message || 'Error al guardar' });
+        showToast({
+          type: "error",
+          message: result.message || "Error al guardar",
+        });
       }
     } catch (err) {
-      showToast({ type: 'error', message: 'Error al guardar configuración' });
+      showToast({ type: "error", message: "Error al guardar configuración" });
     }
   }
 
   function startEdit(sectionKey: string, index: number) {
-    const section = sections.find(s => s.key === sectionKey);
+    const section = sections.find((s) => s.key === sectionKey);
     if (!section) return;
-    
+
     editingItem = { sectionKey, index };
     editItemLabel = section.items[index].label;
   }
 
   function cancelEdit() {
     editingItem = null;
-    editItemLabel = '';
+    editItemLabel = "";
   }
 
   // Filter items based on showInactive flag
   function getVisibleItems(items: ConfigItem[]) {
     if (showInactive) return items;
-    return items.filter(item => item.active ?? true);
+    return items.filter((item) => item.active ?? true);
   }
 
   // Get counts
   function getActiveCount(items: ConfigItem[]) {
-    return items.filter(item => item.active ?? true).length;
+    return items.filter((item) => item.active ?? true).length;
   }
 
   function getInactiveCount(items: ConfigItem[]) {
-    return items.filter(item => !(item.active ?? true)).length;
+    return items.filter((item) => !(item.active ?? true)).length;
   }
 </script>
 
@@ -263,7 +291,9 @@
                 <p class="section-description">{section.description}</p>
               </div>
             </div>
-            <div style="display: flex; gap: var(--space-2); align-items: center;">
+            <div
+              style="display: flex; gap: var(--space-2); align-items: center;"
+            >
               <Badge variant="success">
                 {getActiveCount(section.items)} activos
               </Badge>
@@ -279,10 +309,7 @@
           {#if getInactiveCount(section.items) > 0}
             <div class="show-inactive-toggle">
               <label class="checkbox-label">
-                <input
-                  type="checkbox"
-                  bind:checked={showInactive}
-                />
+                <input type="checkbox" bind:checked={showInactive} />
                 <span>Mostrar items inactivos</span>
               </label>
             </div>
@@ -290,7 +317,9 @@
 
           <div class="items-list">
             {#each getVisibleItems(section.items) as item, index (item.value)}
-              {@const actualIndex = section.items.findIndex(it => it.value === item.value)}
+              {@const actualIndex = section.items.findIndex(
+                (it) => it.value === item.value
+              )}
               <div class="item-row" class:inactive={!(item.active ?? true)}>
                 {#if editingItem?.sectionKey === section.key && editingItem?.index === actualIndex}
                   <div class="item-edit-form">
@@ -336,9 +365,11 @@
                       <Edit2 size={16} />
                     </button>
                     <button
-                      class="action-btn {(item.active ?? true) ? 'warning' : 'success'}"
+                      class="action-btn {(item.active ?? true)
+                        ? 'warning'
+                        : 'success'}"
                       onclick={() => toggleItemStatus(section.key, actualIndex)}
-                      title={(item.active ?? true) ? 'Desactivar' : 'Activar'}
+                      title={(item.active ?? true) ? "Desactivar" : "Activar"}
                     >
                       {#if item.active ?? true}
                         <Trash size={16} />
@@ -353,13 +384,14 @@
 
             {#if getVisibleItems(section.items).length === 0 && !showInactive}
               <div class="empty-state">
-              <p>
-                {#if getInactiveCount(section.items) > 0}
-                  No hay items activos. Hay {getInactiveCount(section.items)} items inactivos.
-                {:else}
-                  No hay items configurados
-                {/if}
-              </p>
+                <p>
+                  {#if getInactiveCount(section.items) > 0}
+                    No hay items activos. Hay {getInactiveCount(section.items)} items
+                    inactivos.
+                  {:else}
+                    No hay items configurados
+                  {/if}
+                </p>
               </div>
             {/if}
           </div>
@@ -372,12 +404,12 @@
                   placeholder="Nombre del nuevo item"
                   autofocus
                   onkeydown={(e) => {
-                    if (e.key === 'Enter') {
+                    if (e.key === "Enter") {
                       e.preventDefault();
                       addItem(section.key);
-                    } else if (e.key === 'Escape') {
+                    } else if (e.key === "Escape") {
                       activeSectionKey = null;
-                      newItemLabel = '';
+                      newItemLabel = "";
                     }
                   }}
                 />
@@ -394,7 +426,7 @@
                   size="sm"
                   onclick={() => {
                     activeSectionKey = null;
-                    newItemLabel = '';
+                    newItemLabel = "";
                   }}
                 >
                   Cancelar
@@ -404,7 +436,7 @@
               <Button
                 variant="outline"
                 size="sm"
-                onclick={() => activeSectionKey = section.key}
+                onclick={() => (activeSectionKey = section.key)}
               >
                 <Plus size={16} />
                 Agregar {section.label}
@@ -420,11 +452,30 @@
         <div class="help-content">
           <h4>💡 Acerca de la configuración</h4>
           <ul>
-            <li><strong>Valor automático:</strong> Al agregar un item, se genera automáticamente un valor técnico (slug) sin espacios ni acentos para uso interno en la base de datos</li>
-            <li><strong>Edición del nombre:</strong> Puedes cambiar el nombre visible sin afectar el valor técnico, manteniendo la compatibilidad con datos existentes</li>
-            <li><strong>Desactivación:</strong> En lugar de eliminar, los items se desactivan para preservar el historial. Las pólizas existentes mantienen su referencia</li>
-            <li><strong>Items inactivos:</strong> Los items desactivados no aparecen en los formularios nuevos, pero puedes verlos activando el checkbox "Mostrar items inactivos"</li>
-            <li><strong>Reactivación:</strong> Puedes reactivar items desactivados en cualquier momento haciendo clic en el botón de activar (✓)</li>
+            <li>
+              <strong>Valor automático:</strong> Al agregar un item, se genera automáticamente
+              un valor técnico (slug) sin espacios ni acentos para uso interno en
+              la base de datos
+            </li>
+            <li>
+              <strong>Edición del nombre:</strong> Puedes cambiar el nombre visible
+              sin afectar el valor técnico, manteniendo la compatibilidad con datos
+              existentes
+            </li>
+            <li>
+              <strong>Desactivación:</strong> En lugar de eliminar, los items se
+              desactivan para preservar el historial. Las pólizas existentes mantienen
+              su referencia
+            </li>
+            <li>
+              <strong>Items inactivos:</strong> Los items desactivados no aparecen
+              en los formularios nuevos, pero puedes verlos activando el checkbox
+              "Mostrar items inactivos"
+            </li>
+            <li>
+              <strong>Reactivación:</strong> Puedes reactivar items desactivados
+              en cualquier momento haciendo clic en el botón de activar (✓)
+            </li>
           </ul>
         </div>
       </Card>
@@ -478,6 +529,7 @@
       border-radius: var(--radius-md);
       background: var(--primary-50);
       color: var(--primary-600);
+      flex: unset;
     }
 
     h3 {
@@ -574,7 +626,7 @@
 
     .item-value {
       font-size: var(--text-xs);
-      font-family: 'Monaco', 'Courier New', monospace;
+      font-family: "Monaco", "Courier New", monospace;
       color: var(--text-tertiary);
       background: var(--bg-secondary);
       padding: var(--space-1) var(--space-2);

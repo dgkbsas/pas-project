@@ -22,7 +22,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 		const path = event.url.pathname;
 
 		// Public routes that don't require authentication
-		const publicRoutes = ['/', '/auth/login', '/auth/signup', '/auth/callback'];
+		const publicRoutes = ['/', '/auth/login', '/auth/callback'];
 		const isPublicRoute = publicRoutes.some(route => path === route || path.startsWith(route + '/'));
 
 		// If user is not authenticated and trying to access protected route, redirect to login
@@ -31,8 +31,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 			throw redirect(303, '/auth/login');
 		}
 
-		// If user is authenticated and trying to access login/signup, redirect to dashboard
-		if (isValidSession && (path === '/auth/login' || path === '/auth/signup')) {
+		// If user is authenticated and trying to access login, redirect to dashboard
+		if (isValidSession && path === '/auth/login') {
 			throw redirect(303, '/dashboard');
 		}
 

@@ -43,9 +43,10 @@
 
   let errors = $state<Record<string, string>>({});
 
-  // Load policy data when policyId changes
+  // Reset edit mode when policyId changes or modal reopens
   $effect(() => {
     if (policyId) {
+      isEditMode = mode === "edit";
       loadPolicy();
     }
   });
@@ -244,96 +245,78 @@
             <div class="form-row">
               <div class="form-field">
                 <label for="policy_number">Número de Póliza</label>
-                {#if isEditMode}
-                  <Input
-                    id="policy_number"
-                    bind:value={formData.policy_number}
-                    error={errors.policy_number}
-                  />
-                {:else}
-                  <p class="field-value">{policy.policy_number || "N/A"}</p>
-                {/if}
+                <Input
+                  id="policy_number"
+                  bind:value={formData.policy_number}
+                  error={errors.policy_number}
+                  disabled={!isEditMode}
+                />
               </div>
 
               <div class="form-field">
                 <label for="policy_type">Tipo de Póliza</label>
-                {#if isEditMode}
-                  <select id="policy_type" bind:value={formData.policy_type}>
-                    <option value="auto">Auto</option>
-                    <option value="home">Hogar</option>
-                    <option value="life">Vida</option>
-                    <option value="health">Salud</option>
-                    <option value="business">Empresa</option>
-                    <option value="other">Otro</option>
-                  </select>
-                {:else}
-                  <p class="field-value">
-                    {policyTypeLabels[policy.policy_type]}
-                  </p>
-                {/if}
+                <select
+                  id="policy_type"
+                  bind:value={formData.policy_type}
+                  disabled={!isEditMode}
+                >
+                  <option value="auto">Auto</option>
+                  <option value="home">Hogar</option>
+                  <option value="life">Vida</option>
+                  <option value="health">Salud</option>
+                  <option value="business">Empresa</option>
+                  <option value="other">Otro</option>
+                </select>
               </div>
             </div>
 
             <div class="form-row">
               <div class="form-field">
                 <label for="insurer">Aseguradora</label>
-                {#if isEditMode}
-                  <Input
-                    id="insurer"
-                    bind:value={formData.insurer}
-                    error={errors.insurer}
-                  />
-                {:else}
-                  <p class="field-value">{policy.insurer || "N/A"}</p>
-                {/if}
+                <Input
+                  id="insurer"
+                  bind:value={formData.insurer}
+                  error={errors.insurer}
+                  disabled={!isEditMode}
+                />
               </div>
 
               <div class="form-field">
                 <label for="payment_mode">Forma de Pago</label>
-                {#if isEditMode}
-                  <select id="payment_mode" bind:value={formData.payment_mode}>
-                    <option value="monthly">Mensual</option>
-                    <option value="quarterly">Trimestral</option>
-                    <option value="semi-annual">Semestral</option>
-                    <option value="annual">Anual</option>
-                  </select>
-                {:else}
-                  <p class="field-value">
-                    {policy.payment_mode
-                      ? paymentModeLabels[policy.payment_mode]
-                      : "N/A"}
-                  </p>
-                {/if}
+                <select
+                  id="payment_mode"
+                  bind:value={formData.payment_mode}
+                  disabled={!isEditMode}
+                >
+                  <option value="monthly">Mensual</option>
+                  <option value="quarterly">Trimestral</option>
+                  <option value="semi-annual">Semestral</option>
+                  <option value="annual">Anual</option>
+                </select>
               </div>
             </div>
 
             <div class="form-row">
               <div class="form-field">
                 <label for="start_date">Fecha de Inicio</label>
-                {#if isEditMode}
-                  <Input
-                    id="start_date"
-                    type="date"
-                    bind:value={formData.start_date}
-                    error={errors.start_date}
-                  />
-                {:else}
-                  <p class="field-value">{formatDate(policy.start_date)}</p>
-                {/if}
+                <Input
+                  id="start_date"
+                  type="date"
+                  bind:value={formData.start_date}
+                  error={errors.start_date}
+                  disabled={!isEditMode}
+                />
               </div>
 
               <div class="form-field">
                 <label for="expiry_date">Fecha de Vencimiento</label>
-                {#if isEditMode}
-                  <Input
-                    id="expiry_date"
-                    type="date"
-                    bind:value={formData.expiry_date}
-                    error={errors.expiry_date}
-                  />
-                {:else}
-                  <p class="field-value">{formatDate(policy.expiry_date)}</p>
-                {/if}
+                <Input
+                  id="expiry_date"
+                  type="date"
+                  bind:value={formData.expiry_date}
+                  error={errors.expiry_date}
+                  disabled={!isEditMode}
+                />
               </div>
             </div>
           </section>
@@ -345,42 +328,33 @@
 
               <div class="form-field">
                 <label for="vehicle_plate">Patente</label>
-                {#if isEditMode}
-                  <Input
-                    id="vehicle_plate"
-                    bind:value={formData.vehicle_plate}
-                    error={errors.vehicle_plate}
-                  />
-                {:else}
-                  <p class="field-value">{policy.vehicle_plate || "N/A"}</p>
-                {/if}
+                <Input
+                  id="vehicle_plate"
+                  bind:value={formData.vehicle_plate}
+                  error={errors.vehicle_plate}
+                  disabled={!isEditMode}
+                />
               </div>
 
               <div class="form-row">
                 <div class="form-field">
                   <label for="vehicle_brand">Marca</label>
-                  {#if isEditMode}
-                    <Input
-                      id="vehicle_brand"
-                      bind:value={formData.vehicle_brand}
-                      error={errors.vehicle_brand}
-                    />
-                  {:else}
-                    <p class="field-value">{policy.vehicle_brand || "N/A"}</p>
-                  {/if}
+                  <Input
+                    id="vehicle_brand"
+                    bind:value={formData.vehicle_brand}
+                    error={errors.vehicle_brand}
+                    disabled={!isEditMode}
+                  />
                 </div>
 
                 <div class="form-field">
                   <label for="vehicle_model">Modelo</label>
-                  {#if isEditMode}
-                    <Input
-                      id="vehicle_model"
-                      bind:value={formData.vehicle_model}
-                      error={errors.vehicle_model}
-                    />
-                  {:else}
-                    <p class="field-value">{policy.vehicle_model || "N/A"}</p>
-                  {/if}
+                  <Input
+                    id="vehicle_model"
+                    bind:value={formData.vehicle_model}
+                    error={errors.vehicle_model}
+                    disabled={!isEditMode}
+                  />
                 </div>
               </div>
             </section>
@@ -552,7 +526,7 @@
         background: var(--primary-100);
         color: var(--primary-600);
         border-radius: var(--radius-full);
-        flex-shrink: 0;
+        flex: unset;
       }
 
       div {
@@ -673,10 +647,18 @@
       background: var(--bg-primary);
       color: var(--text-primary);
       cursor: pointer;
+      transition: all var(--transition-fast);
 
       &:focus {
         outline: none;
         border-color: var(--primary-500);
+      }
+
+      &:disabled {
+        background: var(--bg-secondary);
+        color: var(--text-secondary);
+        cursor: not-allowed;
+        opacity: 0.7;
       }
     }
 

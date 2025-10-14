@@ -12,9 +12,15 @@
   import { fade, fly } from "svelte/transition";
   import type { Client, Policy } from "$lib/types/database.types";
 
-  type RecentClient = Pick<Client, 'id' | 'first_name' | 'last_name' | 'created_at'>;
-  type RecentPolicy = Pick<Policy, 'id' | 'policy_number' | 'policy_type' | 'created_at'> & {
-    clients?: Pick<Client, 'first_name' | 'last_name'> | null;
+  type RecentClient = Pick<
+    Client,
+    "id" | "first_name" | "last_name" | "created_at"
+  >;
+  type RecentPolicy = Pick<
+    Policy,
+    "id" | "policy_number" | "policy_type" | "created_at"
+  > & {
+    clients?: Pick<Client, "first_name" | "last_name"> | null;
   };
 
   type PageData = {
@@ -101,18 +107,20 @@
       .sort((a, b) => {
         // Ordenar por fecha de creación
         const clientDescA = data.recentActivity.clients.find(
-          (c: RecentClient) => a.description === `${c.first_name} ${c.last_name}`
+          (c: RecentClient) =>
+            a.description === `${c.first_name} ${c.last_name}`
         );
-        const policyDescA = data.recentActivity.policies.find((p: RecentPolicy) =>
-          a.description.includes(p.policy_type)
+        const policyDescA = data.recentActivity.policies.find(
+          (p: RecentPolicy) => a.description.includes(p.policy_type)
         );
         const dateA = clientDescA?.created_at || policyDescA?.created_at || "";
 
         const clientDescB = data.recentActivity.clients.find(
-          (c: RecentClient) => b.description === `${c.first_name} ${c.last_name}`
+          (c: RecentClient) =>
+            b.description === `${c.first_name} ${c.last_name}`
         );
-        const policyDescB = data.recentActivity.policies.find((p: RecentPolicy) =>
-          b.description.includes(p.policy_type)
+        const policyDescB = data.recentActivity.policies.find(
+          (p: RecentPolicy) => b.description.includes(p.policy_type)
         );
         const dateB = clientDescB?.created_at || policyDescB?.created_at || "";
 

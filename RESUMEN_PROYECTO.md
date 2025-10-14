@@ -1,20 +1,255 @@
-# PAS Manager - Resumen Ejecutivo del Proyecto
+# 📋 PAS Manager - Documentación Técnica
 
-## 📊 **Estado del Proyecto: 97% COMPLETADO** ✅
+## 📊 Estado del Proyecto: 97% COMPLETADO ✅
 
-**Fecha de finalización**: 12 de Octubre, 2025  
-**Tecnologías**: SvelteKit 5, TypeScript, Supabase, SCSS
+**Última actualización**: 14 de Octubre, 2025  
+**Versión**: 1.0.0  
+**Entorno**: Producción
+
+## 🚀 Tecnologías Principales
+
+### Frontend
+- **Framework**: SvelteKit 5 (SSR/SSG)
+- **Lenguaje**: TypeScript 5.x
+- **Estilos**: SCSS con módulos
+- **UI**: Componentes personalizados + shadcn/svelte
+- **Estado**: Stores de Svelte
+- **Formularios**: SvelteKit Form Actions
+- **Validación**: Zod
+- **Iconos**: Lucide Icons
+
+### Backend (Supabase)
+- **Autenticación**: Supabase Auth
+- **Base de datos**: PostgreSQL
+- **API REST**: PostgREST
+- **Almacenamiento**: Supabase Storage
+- **Funciones**: Edge Functions
+
+### Herramientas de Desarrollo
+- **Paquetería**: pnpm
+- **Linting**: ESLint + Prettier
+- **Testing**: Playwright (pendiente)
+- **CI/CD**: GitHub Actions (configuración inicial)
+
+## 🏗️ Arquitectura del Sistema
+
+### Estructura de Carpetas
+```
+src/
+├── lib/
+│   ├── components/     # Componentes UI reutilizables
+│   ├── config/         # Configuraciones globales
+│   ├── hooks/          # Custom hooks
+│   ├── schemas/        # Esquemas de validación
+│   ├── server/         # Lógica del lado del servidor
+│   ├── stores/         # Stores de Svelte
+│   └── types/          # Tipos TypeScript
+├── routes/
+│   ├── (app)/          # Rutas protegidas
+│   │   ├── dashboard/  # Dashboard principal
+│   │   ├── clients/    # Gestión de clientes
+│   │   └── policies/   # Gestión de pólizas
+│   ├── auth/           # Autenticación
+│   └── api/            # Endpoints de API
+└── app.html            # Plantilla HTML base
+```
+
+### Flujo de Datos
+1. **Autenticación**:
+   - Login/Logout con Supabase Auth
+   - Sesiones manejadas con cookies HTTP-only
+   - Middleware de autenticación en `hooks.server.ts`
+
+2. **API y Base de Datos**:
+   - Comunicación directa con Supabase desde el cliente
+   - Validación de esquemas con Zod
+   - Tipos generados automáticamente
+
+3. **Estado Global**:
+   - Stores de Svelte para estado de UI
+   - Cache de consultas optimizado
+
+## 🗄️ Base de Datos (Supabase)
+
+### Esquema Principal
+```sql
+-- Tabla de clientes
+CREATE TABLE clients (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  first_name TEXT NOT NULL,
+  last_name TEXT NOT NULL,
+  email TEXT UNIQUE,
+  phone TEXT,
+  address JSONB,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Tabla de pólizas
+CREATE TABLE policies (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  policy_number TEXT UNIQUE NOT NULL,
+  policy_type TEXT NOT NULL,
+  client_id UUID REFERENCES clients(id) ON DELETE CASCADE,
+  start_date DATE NOT NULL,
+  end_date DATE NOT NULL,
+  premium DECIMAL(10,2),
+  status TEXT DEFAULT 'active',
+  details JSONB,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Índices para mejorar rendimiento
+CREATE INDEX idx_policies_client_id ON policies(client_id);
+CREATE INDEX idx_policies_end_date ON policies(end_date);
+```
+
+### Políticas de Seguridad (RLS)
+- Acceso basado en roles (admin/usuario)
+- Restricciones a nivel de fila
+- Validación de datos con triggers
+
+## 🔄 Comunicación entre Componentes
+
+1. **Padre → Hijo**: Props
+2. **Hijo → Padre**: Dispatches de eventos
+3. **Componentes no relacionados**:
+   - Stores de Svelte para estado compartido
+   - Event bus para comunicación global
+
+## 🛠️ Configuración del Entorno
+
+### Variables de Entorno Requeridas
+```env
+# Supabase
+PUBLIC_SUPABASE_URL=your-project-url.supabase.co
+PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+
+# Configuración de la aplicación
+PUBLIC_APP_URL=http://localhost:5173
+NODE_ENV=development
+```
+
+### Scripts de Desarrollo
+```bash
+# Instalar dependencias
+pnpm install
+
+# Iniciar servidor de desarrollo
+pnpm run dev
+
+# Construir para producción
+pnpm run build
+
+# Preview producción localmente
+pnpm run preview
+
+# Linting
+pnpm run lint
+
+# Formateo de código
+pnpm run format
+```
+
+## 🎨 Guía de Estilo
+
+### Convenciones de Código
+- **Componentes**: PascalCase (ej. `UserProfile.svelte`)
+- **Stores**: camelCase con sufijo 'Store' (ej. `userStore.ts`)
+- **Hooks**: prefijo 'use' (ej. `useAuth.ts`)
+- **Constantes**: UPPER_SNAKE_CASE
+
+### Estructura de Componentes
+```svelte
+<script lang="ts">
+  // 1. Imports
+  // 2. Tipos/Interfaces
+  // 3. Props
+  // 4. Lógica del componente
+</script>
+
+<!-- 5. Template HTML -->
+
+<style lang="scss">
+  /* 6. Estilos con alcance local */
+</style>
+```
+
+## 📱 Compatibilidad
+
+### Navegadores Soportados
+- Chrome (últimas 2 versiones)
+- Firefox (últimas 2 versiones)
+- Safari (últimas 2 versiones)
+- Edge (últimas 2 versiones)
+
+### Responsive Design
+- Mobile-first approach
+- Breakpoints definidos en `_variables.scss`
+- Layouts adaptativos con CSS Grid/Flexbox
+
+## 🔒 Seguridad
+
+### Medidas Implementadas
+1. **Autenticación**:
+   - Tokens JWT con expiración corta
+   - Refresh tokens rotativos
+   - Protección CSRF
+
+2. **Protección de Rutas**:
+   - Middleware de autenticación
+   - Autorización basada en roles
+   - Validación de sesión en cada petición
+
+3. **Seguridad de Datos**:
+   - Encriptación en tránsito (HTTPS)
+   - Sanitización de entradas
+   - Protección contra inyección SQL (PostgREST)
+
+## 🚀 Despliegue
+
+### Requisitos del Servidor
+- Node.js 18+
+- pnpm 8+
+- Base de datos PostgreSQL (Supabase)
+
+### Pasos de Despliegue
+1. Configurar variables de entorno en producción
+2. Construir la aplicación: `pnpm run build`
+3. Iniciar el servidor: `node build`
+4. Configurar proxy inverso (Nginx/Apache)
+5. Configurar SSL (Let's Encrypt recomendado)
+
+## 📝 Próximos Pasos
+
+### Mejoras Pendientes
+- [ ] Implementar tests E2E con Playwright
+- [ ] Añadir documentación de la API
+- [ ] Mejorar manejo de errores
+- [ ] Optimizar rendimiento para grandes conjuntos de datos
+
+### Roadmap Futuro
+- Exportación a PDF/Excel
+- Integración con pasarelas de pago
+- Panel de análisis avanzado
+- API pública para integraciones
+
+## 🤝 Contribución
+
+1. Hacer fork del repositorio
+2. Crear una rama para tu feature (`git checkout -b feature/nueva-funcionalidad`)
+3. Hacer commit de tus cambios (`git commit -am 'Añadir nueva funcionalidad'`)
+4. Hacer push a la rama (`git push origin feature/nueva-funcionalidad`)
+5. Crear un Pull Request
+
+## 📄 Licencia
+
+Este proyecto está bajo la licencia [MIT](LICENSE).
 
 ---
 
-## 🎯 **Objetivo del Proyecto**
-
-Modernizar y completar la aplicación PAS Manager para la gestión de clientes y pólizas de seguros, construyendo un sistema completo con:
-- Sistema de diseño consistente
-- CRUD completo para clientes y pólizas
-- Autenticación y autorización
-- Dashboard con estadísticas en tiempo real
-- Sistema de configuración multi-tab
+*Documentación generada el 14/10/2025*
 
 ---
 
@@ -75,7 +310,7 @@ Todos los componentes base con estilos consistentes:
 #### **Autenticación**
 - ✅ POST `/api/auth/login` - Login con email/password
 - ✅ POST `/api/auth/logout` - Logout
-- ✅ POST `/api/auth/signup` - Registro con invitación
+- ❌ ~POST `/api/auth/signup`~ - **Eliminado** (registro solo desde panel admin)
 
 #### **Invitaciones**
 - ✅ POST `/api/invitations` - Crear invitación
@@ -87,8 +322,8 @@ Todos los componentes base con estilos consistentes:
 ## 📄 **Páginas Completadas (100%)**
 
 ### **Autenticación**
-1. ✅ `/auth/login` - Login con validación
-2. ✅ `/auth/signup` - Registro con token de invitación
+1. ✅ `/auth/login` - Login con validación y toggle de contraseña
+2. ❌ ~`/auth/signup`~ - **Eliminado** (registro solo desde panel admin)
 
 ### **Dashboard**
 ✅ `/dashboard` - Dashboard principal con:
@@ -273,10 +508,9 @@ src/
 - Navegación por botones
 
 ### **4. Gestión de Invitaciones**
-- Generación de tokens únicos
-- Links copiables al portapapeles
-- Validación de tokens en signup
-- Asociación automática a empresa
+- ⚠️ Sistema pendiente de reimplementación
+- Registro de usuarios ahora se realiza desde panel admin
+- Las invitaciones actuales no funcionan (signup eliminado)
 
 ### **5. Sistema de Alertas**
 - Badges de estado con colores

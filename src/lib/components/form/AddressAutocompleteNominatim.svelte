@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import Input from '$lib/components/ui/Input.svelte';
+  import { onMount } from "svelte";
+  import Input from "$lib/components/ui/Input.svelte";
 
   interface AddressComponents {
     street: string;
@@ -30,19 +30,19 @@
   }
 
   let {
-    value = $bindable(''),
-    street = $bindable(''),
-    streetNumber = $bindable(''),
-    floor = $bindable(''),
-    apartment = $bindable(''),
-    city = $bindable(''),
-    province = $bindable(''),
-    postalCode = $bindable(''),
-    country = $bindable(''),
-    placeholder = 'Ingrese dirección',
+    value = $bindable(""),
+    street = $bindable(""),
+    streetNumber = $bindable(""),
+    floor = $bindable(""),
+    apartment = $bindable(""),
+    city = $bindable(""),
+    province = $bindable(""),
+    postalCode = $bindable(""),
+    country = $bindable(""),
+    placeholder = "Ingrese dirección",
     error,
     disabled = false,
-    onAddressSelect
+    onAddressSelect,
   }: Props = $props();
 
   let suggestions = $state<any[]>([]);
@@ -62,17 +62,17 @@
       // Nominatim API - OpenStreetMap
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?` +
-        new URLSearchParams({
-          q: query,
-          format: 'json',
-          addressdetails: '1',
-          countrycodes: 'ar', // Restringir a Argentina
-          limit: '5'
-        }),
+          new URLSearchParams({
+            q: query,
+            format: "json",
+            addressdetails: "1",
+            countrycodes: "ar", // Restringir a Argentina
+            limit: "5",
+          }),
         {
           headers: {
-            'Accept-Language': 'es-AR,es;q=0.9'
-          }
+            "Accept-Language": "es-AR,es;q=0.9",
+          },
         }
       );
 
@@ -82,7 +82,7 @@
         showSuggestions = results.length > 0;
       }
     } catch (err) {
-      console.error('Error searching address:', err);
+      console.error("Error searching address:", err);
       suggestions = [];
     } finally {
       loading = false;
@@ -102,17 +102,17 @@
 
   function selectAddress(result: any) {
     const addr = result.address || {};
-    
+
     // Parse components from Nominatim result
     const components: AddressComponents = {
-      street: addr.road || '',
-      streetNumber: addr.house_number || '',
-      floor: '',
-      apartment: '',
-      city: addr.city || addr.town || addr.village || '',
-      province: addr.state || '',
-      postalCode: addr.postcode || '',
-      country: addr.country || ''
+      street: addr.road || "",
+      streetNumber: addr.house_number || "",
+      floor: "",
+      apartment: "",
+      city: addr.city || addr.town || addr.village || "",
+      province: addr.state || "",
+      postalCode: addr.postcode || "",
+      country: addr.country || "",
     };
 
     // Update bound values
@@ -158,9 +158,10 @@
       autocomplete="off"
       oninput={handleInput}
       onblur={handleBlur}
-      onfocus={() => value.length >= 3 && suggestions.length > 0 && (showSuggestions = true)}
+      onfocus={() =>
+        value.length >= 3 && suggestions.length > 0 && (showSuggestions = true)}
     />
-    
+
     {#if loading}
       <div class="loading-indicator">Buscando...</div>
     {/if}
@@ -174,13 +175,13 @@
             onclick={() => selectAddress(suggestion)}
           >
             <div class="suggestion-main">
-              {suggestion.address?.road || suggestion.address?.suburb || ''}
+              {suggestion.address?.road || suggestion.address?.suburb || ""}
               {#if suggestion.address?.house_number}
                 {suggestion.address.house_number}
               {/if}
             </div>
             <div class="suggestion-detail">
-              {suggestion.address?.city || suggestion.address?.town || ''}
+              {suggestion.address?.city || suggestion.address?.town || ""}
               {#if suggestion.address?.state}
                 , {suggestion.address.state}
               {/if}
@@ -192,7 +193,8 @@
   </div>
 
   <div class="help-text">
-    💡 Autocompletado gratuito con OpenStreetMap. Los datos pueden no ser exactos, verifica y corrige si es necesario.
+    💡 Autocompletado gratuito con OpenStreetMap. Los datos pueden no ser
+    exactos, verifica y corrige si es necesario.
   </div>
 
   <div class="address-fields-grid">
@@ -202,7 +204,7 @@
         id="street"
         bind:value={street}
         placeholder="Nombre de la calle"
-        disabled={disabled}
+        {disabled}
       />
     </div>
 
@@ -212,38 +214,23 @@
         id="streetNumber"
         bind:value={streetNumber}
         placeholder="1234"
-        disabled={disabled}
+        {disabled}
       />
     </div>
 
     <div class="field-group">
       <label for="floor">Piso</label>
-      <Input
-        id="floor"
-        bind:value={floor}
-        placeholder="5"
-        disabled={disabled}
-      />
+      <Input id="floor" bind:value={floor} placeholder="5" {disabled} />
     </div>
 
     <div class="field-group">
       <label for="apartment">Depto</label>
-      <Input
-        id="apartment"
-        bind:value={apartment}
-        placeholder="A"
-        disabled={disabled}
-      />
+      <Input id="apartment" bind:value={apartment} placeholder="A" {disabled} />
     </div>
 
     <div class="field-group">
       <label for="city">Ciudad</label>
-      <Input
-        id="city"
-        bind:value={city}
-        placeholder="Ciudad"
-        disabled={disabled}
-      />
+      <Input id="city" bind:value={city} placeholder="Ciudad" {disabled} />
     </div>
 
     <div class="field-group">
@@ -252,7 +239,7 @@
         id="province"
         bind:value={province}
         placeholder="Provincia"
-        disabled={disabled}
+        {disabled}
       />
     </div>
 
@@ -262,7 +249,7 @@
         id="postalCode"
         bind:value={postalCode}
         placeholder="1234"
-        disabled={disabled}
+        {disabled}
       />
     </div>
   </div>
@@ -298,7 +285,9 @@
     background: var(--bg-primary);
     border: 1px solid var(--border-primary);
     border-radius: var(--radius-md);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
     max-height: 300px;
     overflow-y: auto;
     z-index: 1000;
@@ -347,11 +336,11 @@
 
   .address-fields-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: var(--space-3);
 
     @media (max-width: 1024px) {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
     }
 
     @media (max-width: 640px) {
@@ -371,26 +360,57 @@
     }
 
     // Adjust grid spans for better layout
-    &:nth-child(1) { // Calle
+    &:nth-child(1) {
+      // Calle
       grid-column: span 2;
+
+      @media (max-width: 1024px) {
+        grid-column: span 3;
+      }
 
       @media (max-width: 640px) {
         grid-column: span 1;
       }
     }
-    
-    &:nth-child(5) { // Ciudad
+
+    &:nth-child(2),
+    &:nth-child(3),
+    &:nth-child(4) {
+      // Número, Piso, Depto
+      @media (max-width: 1024px) {
+        grid-column: span 1;
+      }
+    }
+
+    &:nth-child(5) {
+      // Ciudad
       grid-column: span 2;
+
+      @media (max-width: 1024px) {
+        grid-column: span 3;
+      }
 
       @media (max-width: 640px) {
         grid-column: span 1;
       }
     }
 
-    &:nth-child(6) { // Provincia
+    &:nth-child(6) {
+      // Provincia
       grid-column: span 2;
 
+      @media (max-width: 1024px) {
+        grid-column: span 2;
+      }
+
       @media (max-width: 640px) {
+        grid-column: span 1;
+      }
+    }
+
+    &:nth-child(7) {
+      // Código Postal
+      @media (max-width: 1024px) {
         grid-column: span 1;
       }
     }

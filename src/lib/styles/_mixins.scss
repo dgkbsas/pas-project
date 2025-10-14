@@ -133,9 +133,10 @@
   }
   
   &:disabled {
-    opacity: 0.5;
     cursor: not-allowed;
-    background: var(--bg-tertiary);
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    opacity: 0.8;
   }
   
   &.error {

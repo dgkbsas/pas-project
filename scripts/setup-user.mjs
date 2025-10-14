@@ -27,7 +27,7 @@ async function setupUser() {
     
     if (!authUser) {
       console.log('   ❌ Usuario NO encontrado en auth.users');
-      console.log('   ℹ️  Necesitas registrarte primero en: http://localhost:5173/signup');
+      console.log('   ℹ️  Necesitas crear el usuario primero desde el panel admin');
       console.log('   📧 Email:', TARGET_EMAIL);
       return;
     }

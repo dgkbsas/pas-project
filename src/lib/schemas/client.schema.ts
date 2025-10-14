@@ -39,6 +39,12 @@ export const clientSchema = z.object({
 
 	phone: z
 		.string()
+		.max(30, 'El celular es muy largo')
+		.optional()
+		.nullable(),
+
+	phone_landline: z
+		.string()
 		.max(20, 'El teléfono es muy largo')
 		.optional()
 		.nullable(),

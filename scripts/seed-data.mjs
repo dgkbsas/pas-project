@@ -212,7 +212,7 @@ async function main() {
 		let userId;
 		if (!authUser) {
 			console.log('   ⚠️  Usuario no encontrado en auth');
-			console.log('   ℹ️  Debes crear el usuario primero en /signup');
+			console.log('   ℹ️  Debes crear el usuario primero desde el panel admin');
 			console.log(`   ℹ️  Email: ${USER_EMAIL}`);
 			return;
 		} else {
