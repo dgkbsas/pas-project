@@ -137,19 +137,30 @@ NODE_ENV=development
 pnpm install
 
 # Iniciar servidor de desarrollo
-pnpm run dev
+pnpm dev
 
 # Construir para producción
-pnpm run build
+pnpm build
 
 # Preview producción localmente
-pnpm run preview
+pnpm preview
 
 # Linting
-pnpm run lint
+pnpm lint
 
 # Formateo de código
-pnpm run format
+pnpm format
+
+# Instalar una dependencia
+dev: pnpm add -D paquete
+prod: pnpm add paquete
+
+# Actualizar dependencias
+pnpm update
+pnpm update --latest
+
+# Ejecutar tests (cuando estén configurados)
+pnpm test
 ```
 
 ## 🎨 Guía de Estilo
