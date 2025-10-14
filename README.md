@@ -1,29 +1,27 @@
-# 📋 PAS Manager - Gestión de Pólizas y Clientes
+# 007PasProject
 
-Sistema integral para la gestión de pólizas de seguros y clientes, desarrollado con SvelteKit y Supabase.
+Sistema de gestión de pólizas de seguros desarrollado con SvelteKit, TypeScript y Supabase.
 
-## 🚀 Características Principales
+## 🚀 Características
 
-- **Gestión de Clientes**: Registro y seguimiento de clientes
-- **Administración de Pólizas**: Control completo de pólizas de seguros
-- **Dashboard Interactivo**: Estadísticas en tiempo real
-- **Autenticación Segura**: Con roles de usuario
-- **Interfaz Moderna**: Diseño responsivo y accesible
+- Autenticación segura con Supabase Auth
+- Dashboard con estadísticas en tiempo real
+- Gestión completa de clientes y pólizas
+- Interfaz responsive y accesible
+- Sistema de notificaciones integrado
 
-## 🚀 Comenzando
-
-### Requisitos Previos
+## 🛠️ Requisitos
 
 - Node.js 18+
 - pnpm 8+
-- Cuenta de [Supabase](https://supabase.com)
+- Cuenta en [Supabase](https://supabase.com)
 
-### Instalación
+## 🚀 Comenzando
 
 1. **Clonar el repositorio**
    ```bash
-   git clone https://github.com/tu-usuario/pas-manager.git
-   cd pas-manager
+   git clone https://github.com/tu-usuario/007PasProject.git
+   cd 007PasProject
    ```
 
 2. **Instalar dependencias**
@@ -31,14 +29,14 @@ Sistema integral para la gestión de pólizas de seguros y clientes, desarrollad
    pnpm install
    ```
 
-3. **Configurar variables de entorno**
+3. **Configuración**
    Crea un archivo `.env` en la raíz con:
    ```env
    # Supabase
    PUBLIC_SUPABASE_URL=tu_url_de_supabase
    PUBLIC_SUPABASE_ANON_KEY=tu_anon_key
    
-   # Configuración de la aplicación
+   # Opcional: Configuración adicional
    NODE_ENV=development
    ```
 
@@ -46,22 +44,21 @@ Sistema integral para la gestión de pólizas de seguros y clientes, desarrollad
    ```bash
    pnpm dev
    ```
+   La aplicación estará disponible en [http://localhost:5173](http://localhost:5173)
 
-   Abre [http://localhost:5173](http://localhost:5173) en tu navegador.
-
-## 🛠️ Comandos Útiles
+## 🛠 Comandos útiles
 
 ```bash
 # Instalar dependencias
 pnpm install
 
-# Modo desarrollo
+# Iniciar servidor de desarrollo
 pnpm dev
 
 # Construir para producción
 pnpm build
 
-# Preview producción local
+# Preview de producción local
 pnpm preview
 
 # Linting
@@ -69,45 +66,48 @@ pnpm lint
 
 # Formateo de código
 pnpm format
+
+# Ejecutar tests (cuando estén configurados)
+pnpm test
 ```
 
-## 📁 Estructura del Proyecto
+## 📁 Estructura del proyecto
 
 ```
 007PasProject/
-├── .github/                 # Configuración de GitHub Actions
-├── .svelte-kit/             # Build output (generado)
-├── node_modules/            # Dependencias
-├── scripts/                 # Scripts de utilidad
+├── .svelte-kit/          # Build output (no versionar)
+├── mcp-server/           # Servidor MCP personalizado
+├── scripts/              # Scripts de utilidad
 ├── src/
-│   ├── lib/                 # Código compartido
-│   │   ├── components/      # Componentes UI
-│   │   ├── config/          # Configuraciones
-│   │   ├── schemas/         # Esquemas de validación
-│   │   └── stores/          # Stores de Svelte
-│   ├── routes/              # Rutas de la aplicación
-│   └── app.html             # Plantilla HTML base
-├── static/                  # Archivos estáticos
-├── .env                     # Variables de entorno (local)
-├── .gitignore               # Archivos ignorados por git
-├── package.json             # Dependencias y scripts
-├── pnpm-lock.yaml           # Lock file de pnpm
-├── svelte.config.js         # Configuración de SvelteKit
-└── tsconfig.json            # Configuración de TypeScript
+│   ├── lib/
+│   │   ├── assets/       # Recursos estáticos
+│   │   ├── components/   # Componentes reutilizables
+│   │   ├── config/       # Configuraciones
+│   │   └── stores/       # Stores de Svelte
+│   ├── routes/           # Rutas de la aplicación
+│   ├── app.css           # Estilos globales
+│   └── app.html          # Plantilla HTML base
+├── static/               # Archivos estáticos
+├── .env                  # Variables de entorno (no versionar)
+├── .gitignore
+├── package.json
+├── pnpm-lock.yaml
+├── svelte.config.js
+└── tsconfig.json
 ```
 
-## 📚 Documentación Adicional
+## 📚 Documentación
 
-- **[SUPABASE.md](./SUPABASE.md)**: Guía de integración con Supabase
-- **[RESUMEN_PROYECTO.md](./RESUMEN_PROYECTO.md)**: Documentación técnica detallada
-- **[PERFORMANCE_INDEXES.md](./docs/PERFORMANCE_INDEXES.md)**: Optimizaciones de rendimiento
+- [SUPABASE.md](./SUPABASE.md) - Guía de integración con Supabase
+- [RESUMEN_PROYECTO.md](./RESUMEN_PROYECTO.md) - Documentación técnica detallada
+- [PERFORMANCE_INDEXES.md](./docs/PERFORMANCE_INDEXES.md) - Optimizaciones de rendimiento
 
-## 🤝 Cómo Contribuir
+## 🤝 Contribuir
 
 1. Haz un fork del proyecto
-2. Crea una rama: `git checkout -b feature/nueva-funcionalidad`
+2. Crea una rama: `git checkout -b feature/mi-nueva-funcionalidad`
 3. Haz commit de tus cambios: `git commit -am 'Añadir nueva funcionalidad'`
-4. Haz push a la rama: `git push origin feature/nueva-funcionalidad`
+4. Haz push a la rama: `git push origin feature/mi-nueva-funcionalidad`
 5. Abre un Pull Request
 
 ## 📄 Licencia
