@@ -55,6 +55,30 @@ export const clientSchema = z.object({
 		.optional()
 		.nullable(),
 
+	street: z
+		.string()
+		.max(200, 'La calle es muy larga')
+		.optional()
+		.nullable(),
+
+	street_number: z
+		.string()
+		.max(20, 'El número es muy largo')
+		.optional()
+		.nullable(),
+
+	floor: z
+		.string()
+		.max(10, 'El piso es muy largo')
+		.optional()
+		.nullable(),
+
+	apartment: z
+		.string()
+		.max(10, 'El departamento es muy largo')
+		.optional()
+		.nullable(),
+
 	postal_code: z
 		.string()
 		.max(10, 'El código postal es muy largo')
@@ -88,6 +112,12 @@ export const clientSchema = z.object({
 	observations: z
 		.string()
 		.max(1000, 'Las observaciones son muy largas')
+		.optional()
+		.nullable(),
+
+	assigned_to: z
+		.string()
+		.uuid('ID de usuario asignado inválido')
 		.optional()
 		.nullable(),
 

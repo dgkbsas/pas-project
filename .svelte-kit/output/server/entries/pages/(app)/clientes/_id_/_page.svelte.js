@@ -2,92 +2,18 @@ import { a3 as sanitize_props, _ as spread_props, a4 as slot, a6 as head, W as a
 import { g as goto } from "../../../../../chunks/client.js";
 import { B as Button } from "../../../../../chunks/Button.js";
 import { C as Card } from "../../../../../chunks/Card.js";
-import { T as Tabs, M as Mail, E as EmptyState, a as Table, B as Badge } from "../../../../../chunks/Tabs.js";
+import { B as Badge } from "../../../../../chunks/Badge.js";
+import { T as Tabs } from "../../../../../chunks/Tabs.js";
+import { E as EmptyState, T as Table } from "../../../../../chunks/Table.js";
+import { P as Phone, i as isMobileNumber, g as getWhatsAppUrl, M as Message_circle } from "../../../../../chunks/phone.js";
 import { A as Arrow_left } from "../../../../../chunks/arrow-left.js";
-import { I as Icon } from "../../../../../chunks/Icon.js";
+import { S as Square_pen } from "../../../../../chunks/square-pen.js";
+import { M as Mail } from "../../../../../chunks/mail.js";
 import { F as File_text } from "../../../../../chunks/file-text.js";
-import { P as Plus } from "../../../../../chunks/EmptyState.svelte_svelte_type_style_lang.js";
+import { C as Calendar } from "../../../../../chunks/calendar.js";
+import { I as Icon } from "../../../../../chunks/Icon.js";
+import { P as Plus } from "../../../../../chunks/plus.js";
 import { e as escape_html } from "../../../../../chunks/context.js";
-function Calendar($$renderer, $$props) {
-  const $$sanitized_props = sanitize_props($$props);
-  /**
-   * @license lucide-svelte v0.545.0 - ISC
-   *
-   * ISC License
-   *
-   * Copyright (c) for portions of Lucide are held by Cole Bemis 2013-2023 as part of Feather (MIT). All other copyright (c) for Lucide are held by Lucide Contributors 2025.
-   *
-   * Permission to use, copy, modify, and/or distribute this software for any
-   * purpose with or without fee is hereby granted, provided that the above
-   * copyright notice and this permission notice appear in all copies.
-   *
-   * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-   * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-   * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-   * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-   * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-   * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-   * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-   *
-   * ---
-   *
-   * The MIT License (MIT) (for portions derived from Feather)
-   *
-   * Copyright (c) 2013-2023 Cole Bemis
-   *
-   * Permission is hereby granted, free of charge, to any person obtaining a copy
-   * of this software and associated documentation files (the "Software"), to deal
-   * in the Software without restriction, including without limitation the rights
-   * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-   * copies of the Software, and to permit persons to whom the Software is
-   * furnished to do so, subject to the following conditions:
-   *
-   * The above copyright notice and this permission notice shall be included in all
-   * copies or substantial portions of the Software.
-   *
-   * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-   * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-   * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-   * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-   * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-   * SOFTWARE.
-   *
-   */
-  const iconNode = [
-    ["path", { "d": "M8 2v4" }],
-    ["path", { "d": "M16 2v4" }],
-    [
-      "rect",
-      { "width": "18", "height": "18", "x": "3", "y": "4", "rx": "2" }
-    ],
-    ["path", { "d": "M3 10h18" }]
-  ];
-  Icon($$renderer, spread_props([
-    { name: "calendar" },
-    $$sanitized_props,
-    {
-      /**
-       * @component @name Calendar
-       * @description Lucide SVG icon component, renders SVG Element with children.
-       *
-       * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8cGF0aCBkPSJNOCAydjQiIC8+CiAgPHBhdGggZD0iTTE2IDJ2NCIgLz4KICA8cmVjdCB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHg9IjMiIHk9IjQiIHJ4PSIyIiAvPgogIDxwYXRoIGQ9Ik0zIDEwaDE4IiAvPgo8L3N2Zz4K) - https://lucide.dev/icons/calendar
-       * @see https://lucide.dev/guide/packages/lucide-svelte - Documentation
-       *
-       * @param {Object} props - Lucide icons props and any valid SVG attribute
-       * @returns {FunctionalComponent} Svelte component
-       *
-       */
-      iconNode,
-      children: ($$renderer2) => {
-        $$renderer2.push(`<!--[-->`);
-        slot($$renderer2, $$props, "default", {});
-        $$renderer2.push(`<!--]-->`);
-      },
-      $$slots: { default: true }
-    }
-  ]));
-}
 function Map_pin($$renderer, $$props) {
   const $$sanitized_props = sanitize_props($$props);
   /**
@@ -152,170 +78,6 @@ function Map_pin($$renderer, $$props) {
        * @description Lucide SVG icon component, renders SVG Element with children.
        *
        * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8cGF0aCBkPSJNMjAgMTBjMCA0Ljk5My01LjUzOSAxMC4xOTMtNy4zOTkgMTEuNzk5YTEgMSAwIDAgMS0xLjIwMiAwQzkuNTM5IDIwLjE5MyA0IDE0Ljk5MyA0IDEwYTggOCAwIDAgMSAxNiAwIiAvPgogIDxjaXJjbGUgY3g9IjEyIiBjeT0iMTAiIHI9IjMiIC8+Cjwvc3ZnPgo=) - https://lucide.dev/icons/map-pin
-       * @see https://lucide.dev/guide/packages/lucide-svelte - Documentation
-       *
-       * @param {Object} props - Lucide icons props and any valid SVG attribute
-       * @returns {FunctionalComponent} Svelte component
-       *
-       */
-      iconNode,
-      children: ($$renderer2) => {
-        $$renderer2.push(`<!--[-->`);
-        slot($$renderer2, $$props, "default", {});
-        $$renderer2.push(`<!--]-->`);
-      },
-      $$slots: { default: true }
-    }
-  ]));
-}
-function Phone($$renderer, $$props) {
-  const $$sanitized_props = sanitize_props($$props);
-  /**
-   * @license lucide-svelte v0.545.0 - ISC
-   *
-   * ISC License
-   *
-   * Copyright (c) for portions of Lucide are held by Cole Bemis 2013-2023 as part of Feather (MIT). All other copyright (c) for Lucide are held by Lucide Contributors 2025.
-   *
-   * Permission to use, copy, modify, and/or distribute this software for any
-   * purpose with or without fee is hereby granted, provided that the above
-   * copyright notice and this permission notice appear in all copies.
-   *
-   * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-   * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-   * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-   * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-   * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-   * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-   * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-   *
-   * ---
-   *
-   * The MIT License (MIT) (for portions derived from Feather)
-   *
-   * Copyright (c) 2013-2023 Cole Bemis
-   *
-   * Permission is hereby granted, free of charge, to any person obtaining a copy
-   * of this software and associated documentation files (the "Software"), to deal
-   * in the Software without restriction, including without limitation the rights
-   * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-   * copies of the Software, and to permit persons to whom the Software is
-   * furnished to do so, subject to the following conditions:
-   *
-   * The above copyright notice and this permission notice shall be included in all
-   * copies or substantial portions of the Software.
-   *
-   * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-   * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-   * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-   * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-   * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-   * SOFTWARE.
-   *
-   */
-  const iconNode = [
-    [
-      "path",
-      {
-        "d": "M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"
-      }
-    ]
-  ];
-  Icon($$renderer, spread_props([
-    { name: "phone" },
-    $$sanitized_props,
-    {
-      /**
-       * @component @name Phone
-       * @description Lucide SVG icon component, renders SVG Element with children.
-       *
-       * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8cGF0aCBkPSJNMTMuODMyIDE2LjU2OGExIDEgMCAwIDAgMS4yMTMtLjMwM2wuMzU1LS40NjVBMiAyIDAgMCAxIDE3IDE1aDNhMiAyIDAgMCAxIDIgMnYzYTIgMiAwIDAgMS0yIDJBMTggMTggMCAwIDEgMiA0YTIgMiAwIDAgMSAyLTJoM2EyIDIgMCAwIDEgMiAydjNhMiAyIDAgMCAxLS44IDEuNmwtLjQ2OC4zNTFhMSAxIDAgMCAwLS4yOTIgMS4yMzMgMTQgMTQgMCAwIDAgNi4zOTIgNi4zODQiIC8+Cjwvc3ZnPgo=) - https://lucide.dev/icons/phone
-       * @see https://lucide.dev/guide/packages/lucide-svelte - Documentation
-       *
-       * @param {Object} props - Lucide icons props and any valid SVG attribute
-       * @returns {FunctionalComponent} Svelte component
-       *
-       */
-      iconNode,
-      children: ($$renderer2) => {
-        $$renderer2.push(`<!--[-->`);
-        slot($$renderer2, $$props, "default", {});
-        $$renderer2.push(`<!--]-->`);
-      },
-      $$slots: { default: true }
-    }
-  ]));
-}
-function Square_pen($$renderer, $$props) {
-  const $$sanitized_props = sanitize_props($$props);
-  /**
-   * @license lucide-svelte v0.545.0 - ISC
-   *
-   * ISC License
-   *
-   * Copyright (c) for portions of Lucide are held by Cole Bemis 2013-2023 as part of Feather (MIT). All other copyright (c) for Lucide are held by Lucide Contributors 2025.
-   *
-   * Permission to use, copy, modify, and/or distribute this software for any
-   * purpose with or without fee is hereby granted, provided that the above
-   * copyright notice and this permission notice appear in all copies.
-   *
-   * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-   * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-   * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-   * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-   * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-   * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-   * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-   *
-   * ---
-   *
-   * The MIT License (MIT) (for portions derived from Feather)
-   *
-   * Copyright (c) 2013-2023 Cole Bemis
-   *
-   * Permission is hereby granted, free of charge, to any person obtaining a copy
-   * of this software and associated documentation files (the "Software"), to deal
-   * in the Software without restriction, including without limitation the rights
-   * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-   * copies of the Software, and to permit persons to whom the Software is
-   * furnished to do so, subject to the following conditions:
-   *
-   * The above copyright notice and this permission notice shall be included in all
-   * copies or substantial portions of the Software.
-   *
-   * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-   * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-   * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-   * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-   * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-   * SOFTWARE.
-   *
-   */
-  const iconNode = [
-    [
-      "path",
-      {
-        "d": "M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
-      }
-    ],
-    [
-      "path",
-      {
-        "d": "M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"
-      }
-    ]
-  ];
-  Icon($$renderer, spread_props([
-    { name: "square-pen" },
-    $$sanitized_props,
-    {
-      /**
-       * @component @name SquarePen
-       * @description Lucide SVG icon component, renders SVG Element with children.
-       *
-       * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8cGF0aCBkPSJNMTIgM0g1YTIgMiAwIDAgMC0yIDJ2MTRhMiAyIDAgMCAwIDIgMmgxNGEyIDIgMCAwIDAgMi0ydi03IiAvPgogIDxwYXRoIGQ9Ik0xOC4zNzUgMi42MjVhMSAxIDAgMCAxIDMgM2wtOS4wMTMgOS4wMTRhMiAyIDAgMCAxLS44NTMuNTA1bC0yLjg3My44NGEuNS41IDAgMCAxLS42Mi0uNjJsLjg0LTIuODczYTIgMiAwIDAgMSAuNTA2LS44NTJ6IiAvPgo8L3N2Zz4K) - https://lucide.dev/icons/square-pen
        * @see https://lucide.dev/guide/packages/lucide-svelte - Documentation
        *
        * @param {Object} props - Lucide icons props and any valid SVG attribute
@@ -402,29 +164,65 @@ function _page($$renderer, $$props) {
             Card($$renderer4, {
               children: ($$renderer5) => {
                 $$renderer5.push(`<div class="card-header svelte-q8hs85"><h2 class="svelte-q8hs85">Datos Personales</h2></div> <div class="info-list svelte-q8hs85">`);
-                if (data.client.email) {
+                if (data.client.email_primary) {
                   $$renderer5.push("<!--[-->");
                   $$renderer5.push(`<div class="info-item svelte-q8hs85">`);
                   Mail($$renderer5, { size: 18 });
-                  $$renderer5.push(`<!----> <div class="svelte-q8hs85"><div class="label svelte-q8hs85">Email</div> <div class="value svelte-q8hs85">${escape_html(data.client.email)}</div></div></div>`);
+                  $$renderer5.push(`<!----> <div class="svelte-q8hs85"><div class="label svelte-q8hs85">Email Principal</div> <div class="value svelte-q8hs85">${escape_html(data.client.email_primary)}</div></div></div>`);
                 } else {
                   $$renderer5.push("<!--[!-->");
                 }
                 $$renderer5.push(`<!--]--> `);
+                if (data.client.email_secondary) {
+                  $$renderer5.push("<!--[-->");
+                  $$renderer5.push(`<div class="info-item svelte-q8hs85">`);
+                  Mail($$renderer5, { size: 18 });
+                  $$renderer5.push(`<!----> <div class="svelte-q8hs85"><div class="label svelte-q8hs85">Email Secundario</div> <div class="value svelte-q8hs85">${escape_html(data.client.email_secondary)}</div></div></div>`);
+                } else {
+                  $$renderer5.push("<!--[!-->");
+                }
+                $$renderer5.push(`<!--]--> <div class="info-row svelte-q8hs85">`);
                 if (data.client.phone) {
                   $$renderer5.push("<!--[-->");
                   $$renderer5.push(`<div class="info-item svelte-q8hs85">`);
                   Phone($$renderer5, { size: 18 });
-                  $$renderer5.push(`<!----> <div class="svelte-q8hs85"><div class="label svelte-q8hs85">Teléfono</div> <div class="value svelte-q8hs85">${escape_html(data.client.phone)}</div></div></div>`);
+                  $$renderer5.push(`<!----> <div class="phone-content svelte-q8hs85"><div class="label svelte-q8hs85">Celular</div> <div class="value phone-with-whatsapp svelte-q8hs85"><span class="svelte-q8hs85">${escape_html(data.client.phone)}</span> `);
+                  if (isMobileNumber(data.client.phone)) {
+                    $$renderer5.push("<!--[-->");
+                    $$renderer5.push(`<a${attr("href", getWhatsAppUrl(data.client.phone))} target="_blank" rel="noopener noreferrer" class="whatsapp-btn svelte-q8hs85" title="Abrir en WhatsApp">`);
+                    Message_circle($$renderer5, { size: 16 });
+                    $$renderer5.push(`<!----></a>`);
+                  } else {
+                    $$renderer5.push("<!--[!-->");
+                  }
+                  $$renderer5.push(`<!--]--></div></div></div>`);
                 } else {
                   $$renderer5.push("<!--[!-->");
                 }
                 $$renderer5.push(`<!--]--> `);
-                if (data.client.id_number) {
+                if (data.client.phone_landline) {
+                  $$renderer5.push("<!--[-->");
+                  $$renderer5.push(`<div class="info-item svelte-q8hs85">`);
+                  Phone($$renderer5, { size: 18 });
+                  $$renderer5.push(`<!----> <div class="svelte-q8hs85"><div class="label svelte-q8hs85">Teléfono</div> <div class="value svelte-q8hs85">${escape_html(data.client.phone_landline)}</div></div></div>`);
+                } else {
+                  $$renderer5.push("<!--[!-->");
+                }
+                $$renderer5.push(`<!--]--></div> `);
+                if (data.client.document_number) {
                   $$renderer5.push("<!--[-->");
                   $$renderer5.push(`<div class="info-item svelte-q8hs85">`);
                   File_text($$renderer5, { size: 18 });
-                  $$renderer5.push(`<!----> <div class="svelte-q8hs85"><div class="label svelte-q8hs85">DNI/NIE</div> <div class="value svelte-q8hs85">${escape_html(data.client.id_number)}</div></div></div>`);
+                  $$renderer5.push(`<!----> <div class="svelte-q8hs85"><div class="label svelte-q8hs85">DNI/CUIT</div> <div class="value svelte-q8hs85">${escape_html(data.client.document_number)}</div></div></div>`);
+                } else {
+                  $$renderer5.push("<!--[!-->");
+                }
+                $$renderer5.push(`<!--]--> `);
+                if (data.client.birth_date) {
+                  $$renderer5.push("<!--[-->");
+                  $$renderer5.push(`<div class="info-item svelte-q8hs85">`);
+                  Calendar($$renderer5, { size: 18 });
+                  $$renderer5.push(`<!----> <div class="svelte-q8hs85"><div class="label svelte-q8hs85">Fecha de Nacimiento</div> <div class="value svelte-q8hs85">${escape_html(formatDate(data.client.birth_date))}</div></div></div>`);
                 } else {
                   $$renderer5.push("<!--[!-->");
                 }
@@ -463,12 +261,37 @@ function _page($$renderer, $$props) {
               }
             });
             $$renderer4.push(`<!----> `);
-            if (data.client.notes) {
+            Card($$renderer4, {
+              class: "full-width",
+              children: ($$renderer5) => {
+                $$renderer5.push(`<div class="card-header svelte-q8hs85"><h2 class="svelte-q8hs85">Información Adicional</h2></div> <div class="info-list svelte-q8hs85">`);
+                if (data.client.alias_pas) {
+                  $$renderer5.push("<!--[-->");
+                  $$renderer5.push(`<div class="info-item svelte-q8hs85">`);
+                  File_text($$renderer5, { size: 18 });
+                  $$renderer5.push(`<!----> <div class="svelte-q8hs85"><div class="label svelte-q8hs85">Alias PAS</div> <div class="value svelte-q8hs85">${escape_html(data.client.alias_pas)}</div></div></div>`);
+                } else {
+                  $$renderer5.push("<!--[!-->");
+                }
+                $$renderer5.push(`<!--]--> `);
+                if (data.client.referred_by) {
+                  $$renderer5.push("<!--[-->");
+                  $$renderer5.push(`<div class="info-item svelte-q8hs85">`);
+                  File_text($$renderer5, { size: 18 });
+                  $$renderer5.push(`<!----> <div class="svelte-q8hs85"><div class="label svelte-q8hs85">Referido Por</div> <div class="value svelte-q8hs85">${escape_html(data.client.referred_by)}</div></div></div>`);
+                } else {
+                  $$renderer5.push("<!--[!-->");
+                }
+                $$renderer5.push(`<!--]--></div>`);
+              }
+            });
+            $$renderer4.push(`<!----> `);
+            if (data.client.observations) {
               $$renderer4.push("<!--[-->");
               Card($$renderer4, {
                 class: "full-width",
                 children: ($$renderer5) => {
-                  $$renderer5.push(`<div class="card-header svelte-q8hs85"><h2 class="svelte-q8hs85">Notas</h2></div> <p class="notes svelte-q8hs85">${escape_html(data.client.notes)}</p>`);
+                  $$renderer5.push(`<div class="card-header svelte-q8hs85"><h2 class="svelte-q8hs85">Observaciones</h2></div> <p class="notes svelte-q8hs85">${escape_html(data.client.observations)}</p>`);
                 }
               });
             } else {
@@ -483,7 +306,7 @@ function _page($$renderer, $$props) {
               Button($$renderer4, {
                 variant: "primary",
                 size: "sm",
-                onclick: () => goto(),
+                onclick: () => goto(`/polizas/nuevo?client_id=${data.client.id}`),
                 children: ($$renderer5) => {
                   Plus($$renderer5, { size: 16 });
                   $$renderer5.push(`<!----> Nueva Póliza`);

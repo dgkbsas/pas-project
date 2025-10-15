@@ -7,10 +7,10 @@ function __memo(fn) {
 return {
 	appDir: "_app",
 	appPath: "_app",
-	assets: new Set([]),
-	mimeTypes: {},
+	assets: new Set([".DS_Store","favicon.ico","favicon.png","icons/apple-touch-icon.png","icons/icon-128x128.png","icons/icon-144x144.png","icons/icon-152x152.png","icons/icon-192x192.png","icons/icon-384x384.png","icons/icon-512x512.png","icons/icon-72x72.png","icons/icon-96x96.png","manifest.json"]),
+	mimeTypes: {".png":"image/png",".json":"application/json"},
 	_: {
-		client: {start:"_app/immutable/entry/start.Be_rappm.js",app:"_app/immutable/entry/app.Dy2DksG5.js",imports:["_app/immutable/entry/start.Be_rappm.js","_app/immutable/chunks/CdRlIqj1.js","_app/immutable/chunks/B5RiWETq.js","_app/immutable/chunks/T0dPp4D2.js","_app/immutable/entry/app.Dy2DksG5.js","_app/immutable/chunks/C1FmrZbK.js","_app/immutable/chunks/T0dPp4D2.js","_app/immutable/chunks/CWj6FrbW.js","_app/immutable/chunks/B5RiWETq.js","_app/immutable/chunks/iIrk5DBN.js","_app/immutable/chunks/Bc04Jkhx.js","_app/immutable/chunks/DmV6kigd.js","_app/immutable/chunks/x5bn8cLp.js"],stylesheets:[],fonts:[],uses_env_dynamic_public:false},
+		client: {start:"_app/immutable/entry/start.TYCyCChB.js",app:"_app/immutable/entry/app.DfdgCYZ6.js",imports:["_app/immutable/entry/start.TYCyCChB.js","_app/immutable/chunks/DmrR99iC.js","_app/immutable/chunks/C_FCoYF_.js","_app/immutable/chunks/dGHTYzhB.js","_app/immutable/chunks/Qt_sPRvb.js","_app/immutable/entry/app.DfdgCYZ6.js","_app/immutable/chunks/C1FmrZbK.js","_app/immutable/chunks/dGHTYzhB.js","_app/immutable/chunks/CWj6FrbW.js","_app/immutable/chunks/C_FCoYF_.js","_app/immutable/chunks/_danfitL.js","_app/immutable/chunks/CfIVFlu0.js","_app/immutable/chunks/EndzCuNO.js","_app/immutable/chunks/pnKjlpSc.js"],stylesheets:[],fonts:[],uses_env_dynamic_public:false},
 		nodes: [
 			__memo(() => import('./nodes/0.js')),
 			__memo(() => import('./nodes/1.js')),
@@ -40,6 +40,27 @@ return {
 				endpoint: null
 			},
 			{
+				id: "/(app)/actividades",
+				pattern: /^\/actividades\/?$/,
+				params: [],
+				page: { layouts: [0,2,], errors: [1,,], leaf: 4 },
+				endpoint: null
+			},
+			{
+				id: "/api/activities",
+				pattern: /^\/api\/activities\/?$/,
+				params: [],
+				page: null,
+				endpoint: __memo(() => import('./entries/endpoints/api/activities/_server.ts.js'))
+			},
+			{
+				id: "/api/auth/logout",
+				pattern: /^\/api\/auth\/logout\/?$/,
+				params: [],
+				page: null,
+				endpoint: __memo(() => import('./entries/endpoints/api/auth/logout/_server.ts.js'))
+			},
+			{
 				id: "/api/clients",
 				pattern: /^\/api\/clients\/?$/,
 				params: [],
@@ -47,11 +68,67 @@ return {
 				endpoint: __memo(() => import('./entries/endpoints/api/clients/_server.ts.js'))
 			},
 			{
+				id: "/api/clients/search",
+				pattern: /^\/api\/clients\/search\/?$/,
+				params: [],
+				page: null,
+				endpoint: __memo(() => import('./entries/endpoints/api/clients/search/_server.ts.js'))
+			},
+			{
 				id: "/api/clients/[id]",
 				pattern: /^\/api\/clients\/([^/]+?)\/?$/,
 				params: [{"name":"id","optional":false,"rest":false,"chained":false}],
 				page: null,
 				endpoint: __memo(() => import('./entries/endpoints/api/clients/_id_/_server.ts.js'))
+			},
+			{
+				id: "/api/company",
+				pattern: /^\/api\/company\/?$/,
+				params: [],
+				page: null,
+				endpoint: __memo(() => import('./entries/endpoints/api/company/_server.ts.js'))
+			},
+			{
+				id: "/api/config",
+				pattern: /^\/api\/config\/?$/,
+				params: [],
+				page: null,
+				endpoint: __memo(() => import('./entries/endpoints/api/config/_server.ts.js'))
+			},
+			{
+				id: "/api/config/[key]",
+				pattern: /^\/api\/config\/([^/]+?)\/?$/,
+				params: [{"name":"key","optional":false,"rest":false,"chained":false}],
+				page: null,
+				endpoint: __memo(() => import('./entries/endpoints/api/config/_key_/_server.ts.js'))
+			},
+			{
+				id: "/api/debug/policies-schema",
+				pattern: /^\/api\/debug\/policies-schema\/?$/,
+				params: [],
+				page: null,
+				endpoint: __memo(() => import('./entries/endpoints/api/debug/policies-schema/_server.ts.js'))
+			},
+			{
+				id: "/api/followups/[id]",
+				pattern: /^\/api\/followups\/([^/]+?)\/?$/,
+				params: [{"name":"id","optional":false,"rest":false,"chained":false}],
+				page: null,
+				endpoint: __memo(() => import('./entries/endpoints/api/followups/_id_/_server.ts.js'))
+			},
+			{
+				id: "/api/insurance-companies",
+				pattern: /^\/api\/insurance-companies\/?$/,
+				params: [],
+				page: null,
+				endpoint: __memo(() => import('./entries/endpoints/api/insurance-companies/_server.ts.js'))
+			},
+			{
+				id: "/api/insurance-companies/[id]",
+				pattern: /^\/api\/insurance-companies\/([^/]+?)\/?$/,
+				params: [{"name":"id","optional":false,"rest":false,"chained":false}],
+				page: null,
+				endpoint: __memo(() => import('./entries/endpoints/api/insurance-companies/_id_/_server.ts.js'))
 			},
 			{
 				id: "/api/invitations",
@@ -82,6 +159,13 @@ return {
 				endpoint: __memo(() => import('./entries/endpoints/api/policies/_id_/_server.ts.js'))
 			},
 			{
+				id: "/api/policies/[id]/followups",
+				pattern: /^\/api\/policies\/([^/]+?)\/followups\/?$/,
+				params: [{"name":"id","optional":false,"rest":false,"chained":false}],
+				page: null,
+				endpoint: __memo(() => import('./entries/endpoints/api/policies/_id_/followups/_server.ts.js'))
+			},
+			{
 				id: "/auth/callback",
 				pattern: /^\/auth\/callback\/?$/,
 				params: [],
@@ -92,13 +176,6 @@ return {
 				id: "/auth/login",
 				pattern: /^\/auth\/login\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 13 },
-				endpoint: null
-			},
-			{
-				id: "/auth/signup",
-				pattern: /^\/auth\/signup\/?$/,
-				params: [],
 				page: { layouts: [0,], errors: [1,], leaf: 14 },
 				endpoint: null
 			},
@@ -106,63 +183,63 @@ return {
 				id: "/(app)/clientes",
 				pattern: /^\/clientes\/?$/,
 				params: [],
-				page: { layouts: [0,2,], errors: [1,,], leaf: 4 },
+				page: { layouts: [0,2,], errors: [1,,], leaf: 5 },
 				endpoint: null
 			},
 			{
 				id: "/(app)/clientes/nuevo",
 				pattern: /^\/clientes\/nuevo\/?$/,
 				params: [],
-				page: { layouts: [0,2,], errors: [1,,], leaf: 7 },
+				page: { layouts: [0,2,], errors: [1,,], leaf: 8 },
 				endpoint: null
 			},
 			{
 				id: "/(app)/clientes/[id]",
 				pattern: /^\/clientes\/([^/]+?)\/?$/,
 				params: [{"name":"id","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,2,], errors: [1,,], leaf: 5 },
+				page: { layouts: [0,2,], errors: [1,,], leaf: 6 },
 				endpoint: null
 			},
 			{
 				id: "/(app)/clientes/[id]/editar",
 				pattern: /^\/clientes\/([^/]+?)\/editar\/?$/,
 				params: [{"name":"id","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,2,], errors: [1,,], leaf: 6 },
+				page: { layouts: [0,2,], errors: [1,,], leaf: 7 },
 				endpoint: null
 			},
 			{
 				id: "/(app)/configuracion",
 				pattern: /^\/configuracion\/?$/,
 				params: [],
-				page: { layouts: [0,2,], errors: [1,,], leaf: 8 },
+				page: { layouts: [0,2,], errors: [1,,], leaf: 9 },
 				endpoint: null
 			},
 			{
 				id: "/(app)/dashboard",
 				pattern: /^\/dashboard\/?$/,
 				params: [],
-				page: { layouts: [0,2,], errors: [1,,], leaf: 9 },
+				page: { layouts: [0,2,], errors: [1,,], leaf: 10 },
 				endpoint: null
 			},
 			{
 				id: "/(app)/polizas",
 				pattern: /^\/polizas\/?$/,
 				params: [],
-				page: { layouts: [0,2,], errors: [1,,], leaf: 10 },
+				page: { layouts: [0,2,], errors: [1,,], leaf: 11 },
 				endpoint: null
 			},
 			{
 				id: "/(app)/polizas/nuevo",
 				pattern: /^\/polizas\/nuevo\/?$/,
 				params: [],
-				page: { layouts: [0,2,], errors: [1,,], leaf: 12 },
+				page: { layouts: [0,2,], errors: [1,,], leaf: 13 },
 				endpoint: null
 			},
 			{
 				id: "/(app)/polizas/[id]/editar",
 				pattern: /^\/polizas\/([^/]+?)\/editar\/?$/,
 				params: [{"name":"id","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,2,], errors: [1,,], leaf: 11 },
+				page: { layouts: [0,2,], errors: [1,,], leaf: 12 },
 				endpoint: null
 			}
 		],

@@ -10,6 +10,7 @@
     Plus,
   } from "lucide-svelte";
   import { fade, fly } from "svelte/transition";
+  import { browser } from "$app/environment";
   import type { Client, Policy } from "$lib/types/database.types";
 
   type RecentClient = Pick<
@@ -150,13 +151,15 @@
 
   <!-- Stats Grid -->
   <div class="stats-grid" in:fade={{ duration: 300, delay: 100 }}>
-    {#each stats as stat, i}
+    {#each stats as stat, i (stat.title)}
       {@const Icon = stat.icon}
       <div in:fly={{ y: 20, duration: 300, delay: 100 + i * 50 }}>
         <Card class="stat-card">
           <div class="stat-content">
             <div class="stat-icon stat-icon-{stat.color}">
-              <Icon size={24} />
+              {#if browser && Icon}
+                <Icon size={24} />
+              {/if}
             </div>
             <div class="stat-details">
               <div class="stat-label">{stat.title}</div>
@@ -172,10 +175,12 @@
   <div class="quick-actions" in:fade={{ duration: 300, delay: 300 }}>
     <h2>Acciones Rápidas</h2>
     <div class="actions-grid">
-      {#each quickActions as action}
+      {#each quickActions as action (action.href)}
         {@const Icon = action.icon}
         <a href={action.href} class="action-card">
-          <Icon size={20} />
+          {#if browser && Icon}
+            <Icon size={20} />
+          {/if}
           <span>{action.label}</span>
         </a>
       {/each}
@@ -190,11 +195,13 @@
       {/snippet}
 
       <div class="activity-list">
-        {#each recentActivities as activity}
+        {#each recentActivities as activity, i (activity.type + '-' + i)}
           {@const Icon = activity.icon}
           <div class="activity-item">
             <div class="activity-icon">
-              <Icon size={18} />
+              {#if browser && Icon}
+                <Icon size={18} />
+              {/if}
             </div>
             <div class="activity-content">
               <div class="activity-title">{activity.title}</div>
@@ -206,7 +213,9 @@
       </div>
 
       {#snippet footer()}
-        <Button variant="ghost" size="sm">Ver todas las actividades</Button>
+        <a href="/actividades">
+          <Button variant="ghost" size="sm">Ver todas las actividades</Button>
+        </a>
       {/snippet}
     </Card>
   </div>

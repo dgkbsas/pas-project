@@ -513,7 +513,7 @@
                   class="add-policy-btn"
                   onclick={() => {
                     onClose();
-                    goto(`/polizas/nuevo?client_id=${client.id}`);
+                    goto(`/polizas/nuevo?client_id=${client!.id}`);
                   }}
                 >
                   <Plus size={16} />
@@ -530,7 +530,7 @@
                       onclick={() => {
                         onClose();
                         goto(
-                          `/polizas?policyId=${policy.id}&mode=view&from=client&fromId=${client.id}`
+                          `/polizas?policyId=${policy.id}&mode=view&from=client&fromId=${client!.id}`
                         );
                       }}
                     >
@@ -573,7 +573,7 @@
                     class="create-first-btn"
                     onclick={() => {
                       onClose();
-                      goto(`/polizas/nuevo?client_id=${client.id}`);
+                      goto(`/polizas/nuevo?client_id=${client!.id}`);
                     }}
                   >
                     <Plus size={16} />

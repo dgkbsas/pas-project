@@ -17,6 +17,9 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.75.0
         version: 2.75.0
+      '@vercel/speed-insights':
+        specifier: ^1.2.0
+        version: 1.2.0(@sveltejs/kit@2.46.5(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.13)(vite@5.4.20(@types/node@24.7.2)(sass@1.93.2)))(svelte@5.39.13)(vite@5.4.20(@types/node@24.7.2)(sass@1.93.2)))(svelte@5.39.13)
       bits-ui:
         specifier: ^2.11.5
         version: 2.11.5(@internationalized/date@3.10.0)(svelte@5.39.13)
@@ -604,6 +607,29 @@ packages:
 
   '@types/ws@8.18.1':
     resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
+
+  '@vercel/speed-insights@1.2.0':
+    resolution: {integrity: sha512-y9GVzrUJ2xmgtQlzFP2KhVRoCglwfRQgjyfY607aU0hh0Un6d0OUyrJkjuAlsV18qR4zfoFPs/BiIj9YDS6Wzw==}
+    peerDependencies:
+      '@sveltejs/kit': ^1 || ^2
+      next: '>= 13'
+      react: ^18 || ^19 || ^19.0.0-rc
+      svelte: '>= 4'
+      vue: ^3
+      vue-router: ^4
+    peerDependenciesMeta:
+      '@sveltejs/kit':
+        optional: true
+      next:
+        optional: true
+      react:
+        optional: true
+      svelte:
+        optional: true
+      vue:
+        optional: true
+      vue-router:
+        optional: true
 
   accepts@2.0.0:
     resolution: {integrity: sha512-5cvg6CtKwfgdmVqY1WIiXKc3Q1bkRqGLi+2W/6ao+6Y7gu/RCwRuAhGEzh5B4KlszSuTLgZYuqFqo5bImjNKng==}
@@ -1749,6 +1775,11 @@ snapshots:
   '@types/ws@8.18.1':
     dependencies:
       '@types/node': 24.7.2
+
+  '@vercel/speed-insights@1.2.0(@sveltejs/kit@2.46.5(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.13)(vite@5.4.20(@types/node@24.7.2)(sass@1.93.2)))(svelte@5.39.13)(vite@5.4.20(@types/node@24.7.2)(sass@1.93.2)))(svelte@5.39.13)':
+    optionalDependencies:
+      '@sveltejs/kit': 2.46.5(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.13)(vite@5.4.20(@types/node@24.7.2)(sass@1.93.2)))(svelte@5.39.13)(vite@5.4.20(@types/node@24.7.2)(sass@1.93.2))
+      svelte: 5.39.13
 
   accepts@2.0.0:
     dependencies:

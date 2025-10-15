@@ -26,11 +26,13 @@ export const GET: RequestHandler = async ({ locals }) => {
 			return json({ message: 'Usuario no encontrado' }, { status: 404 });
 		}
 
+		const company_id = (userData as { company_id: string }).company_id;
+
 		// Get all configuration for this company
 		const { data: configs, error: configError } = await supabase
 			.from('configuration')
 			.select('*')
-			.eq('company_id', userData.company_id)
+			.eq('company_id', company_id)
 			.order('config_key');
 
 		if (configError) {
@@ -87,8 +89,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			return json({ message: 'Usuario no encontrado' }, { status: 404 });
 		}
 
+		const { company_id, role } = userData as { company_id: string; role: string };
+
 		// Only admins can create configuration
-		if (userData.role !== 'admin') {
+		if (role !== 'admin') {
 			return json({ message: 'Sin permisos para crear configuración' }, { status: 403 });
 		}
 
@@ -96,7 +100,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		const { data: existing } = await supabase
 			.from('configuration')
 			.select('id')
-			.eq('company_id', userData.company_id)
+			.eq('company_id', company_id)
 			.eq('config_key', config_key)
 			.single();
 
@@ -108,11 +112,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		const { data: config, error: insertError } = await supabase
 			.from('configuration')
 			.insert({
-				company_id: userData.company_id,
+				company_id,
 				config_key,
 				config_value: config_value || {},
 				updated_by: session.user.id
-			})
+			} as any)
 			.select()
 			.single();
 

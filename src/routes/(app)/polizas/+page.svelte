@@ -693,19 +693,8 @@
     }
 
     select {
-      padding: var(--space-2) var(--space-3);
-      border: 1px solid var(--border-primary);
-      border-radius: var(--radius-md);
-      font-size: var(--text-sm);
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      cursor: pointer;
-      transition: border-color var(--transition-fast);
-
-      &:focus {
-        outline: none;
-        border-color: var(--primary-500);
-      }
+      @include select-base;
+      width: auto;
     }
   }
 

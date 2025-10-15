@@ -350,7 +350,7 @@
                     <div class="item-label-wrapper">
                       <span class="item-label">{item.label}</span>
                       {#if !(item.active ?? true)}
-                        <Badge variant="default" size="sm">Inactivo</Badge>
+                        <Badge variant="default">Inactivo</Badge>
                       {/if}
                     </div>
                     <code class="item-value">{item.value}</code>

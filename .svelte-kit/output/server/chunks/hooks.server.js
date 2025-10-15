@@ -8,7 +8,16 @@ const handle$1 = async ({ event, resolve }) => {
       getAll: () => event.cookies.getAll(),
       setAll: (cookiesToSet) => {
         cookiesToSet.forEach(({ name, value, options }) => {
-          event.cookies.set(name, value, { ...options, path: "/" });
+          event.cookies.set(name, value, {
+            ...options,
+            path: "/",
+            // Configuración para desarrollo en red local
+            sameSite: "lax",
+            secure: false,
+            // true solo en producción con HTTPS
+            httpOnly: false
+            // Permitir acceso desde JS para debugging
+          });
         });
       }
     }
@@ -38,13 +47,19 @@ const handle = async ({ event, resolve }) => {
     event2.locals.session = isValidSession ? session : null;
     event2.locals.user = isValidSession ? user : null;
     const path = event2.url.pathname;
-    const publicRoutes = ["/", "/auth/login", "/auth/signup", "/auth/callback"];
+    if (!isValidSession && path !== "/auth/login") {
+      console.log("[HOOKS] No valid session for path:", path);
+      console.log("[HOOKS] Session exists:", !!session);
+      console.log("[HOOKS] Session expires_at:", session?.expires_at);
+      console.log("[HOOKS] Cookies disponibles:", event2.cookies.getAll().map((c) => c.name).join(", "));
+    }
+    const publicRoutes = ["/", "/auth/login", "/auth/callback"];
     const isPublicRoute = publicRoutes.some((route) => path === route || path.startsWith(route + "/"));
     if (!isValidSession && !isPublicRoute && !path.startsWith("/api/")) {
       console.log("Redirecting to login - no valid session");
       throw redirect(303, "/auth/login");
     }
-    if (isValidSession && (path === "/auth/login" || path === "/auth/signup")) {
+    if (isValidSession && path === "/auth/login") {
       throw redirect(303, "/dashboard");
     }
     return resolve(event2);

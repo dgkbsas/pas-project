@@ -7,6 +7,16 @@
 		"src/routes/+layout.server.ts",
 		"src/routes/+layout.server.ts"
 	],
+	"/(app)/actividades": [
+		"src/routes/(app)/+layout.server.ts",
+		"src/routes/+layout.server.ts"
+	],
+	"/api/activities": [
+		"src/routes/api/activities/+server.ts"
+	],
+	"/api/auth/logout": [
+		"src/routes/api/auth/logout/+server.ts"
+	],
 	"/api/clients": [
 		"src/routes/api/clients/+server.ts"
 	],

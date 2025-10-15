@@ -42,15 +42,16 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
 				.single();
 
 			if (userData) {
+				const company_id = (userData as { company_id: string }).company_id;
 				const { data: config } = await supabase
 					.from('configuration')
 					.select('config_value')
-					.eq('company_id', userData.company_id)
+					.eq('company_id', company_id)
 					.eq('config_key', 'followup_types')
 					.single();
 
-				if (config?.config_value) {
-					const validTypes = config.config_value as string[];
+				if (config && (config as { config_value?: string[] }).config_value) {
+					const validTypes = (config as { config_value: string[] }).config_value;
 					if (!validTypes.includes(updates.followup_type)) {
 						return json(
 							{ message: `Tipo de seguimiento no válido. Tipos permitidos: ${validTypes.join(', ')}` },
@@ -65,7 +66,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
 		// RLS will ensure only allowed users can update
 		const { data: followup, error: updateError } = await supabase
 			.from('policy_followups')
-			.update(updates)
+			.update(updates as any)
 			.eq('id', followupId)
 			.select()
 			.single();

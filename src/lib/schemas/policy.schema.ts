@@ -80,7 +80,7 @@ export const policySchema = z.object({
 		.nullable(),
 
 	active: z.boolean().default(true)
-})
+}).refine(
 	(data) => {
 		// Validate that expiry_date is after start_date
 		if (data.start_date && data.expiry_date) {

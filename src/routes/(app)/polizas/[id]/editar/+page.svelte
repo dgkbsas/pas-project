@@ -299,7 +299,7 @@
           <Button variant="ghost" onclick={resetFollowupForm} type="button">
             Cancelar
           </Button>
-          <Button variant="primary" onclick={() => handleUpdateFollowup(editingFollowupId)} type="button">
+          <Button variant="primary" onclick={() => handleUpdateFollowup(editingFollowupId!)} type="button">
             Actualizar Seguimiento
           </Button>
         {:else}

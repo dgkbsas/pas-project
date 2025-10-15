@@ -1,6 +1,6 @@
 import { a3 as sanitize_props, _ as spread_props, a4 as slot, V as attr_class, Z as attr_style, a0 as stringify } from "./index2.js";
 import { I as Icon } from "./Icon.js";
-function Search($$renderer, $$props) {
+function Funnel($$renderer, $$props) {
   const $$sanitized_props = sanitize_props($$props);
   /**
    * @license lucide-svelte v0.545.0 - ISC
@@ -47,18 +47,22 @@ function Search($$renderer, $$props) {
    *
    */
   const iconNode = [
-    ["path", { "d": "m21 21-4.34-4.34" }],
-    ["circle", { "cx": "11", "cy": "11", "r": "8" }]
+    [
+      "path",
+      {
+        "d": "M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"
+      }
+    ]
   ];
   Icon($$renderer, spread_props([
-    { name: "search" },
+    { name: "funnel" },
     $$sanitized_props,
     {
       /**
-       * @component @name Search
+       * @component @name Funnel
        * @description Lucide SVG icon component, renders SVG Element with children.
        *
-       * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8cGF0aCBkPSJtMjEgMjEtNC4zNC00LjM0IiAvPgogIDxjaXJjbGUgY3g9IjExIiBjeT0iMTEiIHI9IjgiIC8+Cjwvc3ZnPgo=) - https://lucide.dev/icons/search
+       * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8cGF0aCBkPSJNMTAgMjBhMSAxIDAgMCAwIC41NTMuODk1bDIgMUExIDEgMCAwIDAgMTQgMjF2LTdhMiAyIDAgMCAxIC41MTctMS4zNDFMMjEuNzQgNC42N0ExIDEgMCAwIDAgMjEgM0gzYTEgMSAwIDAgMC0uNzQyIDEuNjdsNy4yMjUgNy45ODlBMiAyIDAgMCAxIDEwIDE0eiIgLz4KPC9zdmc+Cg==) - https://lucide.dev/icons/funnel
        * @see https://lucide.dev/guide/packages/lucide-svelte - Documentation
        *
        * @param {Object} props - Lucide icons props and any valid SVG attribute
@@ -85,6 +89,6 @@ function Skeleton($$renderer, $$props) {
   $$renderer.push(`<div${attr_class(`skeleton ${stringify(className)}`, "svelte-19f3yks", { "circle": circle })}${attr_style(`width: ${stringify(width)}; height: ${stringify(height)};`)}></div>`);
 }
 export {
-  Search as S,
-  Skeleton as a
+  Funnel as F,
+  Skeleton as S
 };

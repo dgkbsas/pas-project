@@ -517,14 +517,14 @@
           }}
         >
           <div class="form-grid">
-            <div class="form-group full-width">
-              <label>Email</label>
+            <div class="form-group double-width">
+              <label for="email">Email</label>
               <Input value={profileData.email} disabled />
               <small class="help-text">El email no se puede cambiar</small>
             </div>
 
             <div class="form-group">
-              <label>Nueva Contraseña</label>
+              <label for="new_password">Nueva Contraseña</label>
               <Input
                 type="password"
                 bind:value={profileData.new_password}
@@ -533,7 +533,7 @@
             </div>
 
             <div class="form-group">
-              <label>Confirmar Contraseña</label>
+              <label for="confirm_password">Confirmar Contraseña</label>
               <Input
                 type="password"
                 bind:value={profileData.confirm_password}
@@ -568,8 +568,8 @@
           }}
         >
           <div class="form-grid">
-            <div class="form-group full-width">
-              <label>Nombre de la Empresa</label>
+            <div class="form-group double-width">
+              <label for="companyName">Nombre de la Empresa</label>
               <Input
                 bind:value={companyData.name}
                 placeholder="Mi Empresa S.A."
@@ -577,8 +577,8 @@
               />
             </div>
 
-            <div class="form-group full-width">
-              <label>Dirección</label>
+            <div class="form-group double-width">
+              <label for="companyAddress">Dirección</label>
               <Input
                 bind:value={companyData.address}
                 placeholder="Calle Principal 123"
@@ -586,17 +586,17 @@
             </div>
 
             <div class="form-group">
-              <label>Ciudad</label>
+              <label for="companyCity">Ciudad</label>
               <Input bind:value={companyData.city} placeholder="Madrid" />
             </div>
 
             <div class="form-group">
-              <label>Código Postal</label>
+              <label for="companyPostalCode">Código Postal</label>
               <Input bind:value={companyData.postal_code} placeholder="28001" />
             </div>
 
             <div class="form-group">
-              <label>Teléfono</label>
+              <label for="companyPhone">Teléfono</label>
               <Input
                 type="tel"
                 bind:value={companyData.phone}
@@ -633,7 +633,7 @@
         >
           <div class="form-grid">
             <div class="form-group">
-              <label>Nombre *</label>
+              <label for="insurerName">Nombre *</label>
               <Input
                 bind:value={insurerFormData.name}
                 placeholder="Ej: Mapfre, AXA, Zurich..."
@@ -642,7 +642,7 @@
             </div>
 
             <div class="form-group">
-              <label>Código</label>
+              <label for="insurerCode">Código</label>
               <Input
                 bind:value={insurerFormData.code}
                 placeholder="Código corto"
@@ -650,7 +650,7 @@
             </div>
 
             <div class="form-group">
-              <label>Email de contacto</label>
+              <label for="insurerContactEmail">Email de contacto</label>
               <Input
                 type="email"
                 bind:value={insurerFormData.contact_email}
@@ -659,7 +659,7 @@
             </div>
 
             <div class="form-group">
-              <label>Teléfono</label>
+              <label for="insurerContactPhone">Teléfono</label>
               <Input
                 type="tel"
                 bind:value={insurerFormData.contact_phone}
@@ -668,7 +668,7 @@
             </div>
 
             <div class="form-group full-width">
-              <label>Sitio web</label>
+              <label for="insurerWebsite">Sitio web</label>
               <Input
                 type="url"
                 bind:value={insurerFormData.website}
@@ -944,7 +944,7 @@
 
   .form-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: var(--space-4);
     margin-bottom: var(--space-6);
   }
@@ -957,6 +957,9 @@
     /* svelte-ignore css-unused-selector */
     &.full-width {
       grid-column: 1 / -1;
+    }
+    &.double-width {
+      grid-column: span 2;
     }
 
     label {

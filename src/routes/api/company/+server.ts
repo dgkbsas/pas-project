@@ -25,11 +25,13 @@ export const GET: RequestHandler = async ({ locals }) => {
 			return json({ message: 'Usuario no encontrado' }, { status: 404 });
 		}
 
+		const company_id = (userData as { company_id: string }).company_id;
+
 		// Get company data
 		const { data: company, error: companyError } = await supabase
 			.from('companies')
 			.select('*')
-			.eq('id', userData.company_id)
+			.eq('id', company_id)
 			.single();
 
 		if (companyError || !company) {
@@ -69,8 +71,10 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
 			return json({ message: 'Usuario no encontrado' }, { status: 404 });
 		}
 
+		const { company_id, role } = userData as { company_id: string; role: string };
+
 		// Only admins can update company info
-		if (userData.role !== 'admin') {
+		if (role !== 'admin') {
 			return json({ message: 'Sin permisos para actualizar empresa' }, { status: 403 });
 		}
 
@@ -95,8 +99,8 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
 		// Update company
 		const { data: company, error: updateError } = await supabase
 			.from('companies')
-			.update(updates)
-			.eq('id', userData.company_id)
+			.update(updates as any)
+			.eq('id', company_id)
 			.select()
 			.single();
 
@@ -107,7 +111,7 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
 				message: updateError.message,
 				details: updateError.details,
 				hint: updateError.hint,
-				company_id: userData.company_id,
+				company_id,
 				updates: updates
 			});
 			

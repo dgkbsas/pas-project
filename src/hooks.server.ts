@@ -12,14 +12,22 @@ export const handle: Handle = async ({ event, resolve }) => {
 	return supabaseHandle({ event, resolve: async (event) => {
 		// Check authentication for protected routes
 		const { session, user } = await event.locals.safeGetSession();
-		
+
 		// IMPORTANTE: Validar que la sesión sea válida y no esté expirada
-		const isValidSession = session && session.expires_at && 
+		const isValidSession = session && session.expires_at &&
 							  new Date(session.expires_at * 1000) > new Date();
-		
+
 		event.locals.session = isValidSession ? session : null;
 		event.locals.user = isValidSession ? user : null;
 		const path = event.url.pathname;
+
+		// Log para debugging
+		if (!isValidSession && path !== '/auth/login') {
+			console.log('[HOOKS] No valid session for path:', path);
+			console.log('[HOOKS] Session exists:', !!session);
+			console.log('[HOOKS] Session expires_at:', session?.expires_at);
+			console.log('[HOOKS] Cookies disponibles:', event.cookies.getAll().map(c => c.name).join(', '));
+		}
 
 		// Public routes that don't require authentication
 		const publicRoutes = ['/', '/auth/login', '/auth/callback'];

@@ -8,6 +8,7 @@ function Input($$renderer, $$props) {
       label,
       value = "",
       error = false,
+      inputRef = void 0,
       class: className = "",
       children,
       $$slots,
@@ -44,7 +45,7 @@ function Input($$renderer, $$props) {
       )}/>`);
     }
     $$renderer2.push(`<!--]-->`);
-    bind_props($$props, { value });
+    bind_props($$props, { value, inputRef });
   });
 }
 export {

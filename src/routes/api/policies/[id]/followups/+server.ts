@@ -73,15 +73,16 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
 			.single();
 
 		if (userData) {
+			const company_id = (userData as { company_id: string }).company_id;
 			const { data: config } = await supabase
 				.from('configuration')
 				.select('config_value')
-				.eq('company_id', userData.company_id)
+				.eq('company_id', company_id)
 				.eq('config_key', 'followup_types')
 				.single();
 
-			if (config?.config_value) {
-				const validTypes = config.config_value as string[];
+			if (config && (config as { config_value?: string[] }).config_value) {
+				const validTypes = (config as { config_value: string[] }).config_value;
 				if (!validTypes.includes(followup_type)) {
 					return json(
 						{ message: `Tipo de seguimiento no válido. Tipos permitidos: ${validTypes.join(', ')}` },
@@ -102,7 +103,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
 				description: description || null,
 				status: status || null,
 				created_by: session.user.id
-			})
+			} as any)
 			.select()
 			.single();
 

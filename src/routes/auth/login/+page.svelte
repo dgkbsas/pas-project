@@ -6,6 +6,7 @@
   import Card from "$lib/components/ui/Card.svelte";
   import Label from "$lib/components/ui/Label.svelte";
   import { Eye, EyeOff } from "lucide-svelte";
+  import logo from "$lib/assets/icons/logo.png";
 
   let { data, form } = $props();
 
@@ -32,10 +33,9 @@
     {#snippet header()}
       <div class="header-content">
         <div class="logo">
-          <span class="logo-icon">📋</span>
+          <img src={logo} alt="Logo" height="48" />
           <span class="logo-text">PAS Manager</span>
         </div>
-        <h1>Iniciar Sesión</h1>
         <p class="subtitle">Accede a tu cuenta</p>
       </div>
     {/snippet}
@@ -47,20 +47,22 @@
         loading = true;
         errorMessage = "";
 
-        return async ({ result }) => {
+        return async ({ result, update }) => {
           loading = false;
 
-          if (result.type === "redirect") {
+          if (result.type === "success" && result.data?.success) {
             showToast({
               type: "success",
               message: "¡Bienvenido!",
             });
-            // La navegación se hace automáticamente
-            await new Promise((resolve) => setTimeout(resolve, 300));
-            window.location.href = result.location || "/dashboard";
+            // Esperar para que las cookies se establezcan (especialmente en mobile/red local)
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            // Navegar al dashboard con recarga completa para asegurar cookies
+            window.location.href = "/dashboard";
           } else if (result.type === "failure") {
             // Mostrar error también en el formulario (especialmente útil en mobile)
-            errorMessage = result.data?.message || "Error al iniciar sesión";
+            errorMessage =
+              (result.data?.message as string) || "Error al iniciar sesión";
           }
         };
       }}
@@ -131,9 +133,12 @@
     justify-content: center;
     align-items: center;
     background: linear-gradient(
-      135deg,
-      var(--primary-600) 0%,
-      var(--primary-800) 100%
+      to right bottom,
+      #faf7ff,
+      #e2cfff,
+      #caa7ff,
+      #b17eff,
+      #9652ff
     );
     padding: var(--space-4);
 
@@ -148,6 +153,13 @@
     width: 100%;
     max-width: 420px;
     box-shadow: var(--shadow-xl);
+    /* From https://css.glass */
+    background: rgba(255, 255, 255, 0.48) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
+    backdrop-filter: blur(9.5px) !important;
+    -webkit-backdrop-filter: blur(9.5px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.53) !important;
 
     @include mobile {
       box-shadow: var(--shadow-lg);
@@ -163,10 +175,6 @@
       justify-content: center;
       gap: var(--space-2);
       margin-bottom: var(--space-4);
-
-      .logo-icon {
-        font-size: var(--text-4xl);
-      }
 
       .logo-text {
         font-size: var(--text-2xl);

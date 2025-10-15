@@ -1,4 +1,5 @@
 import { V as attr_class, a0 as stringify } from "./index2.js";
+/* empty css                                   */
 function Card($$renderer, $$props) {
   let { class: className = "", header, footer, children } = $$props;
   $$renderer.push(`<div${attr_class(`card ${stringify(className)}`, "svelte-7d5xe5")}>`);

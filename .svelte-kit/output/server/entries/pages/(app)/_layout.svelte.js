@@ -1,40 +1,16 @@
-import "clsx";
 import { a3 as sanitize_props, _ as spread_props, a4 as slot, Y as ensure_array_like, W as attr, V as attr_class, a5 as bind_props, a0 as stringify, a1 as store_get, a2 as unsubscribe_stores, a6 as head } from "../../../chunks/index2.js";
-import { g as getContext, e as escape_html } from "../../../chunks/context.js";
-import "@sveltejs/kit/internal";
-import "../../../chunks/exports.js";
-import "../../../chunks/utils.js";
-import "@sveltejs/kit/internal/server";
-import "../../../chunks/state.svelte.js";
+import { p as page } from "../../../chunks/stores.js";
 import { w as writable } from "../../../chunks/index.js";
 import { I as Icon } from "../../../chunks/Icon.js";
 import { U as Users } from "../../../chunks/users.js";
 import { F as File_text } from "../../../chunks/file-text.js";
+import { e as escape_html } from "../../../chunks/context.js";
 import { t as theme } from "../../../chunks/theme.js";
 import "../../../chunks/notifications.js";
 import { U as User } from "../../../chunks/user.js";
+import { l as logo } from "../../../chunks/logo.js";
 import { X } from "../../../chunks/x.js";
-const getStores = () => {
-  const stores$1 = getContext("__svelte__");
-  return {
-    /** @type {typeof page} */
-    page: {
-      subscribe: stores$1.page.subscribe
-    },
-    /** @type {typeof navigating} */
-    navigating: {
-      subscribe: stores$1.navigating.subscribe
-    },
-    /** @type {typeof updated} */
-    updated: stores$1.updated
-  };
-};
-const page = {
-  subscribe(fn) {
-    const store = getStores().page;
-    return store.subscribe(fn);
-  }
-};
+import "clsx";
 function createSidebarStore() {
   const { subscribe, set, update } = writable(false);
   return {
@@ -552,10 +528,13 @@ function Navigation($$renderer, $$props) {
     const each_array = ensure_array_like(navigationItems);
     for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
       let item = each_array[$$index];
-      const Icon2 = item.icon;
-      $$renderer2.push(`<a${attr("href", item.href)}${attr_class("nav-item svelte-1mok3ed", void 0, { "active": currentPath.startsWith(item.href) })}><!---->`);
-      Icon2($$renderer2, { size: 20 });
-      $$renderer2.push(`<!----> <span>${escape_html(item.name)}</span></a>`);
+      item.icon;
+      $$renderer2.push(`<a${attr("href", item.href)}${attr_class("nav-item svelte-1mok3ed", void 0, { "active": currentPath.startsWith(item.href) })}>`);
+      {
+        $$renderer2.push("<!--[!-->");
+        $$renderer2.push(`<span style="width: 20px; height: 20px; display: inline-block;" class="svelte-1mok3ed"></span>`);
+      }
+      $$renderer2.push(`<!--]--> <span class="svelte-1mok3ed">${escape_html(item.name)}</span></a>`);
     }
     $$renderer2.push(`<!--]--></nav>`);
   });
@@ -646,26 +625,30 @@ function UserMenu($$renderer, $$props) {
   });
 }
 function Sidebar($$renderer, $$props) {
-  let { currentPath, user, userProfile } = $$props;
-  $$renderer.push(`<aside class="sidebar svelte-6dohdz"><div class="sidebar-header svelte-6dohdz"><div class="logo svelte-6dohdz">`);
-  File_text($$renderer, { size: 32 });
-  $$renderer.push(`<!----> <span class="svelte-6dohdz">PAS Manager</span></div></div> `);
-  Navigation($$renderer, { currentPath });
-  $$renderer.push(`<!----> <div class="sidebar-footer svelte-6dohdz">`);
-  UserMenu($$renderer, {
-    user,
-    userProfile,
-    variant: "sidebar",
-    dropdownPosition: "top",
-    dropdownAlign: "left"
+  $$renderer.component(($$renderer2) => {
+    let { currentPath, user, userProfile } = $$props;
+    $$renderer2.push(`<aside class="sidebar svelte-6dohdz"><div class="sidebar-header svelte-6dohdz"><div class="logo svelte-6dohdz"><img${attr("src", logo)} alt="Logo" height="24" class="svelte-6dohdz"/> <div class="logo-text svelte-6dohdz"><span class="app-name svelte-6dohdz">PAS Manager</span> `);
+    {
+      $$renderer2.push("<!--[!-->");
+    }
+    $$renderer2.push(`<!--]--></div></div></div> `);
+    Navigation($$renderer2, { currentPath });
+    $$renderer2.push(`<!----> <div class="sidebar-footer svelte-6dohdz">`);
+    UserMenu($$renderer2, {
+      user,
+      userProfile,
+      variant: "sidebar",
+      dropdownPosition: "top",
+      dropdownAlign: "left"
+    });
+    $$renderer2.push(`<!----></div></aside>`);
   });
-  $$renderer.push(`<!----></div></aside>`);
 }
 function MobileSidebar($$renderer, $$props) {
   let { isOpen = false, currentPath } = $$props;
   if (isOpen) {
     $$renderer.push("<!--[-->");
-    $$renderer.push(`<div class="sidebar-overlay svelte-dsssid"></div>`);
+    $$renderer.push(`<button class="sidebar-overlay svelte-dsssid" aria-label="Close sidebar"></button>`);
   } else {
     $$renderer.push("<!--[!-->");
   }
@@ -688,7 +671,7 @@ function Header($$renderer, $$props) {
 function AppLayout($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
     var $$store_subs;
-    let { data, children } = $$props;
+    let { data } = $$props;
     head($$renderer2, ($$renderer3) => {
       $$renderer3.push(`<style class="svelte-1rlssa4">
     .dropdown {
@@ -714,15 +697,23 @@ function AppLayout($$renderer, $$props) {
       userProfile: data.userProfile,
       onToggleSidebar: sidebarOpen.toggle
     });
-    $$renderer2.push(`<!----> <main class="content svelte-1rlssa4"><div class="content-wrapper svelte-1rlssa4">`);
-    children($$renderer2);
-    $$renderer2.push(`<!----></div></main></div></div>`);
+    $$renderer2.push(`<!----> <main class="content svelte-1rlssa4"><div class="content-wrapper svelte-1rlssa4"><!--[-->`);
+    slot($$renderer2, $$props, "default", {});
+    $$renderer2.push(`<!--]--></div></main></div></div>`);
     if ($$store_subs) unsubscribe_stores($$store_subs);
   });
 }
 function _layout($$renderer, $$props) {
-  let { data, children } = $$props;
-  AppLayout($$renderer, { data, children });
+  let { data } = $$props;
+  AppLayout($$renderer, {
+    data,
+    children: ($$renderer2) => {
+      $$renderer2.push(`<!--[-->`);
+      slot($$renderer2, $$props, "default", {});
+      $$renderer2.push(`<!--]-->`);
+    },
+    $$slots: { default: true }
+  });
 }
 export {
   _layout as default

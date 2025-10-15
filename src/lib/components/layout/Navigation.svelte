@@ -1,18 +1,23 @@
 <script lang="ts">
 	import { navigationItems } from '$lib/config/navigation';
-	
+	import { browser } from '$app/environment';
+
 	let { currentPath } = $props<{ currentPath: string }>();
 </script>
 
 <nav class="sidebar-nav">
-	{#each navigationItems as item}
+	{#each navigationItems as item (item.href)}
 		{@const Icon = item.icon}
 		<a
 			href={item.href}
 			class="nav-item"
 			class:active={currentPath.startsWith(item.href)}
 		>
-			<Icon size={20} />
+			{#if browser && Icon}
+				<Icon size={20} />
+			{:else}
+				<span style="width: 20px; height: 20px; display: inline-block;"></span>
+			{/if}
 			<span>{item.name}</span>
 		</a>
 	{/each}

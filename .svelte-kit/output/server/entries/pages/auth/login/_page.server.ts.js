@@ -32,7 +32,11 @@ const actions = {
       });
     }
     console.log("[LOGIN ACTION] Login exitoso, sesión creada:", data.session ? "SI" : "NO");
-    throw redirect(303, "/dashboard");
+    console.log("[LOGIN ACTION] Access token presente:", !!data.session?.access_token);
+    console.log("[LOGIN ACTION] Expires at:", data.session?.expires_at);
+    locals.supabase.auth.getSession();
+    console.log("[LOGIN ACTION] Verificando cookies después de login...");
+    return { success: true };
   }
 };
 export {

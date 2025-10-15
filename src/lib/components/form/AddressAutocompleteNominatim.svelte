@@ -48,7 +48,7 @@
   let suggestions = $state<any[]>([]);
   let showSuggestions = $state(false);
   let loading = $state(false);
-  let searchTimeout: number;
+  let searchTimeout: ReturnType<typeof setTimeout>;
 
   async function searchAddress(query: string) {
     if (query.length < 3) {

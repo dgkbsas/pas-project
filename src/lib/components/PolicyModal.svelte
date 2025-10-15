@@ -26,6 +26,8 @@
   let loading = $state(false);
   let saving = $state(false);
   let isEditMode = $state(mode === "edit");
+  let insurers = $state<Array<{ id: string; name: string }>>([]);
+  let loadingInsurers = $state(false);
 
   // Form data
   let formData = $state({
@@ -43,6 +45,11 @@
 
   let errors = $state<Record<string, string>>({});
 
+  // Load insurers on mount
+  $effect(() => {
+    loadInsurers();
+  });
+
   // Reset edit mode when policyId changes or modal reopens
   $effect(() => {
     if (policyId) {
@@ -50,6 +57,25 @@
       loadPolicy();
     }
   });
+
+  // Load available insurers from API
+  async function loadInsurers() {
+    loadingInsurers = true;
+    try {
+      const response = await fetch("/api/insurance-companies");
+      const result = await response.json();
+
+      if (response.ok) {
+        insurers = result.companies || [];
+      } else {
+        console.error("Error loading insurers:", result.message);
+      }
+    } catch (err) {
+      console.error("Error loading insurers:", err);
+    } finally {
+      loadingInsurers = false;
+    }
+  }
 
   // Load policy details from API
   async function loadPolicy() {
@@ -273,12 +299,25 @@
             <div class="form-row">
               <div class="form-field">
                 <label for="insurer">Aseguradora</label>
-                <Input
+                <select
                   id="insurer"
                   bind:value={formData.insurer}
-                  error={errors.insurer}
-                  disabled={!isEditMode}
-                />
+                  disabled={!isEditMode || loadingInsurers}
+                >
+                  {#if loadingInsurers}
+                    <option value="">Cargando...</option>
+                  {:else if insurers.length === 0}
+                    <option value="">No hay aseguradoras disponibles</option>
+                  {:else}
+                    <option value="">Seleccionar aseguradora</option>
+                    {#each insurers as insurer}
+                      <option value={insurer.name}>{insurer.name}</option>
+                    {/each}
+                  {/if}
+                </select>
+                {#if errors.insurer}
+                  <span class="error-text">{errors.insurer}</span>
+                {/if}
               </div>
 
               <div class="form-field">
@@ -638,28 +677,15 @@
       }
     }
 
+    .error-text {
+      display: block;
+      font-size: var(--text-xs);
+      color: var(--error-600);
+      margin-top: var(--space-1);
+    }
+
     select {
-      width: 100%;
-      padding: var(--space-2) var(--space-3);
-      border: 1px solid var(--border-primary);
-      border-radius: var(--radius-md);
-      font-size: var(--text-sm);
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      cursor: pointer;
-      transition: all var(--transition-fast);
-
-      &:focus {
-        outline: none;
-        border-color: var(--primary-500);
-      }
-
-      &:disabled {
-        background: var(--bg-secondary);
-        color: var(--text-secondary);
-        cursor: not-allowed;
-        opacity: 0.7;
-      }
+      @include select-base;
     }
 
     textarea {

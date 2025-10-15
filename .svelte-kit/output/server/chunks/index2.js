@@ -1,6 +1,6 @@
 import { b as safe_equals, c as equals, e as escape_html, d as set_ssr_context, f as ssr_context, p as push$1, i as pop$1 } from "./context.js";
 import { clsx as clsx$1 } from "clsx";
-import { b as run_all, d as define_property, c as deferred, n as noop, o as object_prototype, e as array_prototype, g as get_descriptor, h as get_prototype_of, i as is_array, j as is_extensible, k as index_of } from "./utils2.js";
+import { b as run_all, d as define_property, c as deferred, n as noop, o as object_prototype, e as array_prototype, g as get_descriptor, f as get_prototype_of, i as is_array, h as is_extensible, j as index_of } from "./utils2.js";
 import { D as DEV } from "./false.js";
 const DERIVED = 1 << 1;
 const EFFECT = 1 << 2;
@@ -2524,9 +2524,9 @@ export {
   slot as a4,
   bind_props as a5,
   head as a6,
-  rest_props as a7,
-  element as a8,
-  derived as a9,
+  derived as a7,
+  rest_props as a8,
+  element as a9,
   HYDRATION_START as b,
   HYDRATION_START_ELSE as c,
   get as d,

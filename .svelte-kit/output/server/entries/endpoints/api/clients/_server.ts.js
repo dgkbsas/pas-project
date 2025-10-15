@@ -16,12 +16,44 @@ const GET = async ({ url, locals }) => {
     const page = parseInt(url.searchParams.get("page") || "1");
     const limit = parseInt(url.searchParams.get("limit") || "30");
     const offset = (page - 1) * limit;
-    let query = supabase.from("clients").select("*", { count: "exact" }).eq("company_id", userData.company_id).order("created_at", { ascending: false });
+    const cities = url.searchParams.getAll("city");
+    const hasEmail = url.searchParams.get("has_email");
+    const hasPhone = url.searchParams.get("has_phone");
+    const dateFrom = url.searchParams.get("date_from");
+    const dateTo = url.searchParams.get("date_to");
+    const sortBy = url.searchParams.get("sort_by") || "first_name";
+    const sortOrder = url.searchParams.get("sort_order") || "asc";
+    const ascending = sortOrder === "asc";
+    const validSortFields = ["first_name", "last_name", "created_at", "updated_at", "policy_count"];
+    const sortField = validSortFields.includes(sortBy) ? sortBy : "first_name";
+    let query = supabase.from("clients").select("*", { count: "exact" }).eq("company_id", userData.company_id);
     if (activeOnly) {
       query = query.eq("active", true);
     }
     if (search) {
       query = query.or(`first_name.ilike.%${search}%,last_name.ilike.%${search}%,email_primary.ilike.%${search}%,phone.ilike.%${search}%`);
+    }
+    if (cities.length > 0) {
+      query = query.in("city", cities);
+    }
+    if (hasEmail === "true") {
+      query = query.not("email_primary", "is", null);
+    } else if (hasEmail === "false") {
+      query = query.is("email_primary", null);
+    }
+    if (hasPhone === "true") {
+      query = query.not("phone", "is", null);
+    } else if (hasPhone === "false") {
+      query = query.is("phone", null);
+    }
+    if (dateFrom) {
+      query = query.gte("created_at", dateFrom);
+    }
+    if (dateTo) {
+      query = query.lte("created_at", dateTo);
+    }
+    if (sortField !== "policy_count") {
+      query = query.order(sortField, { ascending });
     }
     query = query.range(offset, offset + limit - 1);
     const { data: clients, error, count } = await query;
@@ -38,6 +70,13 @@ const GET = async ({ url, locals }) => {
       clients.forEach((client) => {
         client.active_policies_count = countsMap.get(client.id) || 0;
       });
+      if (sortField === "policy_count") {
+        clients.sort((a, b) => {
+          const countA = a.active_policies_count || 0;
+          const countB = b.active_policies_count || 0;
+          return ascending ? countA - countB : countB - countA;
+        });
+      }
     }
     return json({
       clients,
@@ -79,7 +118,9 @@ const POST = async ({ request, locals }) => {
     }
     const { data: client, error } = await supabase.from("clients").insert({
       ...validation.data,
-      company_id: userData.company_id
+      company_id: userData.company_id,
+      created_by: session.user.id,
+      assigned_to: session.user.id
     }).select().single();
     if (error) {
       return json({ message: error.message }, { status: 400 });

@@ -59,8 +59,10 @@ export interface PolicySummary {
   insurer: string | null;
   status?: PolicyStatus;
   start_date: string;
+  expiry_date?: string;
   renewal_date?: string;
   premium_amount?: number;
+  active: boolean;
 }
 
 // Extended client with computed properties for UI

@@ -15,7 +15,14 @@ export const handle: Handle = async ({ event, resolve }) => {
 			getAll: () => event.cookies.getAll(),
 			setAll: (cookiesToSet) => {
 				cookiesToSet.forEach(({ name, value, options }) => {
-					event.cookies.set(name, value, { ...options, path: '/' });
+					event.cookies.set(name, value, {
+						...options,
+						path: '/',
+						// Configuración para desarrollo en red local
+						sameSite: 'lax',
+						secure: false, // true solo en producción con HTTPS
+						httpOnly: false, // Permitir acceso desde JS para debugging
+					});
 				});
 			}
 		}

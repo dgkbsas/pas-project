@@ -545,7 +545,7 @@ function Toaster($$renderer, $$props) {
     let actualTheme = getInitialTheme(theme2);
     const hotkeyLabel = hotkey.join("+").replace(/Key/g, "").replace(/Digit/g, "");
     sonnerContext.set(new SonnerState());
-    $$renderer2.push(`<section${attr("aria-label", `${stringify(containerAriaLabel)} ${stringify(hotkeyLabel)}`)}${attr("tabindex", -1)} aria-live="polite" aria-relevant="additions text" aria-atomic="false" class="svelte-nbs0zk">`);
+    $$renderer2.push(`<section${attr("aria-label", `${stringify(containerAriaLabel)} ${stringify(hotkeyLabel)}`)}${attr("tabindex", -1)} aria-live="polite" aria-relevant="additions text" aria-atomic="false" class="svelte-19266fc">`);
     if (toastState.toasts.length > 0) {
       $$renderer2.push("<!--[-->");
       $$renderer2.push(`<!--[-->`);
@@ -566,7 +566,7 @@ function Toaster($$renderer, $$props) {
             style: restProps.style,
             ...restProps
           },
-          "svelte-nbs0zk",
+          "svelte-19266fc",
           void 0,
           {
             "--front-toast-height": `${toastState.heights[0]?.height}px`,

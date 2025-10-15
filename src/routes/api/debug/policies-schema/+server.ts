@@ -18,12 +18,12 @@ export const GET: RequestHandler = async ({ locals }) => {
 		// Get sample data to see existing values
 		const { data: allPolicies, error: allError } = await supabase
 			.from('policies')
-			.select('payment_mode, policy_type')
+			.select('payment_mode, policy_type, client_id')
 			.limit(100);
 
 		// Get unique values
-		const uniquePaymentModes = [...new Set(allPolicies?.map(p => p.payment_mode).filter(Boolean))];
-		const uniquePolicyTypes = [...new Set(allPolicies?.map(p => p.policy_type).filter(Boolean))];
+		const uniquePaymentModes = [...new Set(allPolicies?.map((p: any) => p.payment_mode).filter(Boolean))];
+		const uniquePolicyTypes = [...new Set(allPolicies?.map((p: any) => p.policy_type).filter(Boolean))];
 
 		// Get user's company_id
 		const { data: userData } = await supabase
@@ -34,8 +34,8 @@ export const GET: RequestHandler = async ({ locals }) => {
 
 		// Test inserting with semi-annual
 		const testPolicy = {
-			client_id: allPolicies?.[0]?.client_id || '00000000-0000-0000-0000-000000000000',
-			company_id: userData?.company_id,
+			client_id: (allPolicies as any)?.[0]?.client_id || '00000000-0000-0000-0000-000000000000',
+			company_id: (userData as unknown as { company_id: string })?.company_id,
 			created_by: session.user.id,
 			policy_number: 'TEST-SEMI-ANNUAL',
 			policy_type: 'auto',
@@ -47,13 +47,13 @@ export const GET: RequestHandler = async ({ locals }) => {
 
 		const { data: insertTest, error: insertError } = await supabase
 			.from('policies')
-			.insert(testPolicy)
+			.insert(testPolicy as any)
 			.select()
 			.single();
 
 		// If successful, delete the test policy
 		if (insertTest) {
-			await supabase.from('policies').delete().eq('id', insertTest.id);
+			await supabase.from('policies').delete().eq('id', (insertTest as any).id);
 		}
 
 		return json({

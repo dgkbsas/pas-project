@@ -112,8 +112,10 @@ const POST = async ({ request, locals }) => {
   }
   try {
     const body = await request.json();
+    console.log("POST /api/policies - Request body:", JSON.stringify(body, null, 2));
     const validation = policySchema.safeParse(body);
     if (!validation.success) {
+      console.error("Validation failed:", validation.error.flatten());
       return json(
         {
           message: "Datos inválidos",
@@ -135,13 +137,16 @@ const POST = async ({ request, locals }) => {
     }
     const { data: policy, error } = await supabase.from("policies").insert({
       ...validation.data,
-      company_id: userData.company_id
+      company_id: userData.company_id,
+      created_by: session.user.id
     }).select().single();
     if (error) {
+      console.error("Database error creating policy:", error);
       return json({ message: error.message }, { status: 400 });
     }
     return json({ policy }, { status: 201 });
   } catch (err) {
+    console.error("Error in POST /api/policies:", err);
     return json({ message: err.message || "Error interno" }, { status: 500 });
   }
 };

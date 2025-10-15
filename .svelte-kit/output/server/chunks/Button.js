@@ -1,4 +1,5 @@
 import { $ as attributes, a0 as stringify } from "./index2.js";
+/* empty css                                     */
 function Button($$renderer, $$props) {
   let {
     variant = "primary",

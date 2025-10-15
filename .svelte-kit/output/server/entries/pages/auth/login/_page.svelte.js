@@ -1,5 +1,5 @@
+import { $ as attributes, a0 as stringify, W as attr } from "../../../../chunks/index2.js";
 import { e as escape_html } from "../../../../chunks/context.js";
-import "clsx";
 import "@sveltejs/kit/internal";
 import "../../../../chunks/exports.js";
 import "../../../../chunks/utils.js";
@@ -9,7 +9,8 @@ import "../../../../chunks/notifications.js";
 import { B as Button } from "../../../../chunks/Button.js";
 import { I as Input } from "../../../../chunks/Input.js";
 import { C as Card } from "../../../../chunks/Card.js";
-import { $ as attributes, a0 as stringify } from "../../../../chunks/index2.js";
+import { l as logo } from "../../../../chunks/logo.js";
+import { E as Eye } from "../../../../chunks/eye.js";
 function Label($$renderer, $$props) {
   let {
     required = false,
@@ -42,13 +43,17 @@ function _page($$renderer, $$props) {
       $$renderer3.push(`<div class="auth-container fade-in svelte-1i2smtp">`);
       {
         let header = function($$renderer4) {
-          $$renderer4.push(`<div class="header-content svelte-1i2smtp"><div class="logo svelte-1i2smtp"><span class="logo-icon svelte-1i2smtp">📋</span> <span class="logo-text svelte-1i2smtp">PAS Manager</span></div> <h1 class="svelte-1i2smtp">Iniciar Sesión</h1> <p class="subtitle svelte-1i2smtp">Accede a tu cuenta</p></div>`);
+          $$renderer4.push(`<div class="header-content svelte-1i2smtp"><div class="logo svelte-1i2smtp"><img${attr("src", logo)} alt="Logo" height="48" class="svelte-1i2smtp"/> <span class="logo-text svelte-1i2smtp">PAS Manager</span></div> <p class="subtitle svelte-1i2smtp">Accede a tu cuenta</p></div>`);
         };
         Card($$renderer3, {
           class: "auth-card",
           header,
           children: ($$renderer4) => {
-            $$renderer4.push(`<form method="POST" action="?/login" class="form svelte-1i2smtp"><div class="form-group svelte-1i2smtp">`);
+            $$renderer4.push(`<form method="POST" action="?/login" class="form svelte-1i2smtp">`);
+            {
+              $$renderer4.push("<!--[!-->");
+            }
+            $$renderer4.push(`<!--]--> <div class="form-group svelte-1i2smtp">`);
             Label($$renderer4, {
               for: "email",
               required: true,
@@ -82,7 +87,7 @@ function _page($$renderer, $$props) {
               },
               $$slots: { default: true }
             });
-            $$renderer4.push(`<!----> `);
+            $$renderer4.push(`<!----> <div class="password-input-wrapper svelte-1i2smtp">`);
             Input($$renderer4, {
               id: "password",
               name: "password",
@@ -90,6 +95,7 @@ function _page($$renderer, $$props) {
               placeholder: "••••••••",
               disabled: loading,
               required: true,
+              class: "password-input",
               get value() {
                 return password;
               },
@@ -98,7 +104,12 @@ function _page($$renderer, $$props) {
                 $$settled = false;
               }
             });
-            $$renderer4.push(`<!----></div> `);
+            $$renderer4.push(`<!----> <button type="button" class="password-toggle svelte-1i2smtp"${attr("aria-label", "Mostrar contraseña")}>`);
+            {
+              $$renderer4.push("<!--[!-->");
+              Eye($$renderer4, { size: 18 });
+            }
+            $$renderer4.push(`<!--]--></button></div></div> `);
             Button($$renderer4, {
               type: "submit",
               class: "w-full",
@@ -109,7 +120,7 @@ function _page($$renderer, $$props) {
               },
               $$slots: { default: true }
             });
-            $$renderer4.push(`<!----></form> <div class="signup-link svelte-1i2smtp">¿No tienes cuenta? <a href="/auth/signup" class="svelte-1i2smtp">Regístrate aquí</a></div>`);
+            $$renderer4.push(`<!----></form>`);
           }
         });
       }

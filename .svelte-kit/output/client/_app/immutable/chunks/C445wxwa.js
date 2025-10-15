@@ -1,1 +1,0 @@
-import"./CWj6FrbW.js";import{b as p,t as i,a as n}from"./T0dPp4D2.js";import{s as m}from"./BqiCCWh5.js";import{p as r}from"./x5bn8cLp.js";var l=p('<div role="status"><span class="sr-only">Cargando...</span></div>');function u(e,s){let t=r(s,"size",3,"md"),o=r(s,"class",3,"");var a=l();i(()=>m(a,1,`spinner spinner-${t()??""} ${o()??""}`,"svelte-7uvg3c")),n(e,a)}export{u as S};

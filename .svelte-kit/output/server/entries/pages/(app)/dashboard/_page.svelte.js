@@ -241,14 +241,16 @@ function _page($$renderer, $$props) {
     const each_array = ensure_array_like(stats);
     for (let i = 0, $$length = each_array.length; i < $$length; i++) {
       let stat = each_array[i];
-      const Icon2 = stat.icon;
+      stat.icon;
       $$renderer2.push(`<div class="svelte-1tyszyy">`);
       Card($$renderer2, {
         class: "stat-card",
         children: ($$renderer3) => {
-          $$renderer3.push(`<div class="stat-content svelte-1tyszyy"><div${attr_class(`stat-icon stat-icon-${stringify(stat.color)}`, "svelte-1tyszyy")}><!---->`);
-          Icon2($$renderer3, { size: 24 });
-          $$renderer3.push(`<!----></div> <div class="stat-details svelte-1tyszyy"><div class="stat-label svelte-1tyszyy">${escape_html(stat.title)}</div> <div class="stat-value svelte-1tyszyy">${escape_html(stat.value)}</div></div></div>`);
+          $$renderer3.push(`<div class="stat-content svelte-1tyszyy"><div${attr_class(`stat-icon stat-icon-${stringify(stat.color)}`, "svelte-1tyszyy")}>`);
+          {
+            $$renderer3.push("<!--[!-->");
+          }
+          $$renderer3.push(`<!--]--></div> <div class="stat-details svelte-1tyszyy"><div class="stat-label svelte-1tyszyy">${escape_html(stat.title)}</div> <div class="stat-value svelte-1tyszyy">${escape_html(stat.value)}</div></div></div>`);
         }
       });
       $$renderer2.push(`<!----></div>`);
@@ -257,16 +259,19 @@ function _page($$renderer, $$props) {
     const each_array_1 = ensure_array_like(quickActions);
     for (let $$index_1 = 0, $$length = each_array_1.length; $$index_1 < $$length; $$index_1++) {
       let action = each_array_1[$$index_1];
-      const Icon2 = action.icon;
-      $$renderer2.push(`<a${attr("href", action.href)} class="action-card svelte-1tyszyy"><!---->`);
-      Icon2($$renderer2, { size: 20 });
-      $$renderer2.push(`<!----> <span class="svelte-1tyszyy">${escape_html(action.label)}</span></a>`);
+      action.icon;
+      $$renderer2.push(`<a${attr("href", action.href)} class="action-card svelte-1tyszyy">`);
+      {
+        $$renderer2.push("<!--[!-->");
+      }
+      $$renderer2.push(`<!--]--> <span class="svelte-1tyszyy">${escape_html(action.label)}</span></a>`);
     }
     $$renderer2.push(`<!--]--></div></div> <div class="recent-section svelte-1tyszyy">`);
     {
       let header = function($$renderer3) {
         $$renderer3.push(`<h2 class="svelte-1tyszyy">Actividad Reciente</h2>`);
       }, footer = function($$renderer3) {
+        $$renderer3.push(`<a href="/actividades" class="svelte-1tyszyy">`);
         Button($$renderer3, {
           variant: "ghost",
           size: "sm",
@@ -275,6 +280,7 @@ function _page($$renderer, $$props) {
           },
           $$slots: { default: true }
         });
+        $$renderer3.push(`<!----></a>`);
       };
       Card($$renderer2, {
         header,
@@ -282,12 +288,14 @@ function _page($$renderer, $$props) {
         children: ($$renderer3) => {
           $$renderer3.push(`<div class="activity-list svelte-1tyszyy"><!--[-->`);
           const each_array_2 = ensure_array_like(recentActivities);
-          for (let $$index_2 = 0, $$length = each_array_2.length; $$index_2 < $$length; $$index_2++) {
-            let activity = each_array_2[$$index_2];
-            const Icon2 = activity.icon;
-            $$renderer3.push(`<div class="activity-item svelte-1tyszyy"><div class="activity-icon svelte-1tyszyy"><!---->`);
-            Icon2($$renderer3, { size: 18 });
-            $$renderer3.push(`<!----></div> <div class="activity-content svelte-1tyszyy"><div class="activity-title svelte-1tyszyy">${escape_html(activity.title)}</div> <div class="activity-description svelte-1tyszyy">${escape_html(activity.description)}</div></div> <div class="activity-time svelte-1tyszyy">${escape_html(activity.time)}</div></div>`);
+          for (let i = 0, $$length = each_array_2.length; i < $$length; i++) {
+            let activity = each_array_2[i];
+            activity.icon;
+            $$renderer3.push(`<div class="activity-item svelte-1tyszyy"><div class="activity-icon svelte-1tyszyy">`);
+            {
+              $$renderer3.push("<!--[!-->");
+            }
+            $$renderer3.push(`<!--]--></div> <div class="activity-content svelte-1tyszyy"><div class="activity-title svelte-1tyszyy">${escape_html(activity.title)}</div> <div class="activity-description svelte-1tyszyy">${escape_html(activity.description)}</div></div> <div class="activity-time svelte-1tyszyy">${escape_html(activity.time)}</div></div>`);
           }
           $$renderer3.push(`<!--]--></div>`);
         }

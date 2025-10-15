@@ -1,5 +1,5 @@
-import { a3 as sanitize_props, a7 as rest_props, $ as attributes, X as clsx, Y as ensure_array_like, a8 as element, a4 as slot, a5 as bind_props } from "./index2.js";
-import { f as fallback } from "./utils2.js";
+import { a3 as sanitize_props, a8 as rest_props, $ as attributes, X as clsx, Y as ensure_array_like, a9 as element, a4 as slot, a5 as bind_props } from "./index2.js";
+import { k as fallback } from "./utils2.js";
 /**
  * @license lucide-svelte v0.545.0 - ISC
  *

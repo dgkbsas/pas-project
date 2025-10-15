@@ -43,8 +43,15 @@ export const actions: Actions = {
 		}
 
 		console.log('[LOGIN ACTION] Login exitoso, sesión creada:', data.session ? 'SI' : 'NO');
-		
-		// Redirigir al dashboard después de login exitoso
-		throw redirect(303, '/dashboard');
+		console.log('[LOGIN ACTION] Access token presente:', !!data.session?.access_token);
+		console.log('[LOGIN ACTION] Expires at:', data.session?.expires_at);
+
+		// Verificar que las cookies se establecieron
+		const cookies = locals.supabase.auth.getSession();
+		console.log('[LOGIN ACTION] Verificando cookies después de login...');
+
+		// No redirigir aquí - dejar que el cliente maneje el redirect
+		// Esto da tiempo para que las cookies se establezcan correctamente
+		return { success: true };
 	}
 };

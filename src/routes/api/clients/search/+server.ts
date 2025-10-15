@@ -25,6 +25,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 			return json({ message: 'Usuario no encontrado' }, { status: 404 });
 		}
 
+		const company_id = (userData as { company_id: string }).company_id;
+
 		// Get search parameters
 		const q = url.searchParams.get('q') || '';
 		const limit = parseInt(url.searchParams.get('limit') || '20');
@@ -33,7 +35,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 		let query = supabase
 			.from('clients')
 			.select('id, first_name, last_name, email_primary, document_number')
-			.eq('company_id', userData.company_id)
+			.eq('company_id', company_id)
 			.eq('active', true)
 			.limit(limit);
 

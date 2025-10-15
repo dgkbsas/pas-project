@@ -4,9 +4,12 @@
  */
 
 import type { LayoutServerLoad } from './$types';
+import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
 
 export const load: LayoutServerLoad = async ({ locals }) => {
 	const { session, user } = await locals.safeGetSession();
+
+	injectSpeedInsights();
 
 	// Serializar solo los datos necesarios, no objetos completos
 	return {
