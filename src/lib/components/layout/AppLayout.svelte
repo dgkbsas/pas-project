@@ -4,6 +4,7 @@
   import Sidebar from "./Sidebar.svelte";
   import MobileSidebar from "./MobileSidebar.svelte";
   import Header from "./Header.svelte";
+  import type { Snippet } from "svelte";
 
   interface LayoutData {
     session?: {
@@ -15,7 +16,7 @@
     };
   }
 
-  let { data, children }: { data: LayoutData; children: any } = $props();
+  let { data, children }: { data: LayoutData; children: Snippet } = $props();
 
   // Cerrar sidebar en cambio de ruta
   $effect(() => {
