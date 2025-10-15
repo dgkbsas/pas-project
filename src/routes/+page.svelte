@@ -2,14 +2,6 @@
   import { goto } from "$app/navigation";
   import { onMount } from "svelte";
   import Spinner from "$lib/components/ui/Spinner.svelte";
-
-  import { dev } from "$app/environment";
-  import { injectAnalytics } from "@vercel/analytics/sveltekit";
-  import { injectSpeedInsights } from "@vercel/speed-insights/sveltekit";
-
-  injectAnalytics({ mode: dev ? "development" : "production" });
-  injectSpeedInsights();
-
   onMount(() => {
     // Redirect to dashboard (hooks will redirect to login if not authenticated)
     goto("/dashboard");
