@@ -4,13 +4,7 @@
  */
 
 import type { LayoutServerLoad } from './$types';
-import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
-import { dev } from '$app/environment';
-import { injectAnalytics } from '@vercel/analytics/sveltekit';
- 
-injectAnalytics({ mode: dev ? 'development' : 'production' });
 
-injectSpeedInsights();
 
 export const load: LayoutServerLoad = async ({ locals }) => {
 	const { session, user } = await locals.safeGetSession();
