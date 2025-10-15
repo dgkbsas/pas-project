@@ -190,11 +190,20 @@
     if (!dateStr) return "N/A";
     return new Date(dateStr).toLocaleDateString("es-ES");
   }
+
+  function handleKeydown(e: KeyboardEvent) {
+    if (e.key === "Escape") {
+      onClose();
+    }
+  }
 </script>
+
+<svelte:window on:keydown={handleKeydown} />
 
 {#if clientId}
   <!-- Backdrop -->
-  <div class="backdrop" onclick={() => onClose()}></div>
+  <button class="backdrop" onclick={() => onClose()} aria-label="Cerrar modal"
+  ></button>
 
   <!-- Modal Panel -->
   <div class="modal-panel">
@@ -541,10 +550,10 @@
                           >
                           <span
                             class="policy-status"
-                            class:active={policy.active}
-                            class:inactive={!policy.active}
+                            class:active={policy.status}
+                            class:inactive={!policy.status}
                           >
-                            {policy.active ? "Activa" : "Inactiva"}
+                            {policy.status === "active" ? "Activa" : "Inactiva"}
                           </span>
                         </div>
                         <div class="policy-meta">
@@ -554,9 +563,9 @@
                             <span class="policy-insurer">{policy.insurer}</span>
                           {/if}
                         </div>
-                        {#if policy.expiry_date}
+                        {#if policy.renewal_date}
                           <div class="policy-date">
-                            Vence: {formatDate(policy.expiry_date)}
+                            Vence: {formatDate(policy.renewal_date)}
                           </div>
                         {/if}
                       </div>
@@ -792,7 +801,7 @@
   .form-row {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: var(--space-4);
+    column-gap: var(--space-4);
   }
 
   .form-field {
@@ -817,25 +826,10 @@
       }
     }
 
-    .phone-with-whatsapp {
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-
-      .field-value {
-        padding: 0;
-      }
-    }
-
     .phone-input-wrapper {
       display: flex;
       align-items: center;
       gap: var(--space-2);
-      position: relative;
-
-      :global(.input-wrapper) {
-        flex: 1;
-      }
     }
 
     .whatsapp-btn {
@@ -849,6 +843,8 @@
       transition: all var(--transition-fast);
       text-decoration: none;
       flex-shrink: 0;
+      height: 24px;
+      width: 24px;
 
       &:hover {
         background: #20ba5a;

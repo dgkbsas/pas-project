@@ -163,9 +163,4 @@
     font-size: var(--text-xs);
     color: var(--error-600);
   }
-
-  .help-text {
-    font-size: var(--text-xs);
-    color: var(--text-tertiary);
-  }
 </style>

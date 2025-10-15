@@ -125,8 +125,6 @@
 </div>
 
 <style lang="scss">
-  @use "$lib/styles/mixins" as *;
-
   .auth-container {
     min-height: 100vh;
     display: flex;
@@ -181,13 +179,6 @@
         font-weight: var(--font-bold);
         color: var(--text-primary);
       }
-    }
-
-    h1 {
-      margin: 0 0 var(--space-2) 0;
-      font-size: var(--text-2xl);
-      font-weight: var(--font-bold);
-      color: var(--text-primary);
     }
 
     .subtitle {
@@ -274,10 +265,6 @@
   @media (max-width: 768px) {
     .header-content {
       .logo-text {
-        font-size: var(--text-xl);
-      }
-
-      h1 {
         font-size: var(--text-xl);
       }
     }

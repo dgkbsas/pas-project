@@ -196,11 +196,20 @@
     "semi-annual": "Semestral",
     annual: "Anual",
   };
+
+  function handleKeydown(e: KeyboardEvent) {
+    if (e.key === "Escape") {
+      onClose();
+    }
+  }
 </script>
+
+<svelte:window on:keydown={handleKeydown} />
 
 {#if policyId}
   <!-- Backdrop -->
-  <div class="backdrop" onclick={() => onClose()}></div>
+  <button class="backdrop" onclick={() => onClose()} aria-label="Close modal"
+  ></button>
 
   <!-- Modal Panel -->
   <div class="modal-panel">

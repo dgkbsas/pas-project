@@ -42,16 +42,13 @@
 
   let followupForm = $state({
     followup_type: "",
-    date: new Date().toISOString().split('T')[0],
+    date: new Date().toISOString().split("T")[0],
     description: "",
     status: "",
   });
 
   onMount(async () => {
-    await Promise.all([
-      loadFollowups(),
-      loadFollowupTypes()
-    ]);
+    await Promise.all([loadFollowups(), loadFollowupTypes()]);
   });
 
   async function loadFollowups() {
@@ -63,7 +60,7 @@
         followups = result.followups || [];
       }
     } catch (err) {
-      console.error('Error loading followups:', err);
+      console.error("Error loading followups:", err);
     } finally {
       loadingFollowups = false;
     }
@@ -71,17 +68,27 @@
 
   async function loadFollowupTypes() {
     try {
-      const response = await fetch('/api/config');
+      const response = await fetch("/api/config");
       const result = await response.json();
       if (response.ok) {
-        const config = result.configs.find((c: any) => c.config_key === 'followup_types');
+        const config = result.configs.find(
+          (c: any) => c.config_key === "followup_types"
+        );
         if (config?.config_value) {
-          followupTypes = Array.isArray(config.config_value) ? config.config_value : [];
+          followupTypes = Array.isArray(config.config_value)
+            ? config.config_value
+            : [];
         }
       }
     } catch (err) {
-      console.error('Error loading followup types:', err);
-      followupTypes = ["Seguimiento", "Reclamo", "Siniestro", "Renovación", "Otro"];
+      console.error("Error loading followup types:", err);
+      followupTypes = [
+        "Seguimiento",
+        "Reclamo",
+        "Siniestro",
+        "Renovación",
+        "Otro",
+      ];
     }
   }
 
@@ -99,7 +106,10 @@
       const result = await response.json();
 
       if (response.ok) {
-        showToast({ type: "success", message: "Póliza actualizada exitosamente" });
+        showToast({
+          type: "success",
+          message: "Póliza actualizada exitosamente",
+        });
         goto("/polizas");
       } else {
         if (result.errors) {
@@ -119,69 +129,81 @@
 
   async function handleCreateFollowup() {
     if (!followupForm.followup_type || !followupForm.date) {
-      showToast({ type: 'error', message: 'Tipo y fecha son requeridos' });
+      showToast({ type: "error", message: "Tipo y fecha son requeridos" });
       return;
     }
 
     try {
-      const response = await fetch(`/api/policies/${data.policy.id}/followups`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(followupForm),
-      });
+      const response = await fetch(
+        `/api/policies/${data.policy.id}/followups`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(followupForm),
+        }
+      );
 
       if (response.ok) {
-        showToast({ type: 'success', message: 'Seguimiento creado' });
+        showToast({ type: "success", message: "Seguimiento creado" });
         resetFollowupForm();
         await loadFollowups();
       } else {
         const result = await response.json();
-        showToast({ type: 'error', message: result.message || 'Error al crear seguimiento' });
+        showToast({
+          type: "error",
+          message: result.message || "Error al crear seguimiento",
+        });
       }
     } catch (err) {
-      showToast({ type: 'error', message: 'Error al crear seguimiento' });
+      showToast({ type: "error", message: "Error al crear seguimiento" });
     }
   }
 
   async function handleUpdateFollowup(id: string) {
     try {
       const response = await fetch(`/api/followups/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(followupForm),
       });
 
       if (response.ok) {
-        showToast({ type: 'success', message: 'Seguimiento actualizado' });
+        showToast({ type: "success", message: "Seguimiento actualizado" });
         editingFollowupId = null;
         resetFollowupForm();
         await loadFollowups();
       } else {
         const result = await response.json();
-        showToast({ type: 'error', message: result.message || 'Error al actualizar seguimiento' });
+        showToast({
+          type: "error",
+          message: result.message || "Error al actualizar seguimiento",
+        });
       }
     } catch (err) {
-      showToast({ type: 'error', message: 'Error al actualizar seguimiento' });
+      showToast({ type: "error", message: "Error al actualizar seguimiento" });
     }
   }
 
   async function handleDeleteFollowup(id: string) {
-    if (!confirm('¿Seguro que deseas eliminar este seguimiento?')) return;
+    if (!confirm("¿Seguro que deseas eliminar este seguimiento?")) return;
 
     try {
       const response = await fetch(`/api/followups/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
 
       if (response.ok) {
-        showToast({ type: 'success', message: 'Seguimiento eliminado' });
+        showToast({ type: "success", message: "Seguimiento eliminado" });
         await loadFollowups();
       } else {
         const result = await response.json();
-        showToast({ type: 'error', message: result.message || 'Error al eliminar seguimiento' });
+        showToast({
+          type: "error",
+          message: result.message || "Error al eliminar seguimiento",
+        });
       }
     } catch (err) {
-      showToast({ type: 'error', message: 'Error al eliminar seguimiento' });
+      showToast({ type: "error", message: "Error al eliminar seguimiento" });
     }
   }
 
@@ -199,17 +221,17 @@
     editingFollowupId = null;
     followupForm = {
       followup_type: "",
-      date: new Date().toISOString().split('T')[0],
+      date: new Date().toISOString().split("T")[0],
       description: "",
       status: "",
     };
   }
 
   function formatDate(dateString: string) {
-    return new Date(dateString).toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
+    return new Date(dateString).toLocaleDateString("es-ES", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   }
 </script>
@@ -232,7 +254,7 @@
 
   <PolicyForm
     mode="edit"
-    initialData={initialData}
+    {initialData}
     {loading}
     {errors}
     onSubmit={handleSubmit}
@@ -247,25 +269,32 @@
     </div>
 
     <div class="followup-form">
-      <h3>{editingFollowupId ? 'Editar Seguimiento' : 'Nuevo Seguimiento'}</h3>
+      <h3>{editingFollowupId ? "Editar Seguimiento" : "Nuevo Seguimiento"}</h3>
       <div class="form-grid">
         <div class="form-group">
-          <label for="followup_type">Tipo <span class="required">*</span></label>
+          <label for="followup_type">Tipo <span class="required">*</span></label
+          >
           {#if followupTypes.length > 0}
             <Select
               id="followup_type"
-              options={followupTypes.map(t => ({ value: t, label: t }))}
+              options={followupTypes.map((t) => ({ value: t, label: t }))}
               bind:value={followupForm.followup_type}
               placeholder="Selecciona tipo"
               required
             />
           {:else}
-            <Input bind:value={followupForm.followup_type} placeholder="Tipo de seguimiento" required />
+            <Input
+              bind:value={followupForm.followup_type}
+              placeholder="Tipo de seguimiento"
+              required
+            />
           {/if}
         </div>
 
         <div class="form-group">
-          <label for="followup_date">Fecha <span class="required">*</span></label>
+          <label for="followup_date"
+            >Fecha <span class="required">*</span></label
+          >
           <Input
             id="followup_date"
             type="date"
@@ -299,11 +328,19 @@
           <Button variant="ghost" onclick={resetFollowupForm} type="button">
             Cancelar
           </Button>
-          <Button variant="primary" onclick={() => handleUpdateFollowup(editingFollowupId!)} type="button">
+          <Button
+            variant="primary"
+            onclick={() => handleUpdateFollowup(editingFollowupId!)}
+            type="button"
+          >
             Actualizar Seguimiento
           </Button>
         {:else}
-          <Button variant="primary" onclick={handleCreateFollowup} type="button">
+          <Button
+            variant="primary"
+            onclick={handleCreateFollowup}
+            type="button"
+          >
             <Plus size={18} />
             Agregar Seguimiento
           </Button>
@@ -357,8 +394,6 @@
 </div>
 
 <style lang="scss">
-  @use "$lib/styles/mixins" as *;
-
   .page {
     margin: 0 auto;
   }
@@ -377,13 +412,6 @@
       color: var(--text-secondary);
       margin: 0;
     }
-  }
-
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-6);
-    margin-bottom: var(--space-6);
   }
 
   .card-header {
@@ -458,13 +486,6 @@
     justify-content: flex-end;
     gap: var(--space-3);
     padding-top: var(--space-4);
-  }
-
-  .help-text {
-    font-size: var(--text-xs);
-    color: var(--text-tertiary);
-    margin-top: var(--space-1);
-    display: block;
   }
 
   .followup-form {

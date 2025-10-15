@@ -115,14 +115,14 @@
       {/if}
     </button>
 
-	<div class="dropdown-divider"></div>
+    <div class="dropdown-divider"></div>
 
-	<a href="/configuracion" class="dropdown-item">
-		<Settings size={16} />
-		Configuración
-	</a>
+    <a href="/configuracion" class="dropdown-item">
+      <Settings size={16} />
+      Configuración
+    </a>
 
-	<div class="dropdown-divider"></div>
+    <div class="dropdown-divider"></div>
 
     <button class="dropdown-item" data-danger="true" onclick={handleLogout}>
       <LogOut size={16} />
@@ -148,6 +148,10 @@
     &:hover {
       background: var(--bg-secondary);
     }
+  }
+
+  :global(.sidebar-user-dropdown) {
+    z-index: unset !important;
   }
 
   .user-avatar {

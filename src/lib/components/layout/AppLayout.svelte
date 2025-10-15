@@ -15,7 +15,7 @@
     };
   }
 
-  let { data }: { data: LayoutData } = $props();
+  let { data, children }: { data: LayoutData; children: any } = $props();
 
   // Cerrar sidebar en cambio de ruta
   $effect(() => {
@@ -48,12 +48,12 @@
       onToggleSidebar={sidebarOpen.toggle}
     />
 
-		<!-- Content Area (aquí se renderiza el <slot /> del layout padre) -->
-		<main class="content">
-			<div class="content-wrapper">
-				<slot />
-			</div>
-		</main>
+    <!-- Content Area (aquí se renderiza el <slot /> del layout padre) -->
+    <main class="content">
+      <div class="content-wrapper">
+        {@render children()}
+      </div>
+    </main>
   </div>
 </div>
 
@@ -80,6 +80,8 @@
     height: 100vh; // Altura fija = viewport
     // overflow: hidden; // REMOVIDO: Cortaba los modales
     background: var(--bg-secondary);
+    max-width: 1800px;
+    margin: 0 auto;
   }
 
   /* ===========================
@@ -95,28 +97,18 @@
     // overflow: hidden; // REMOVIDO: Cortaba los modales
   }
 
-	/* ===========================
+  /* ===========================
 	 * Content Area (Main)
 	 * ===========================
 	 * Aquí va el scroll - solo esta sección hace scroll
 	 */
-	.content {
-		flex: 1;
-		overflow-y: auto; // Solo esta sección tiene scroll
-		padding: var(--space-6);
-		
-		@include responsive(md-down) {
-			padding: var(--space-4);
-		}
-	}
-	
-	/* ===========================
-	 * Content Wrapper
-	 * ===========================
-	 * Contenedor simple, sin restricciones de ancho
-	 * Cada página puede definir su propio max-width si lo necesita
-	 */
-	.content-wrapper {
-		// Sin max-width - full width disponible
-	}
+  .content {
+    flex: 1;
+    overflow-y: auto; // Solo esta sección tiene scroll
+    padding: var(--space-6);
+
+    @include responsive(md-down) {
+      padding: var(--space-4);
+    }
+  }
 </style>

@@ -284,7 +284,9 @@
           <div class="section-header">
             <div class="section-title">
               <div class="icon-wrapper">
-                <svelte:component this={section.icon} size={20} />
+                {#if section.icon}
+                  <section.icon size={20} />
+                {/if}
               </div>
               <div>
                 <h3>{section.label}</h3>
@@ -660,11 +662,6 @@
     &:disabled {
       opacity: 0.4;
       cursor: not-allowed;
-    }
-
-    &.danger:hover:not(:disabled) {
-      background: var(--error-50);
-      color: var(--error-600);
     }
 
     &.warning:hover:not(:disabled) {

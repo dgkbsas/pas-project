@@ -3,8 +3,8 @@
    * Client Filters Component
    * Checkbox-based filters for client list with Apply button
    */
-  import Button from '$lib/components/ui/Button.svelte';
-  import { X, Check } from 'lucide-svelte';
+  import Button from "$lib/components/ui/Button.svelte";
+  import { X, Check } from "lucide-svelte";
 
   // Props
   interface Props {
@@ -15,14 +15,14 @@
   }
 
   let { open, onClose, onApply, initialFilters }: Props = $props();
-  
+
   // Set default values for initial filters
   const defaultFilters: FilterValues = {
     cities: [],
     hasEmail: undefined,
     hasPhone: undefined,
-    dateFrom: '',
-    dateTo: '',
+    dateFrom: "",
+    dateTo: "",
   };
 
   // Filter state
@@ -34,30 +34,38 @@
     dateTo?: string;
   }
 
-  let selectedCities = $state<string[]>(initialFilters?.cities || defaultFilters.cities);
+  let selectedCities = $state<string[]>(
+    initialFilters?.cities || defaultFilters.cities
+  );
   let hasEmail = $state<boolean | undefined>(initialFilters?.hasEmail);
   let hasPhone = $state<boolean | undefined>(initialFilters?.hasPhone);
-  let dateFrom = $state<string>(initialFilters?.dateFrom || '');
-  let dateTo = $state<string>(initialFilters?.dateTo || '');
+  let dateFrom = $state<string>(initialFilters?.dateFrom || "");
+  let dateTo = $state<string>(initialFilters?.dateTo || "");
 
   // Available cities - would be loaded from API in production
   const cityOptions = [
-    'Madrid',
-    'Barcelona',
-    'Valencia',
-    'Sevilla',
-    'Zaragoza',
-    'Málaga',
-    'Murcia',
-    'Palma',
-    'Bilbao',
-    'Alicante',
+    // Ciudades de Argentina
+    "Buenos Aires",
+    "Córdoba",
+    "Rosario",
+    "Mendoza",
+    "San Miguel de Tucumán",
+    "La Plata",
+    "Mar del Plata",
+    "Salta",
+    "Santa Fe",
+    "San Juan",
+    "Resistencia",
+    "Santiago del Estero",
+    "Corrientes",
+    "Posadas",
+    "San Salvador de Jujuy",
   ];
 
   // Toggle checkbox selection
   function toggleCity(city: string) {
     if (selectedCities.includes(city)) {
-      selectedCities = selectedCities.filter(c => c !== city);
+      selectedCities = selectedCities.filter((c) => c !== city);
     } else {
       selectedCities = [...selectedCities, city];
     }
@@ -68,8 +76,8 @@
     selectedCities = [];
     hasEmail = undefined;
     hasPhone = undefined;
-    dateFrom = '';
-    dateTo = '';
+    dateFrom = "";
+    dateTo = "";
   }
 
   // Apply filters
@@ -93,11 +101,20 @@
     if (dateTo) count++;
     return count;
   });
+
+  function handleKeydown(e: KeyboardEvent) {
+    if (e.key === "Escape") {
+      onClose();
+    }
+  }
 </script>
+
+<svelte:window on:keydown={handleKeydown} />
 
 {#if open}
   <!-- Backdrop -->
-  <div class="backdrop" onclick={onClose}></div>
+  <button class="backdrop" onclick={onClose} aria-label="Close filter panel"
+  ></button>
 
   <!-- Filter Panel -->
   <div class="filter-panel">
@@ -136,7 +153,7 @@
             <input
               type="checkbox"
               checked={hasEmail === true}
-              onchange={() => hasEmail = hasEmail === true ? undefined : true}
+              onchange={() => (hasEmail = hasEmail === true ? undefined : true)}
             />
             <span>Con email</span>
           </label>
@@ -144,7 +161,7 @@
             <input
               type="checkbox"
               checked={hasPhone === true}
-              onchange={() => hasPhone = hasPhone === true ? undefined : true}
+              onchange={() => (hasPhone = hasPhone === true ? undefined : true)}
             />
             <span>Con teléfono</span>
           </label>
@@ -157,19 +174,11 @@
         <div class="date-inputs">
           <div class="input-group">
             <label for="date-from">Desde</label>
-            <input
-              id="date-from"
-              type="date"
-              bind:value={dateFrom}
-            />
+            <input id="date-from" type="date" bind:value={dateFrom} />
           </div>
           <div class="input-group">
             <label for="date-to">Hasta</label>
-            <input
-              id="date-to"
-              type="date"
-              bind:value={dateTo}
-            />
+            <input id="date-to" type="date" bind:value={dateTo} />
           </div>
         </div>
       </div>
@@ -177,9 +186,7 @@
 
     <!-- Footer Actions -->
     <div class="filter-footer">
-      <Button variant="ghost" size="sm" onclick={clearAll}>
-        Limpiar todo
-      </Button>
+      <Button variant="ghost" size="sm" onclick={clearAll}>Limpiar todo</Button>
       <Button variant="primary" onclick={handleApply}>
         <Check size={18} />
         Aplicar {#if activeCount() > 0}({activeCount()}){/if}
@@ -204,8 +211,12 @@
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   /* Filter panel sliding from right */

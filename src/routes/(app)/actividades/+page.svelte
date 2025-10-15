@@ -16,7 +16,7 @@
     ArrowUpDown,
     ArrowUp,
     ArrowDown,
-    Activity
+    Activity,
   } from "lucide-svelte";
   import { debounce } from "$lib/utils";
 
@@ -146,7 +146,9 @@
     }
   }
 
-  function getActivityColor(type: string): "error" | "success" | "info" | "warning" | "default" {
+  function getActivityColor(
+    type: string
+  ): "error" | "success" | "info" | "warning" | "default" {
     switch (type) {
       case "client":
         return "info";
@@ -262,7 +264,8 @@
   {#if filtersOpen}
     <div class="filters-panel">
       <div class="filter-group">
-        <label class="filter-label">Tipo de Actividad</label>
+        <label class="filter-label" for="activity-type">Tipo de Actividad</label
+        >
         <div class="filter-options">
           <label class="checkbox-label">
             <input
@@ -292,7 +295,7 @@
       </div>
 
       <div class="filter-group">
-        <label class="filter-label">Rango de Fechas</label>
+        <label class="filter-label" for="date-range">Rango de Fechas</label>
         <div class="date-range">
           <input
             type="date"
@@ -305,7 +308,8 @@
           <input
             type="date"
             value={appliedFilters.dateTo}
-            onchange={(e) => handleFilterChange("dateTo", e.currentTarget.value)}
+            onchange={(e) =>
+              handleFilterChange("dateTo", e.currentTarget.value)}
             placeholder="Hasta"
           />
         </div>
@@ -363,8 +367,6 @@
 </div>
 
 <style lang="scss">
-  @use "$lib/styles/mixins" as *;
-
   .page {
     margin: 0 auto;
   }
@@ -600,12 +602,6 @@
     align-items: center;
     gap: var(--space-3);
     flex-wrap: wrap;
-
-    input[type="date"] {
-      @include input-base;
-      flex: 1;
-      min-width: 150px;
-    }
 
     span {
       font-size: var(--text-sm);

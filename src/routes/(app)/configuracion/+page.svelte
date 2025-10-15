@@ -886,8 +886,6 @@
 </div>
 
 <style lang="scss">
-  @use "$lib/styles/mixins" as *;
-
   // Ancho más estrecho para formularios (mejor UX)
   .page {
     margin: 0 auto;
@@ -1129,61 +1127,5 @@
     text-align: center;
     color: var(--text-secondary);
     font-size: var(--text-sm);
-  }
-
-  // Variables de configuración
-  .config-form {
-    margin-bottom: var(--space-6);
-    padding-bottom: var(--space-6);
-    border-bottom: 1px solid var(--border-primary);
-
-    textarea {
-      width: 100%;
-      padding: var(--space-3);
-      border: 1px solid var(--border-primary);
-      border-radius: var(--radius-md);
-      font-family: "Courier New", monospace;
-      font-size: var(--text-sm);
-      color: var(--text-primary);
-      background: var(--bg-primary);
-      resize: vertical;
-      transition: border-color var(--transition-fast);
-
-      &:focus {
-        outline: none;
-        border-color: var(--primary-500);
-      }
-    }
-  }
-
-  .config-table {
-    margin-top: var(--space-6);
-  }
-
-  .config-key {
-    display: inline-block;
-    padding: var(--space-1) var(--space-2);
-    background: var(--bg-secondary);
-    color: var(--primary-700);
-    font-size: var(--text-xs);
-    font-family: "Courier New", monospace;
-    font-weight: var(--font-medium);
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border-primary);
-  }
-
-  .config-value {
-    font-size: var(--text-sm);
-    color: var(--text-secondary);
-    font-family: "Courier New", monospace;
-    max-width: 400px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .date-small {
-    font-size: var(--text-xs);
-    color: var(--text-tertiary);
   }
 </style>

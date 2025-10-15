@@ -3,9 +3,9 @@
    * Policy Filters Component
    * Checkbox-based filters for policy list with Apply button
    */
-  import Button from '$lib/components/ui/Button.svelte';
-  import { X, Check } from 'lucide-svelte';
-  import type { PolicyType, PaymentMode, PolicyStatus } from '$lib/types';
+  import Button from "$lib/components/ui/Button.svelte";
+  import { X, Check } from "lucide-svelte";
+  import type { PolicyType, PaymentMode, PolicyStatus } from "$lib/types";
 
   // Props
   interface Props {
@@ -16,7 +16,7 @@
   }
 
   let { open, onClose, onApply, initialFilters }: Props = $props();
-  
+
   // Set default values for initial filters
   const defaultFilters: FilterValues = {
     policyTypes: [],
@@ -33,49 +33,51 @@
     statuses: PolicyStatus[];
   }
 
-  let selectedPolicyTypes = $state<PolicyType[]>(initialFilters?.policyTypes || defaultFilters.policyTypes);
-  let selectedPaymentModes = $state<PaymentMode[]>(initialFilters?.paymentModes || defaultFilters.paymentModes);
-  let selectedInsurers = $state<string[]>(initialFilters?.insurers || defaultFilters.insurers);
-  let selectedStatuses = $state<PolicyStatus[]>(initialFilters?.statuses || defaultFilters.statuses);
+  let selectedPolicyTypes = $state<PolicyType[]>(
+    initialFilters?.policyTypes || defaultFilters.policyTypes
+  );
+  let selectedPaymentModes = $state<PaymentMode[]>(
+    initialFilters?.paymentModes || defaultFilters.paymentModes
+  );
+  let selectedInsurers = $state<string[]>(
+    initialFilters?.insurers || defaultFilters.insurers
+  );
+  let selectedStatuses = $state<PolicyStatus[]>(
+    initialFilters?.statuses || defaultFilters.statuses
+  );
 
   // Available options
   const policyTypeOptions: { value: PolicyType; label: string }[] = [
-    { value: 'auto', label: 'Auto' },
-    { value: 'home', label: 'Hogar' },
-    { value: 'life', label: 'Vida' },
-    { value: 'health', label: 'Salud' },
-    { value: 'business', label: 'Empresa' },
-    { value: 'other', label: 'Otro' },
+    { value: "auto", label: "Auto" },
+    { value: "home", label: "Hogar" },
+    { value: "life", label: "Vida" },
+    { value: "health", label: "Salud" },
+    { value: "business", label: "Empresa" },
+    { value: "other", label: "Otro" },
   ];
 
   const paymentModeOptions: { value: PaymentMode; label: string }[] = [
-    { value: 'monthly', label: 'Mensual' },
-    { value: 'quarterly', label: 'Trimestral' },
-    { value: 'semi-annual', label: 'Semestral' },
-    { value: 'annual', label: 'Anual' },
+    { value: "monthly", label: "Mensual" },
+    { value: "quarterly", label: "Trimestral" },
+    { value: "semi-annual", label: "Semestral" },
+    { value: "annual", label: "Anual" },
   ];
 
   const statusOptions: { value: PolicyStatus; label: string }[] = [
-    { value: 'active', label: 'Activa' },
-    { value: 'inactive', label: 'Inactiva' },
-    { value: 'expiring_soon', label: 'Por vencer' },
-    { value: 'expired', label: 'Vencida' },
+    { value: "active", label: "Activa" },
+    { value: "inactive", label: "Inactiva" },
+    { value: "expiring_soon", label: "Por vencer" },
+    { value: "expired", label: "Vencida" },
   ];
 
   // For now, we'll have a fixed list of insurers
   // TODO: Load from API/configuration
-  const insurerOptions = [
-    'Mapfre',
-    'AXA',
-    'Allianz',
-    'Generali',
-    'Zurich',
-  ];
+  const insurerOptions = ["Mapfre", "AXA", "Allianz", "Generali", "Zurich"];
 
   // Toggle checkbox selection
   function togglePolicyType(type: PolicyType) {
     if (selectedPolicyTypes.includes(type)) {
-      selectedPolicyTypes = selectedPolicyTypes.filter(t => t !== type);
+      selectedPolicyTypes = selectedPolicyTypes.filter((t) => t !== type);
     } else {
       selectedPolicyTypes = [...selectedPolicyTypes, type];
     }
@@ -83,7 +85,7 @@
 
   function togglePaymentMode(mode: PaymentMode) {
     if (selectedPaymentModes.includes(mode)) {
-      selectedPaymentModes = selectedPaymentModes.filter(m => m !== mode);
+      selectedPaymentModes = selectedPaymentModes.filter((m) => m !== mode);
     } else {
       selectedPaymentModes = [...selectedPaymentModes, mode];
     }
@@ -91,7 +93,7 @@
 
   function toggleInsurer(insurer: string) {
     if (selectedInsurers.includes(insurer)) {
-      selectedInsurers = selectedInsurers.filter(i => i !== insurer);
+      selectedInsurers = selectedInsurers.filter((i) => i !== insurer);
     } else {
       selectedInsurers = [...selectedInsurers, insurer];
     }
@@ -99,7 +101,7 @@
 
   function toggleStatus(status: PolicyStatus) {
     if (selectedStatuses.includes(status)) {
-      selectedStatuses = selectedStatuses.filter(s => s !== status);
+      selectedStatuses = selectedStatuses.filter((s) => s !== status);
     } else {
       selectedStatuses = [...selectedStatuses, status];
     }
@@ -126,13 +128,27 @@
 
   // Count active filters
   const activeCount = $derived(() => {
-    return selectedPolicyTypes.length + selectedPaymentModes.length + selectedInsurers.length + selectedStatuses.length;
+    return (
+      selectedPolicyTypes.length +
+      selectedPaymentModes.length +
+      selectedInsurers.length +
+      selectedStatuses.length
+    );
   });
+
+  function handleKeydown(e: KeyboardEvent) {
+    if (e.key === "Escape") {
+      onClose();
+    }
+  }
 </script>
+
+<svelte:window on:keydown={handleKeydown} />
 
 {#if open}
   <!-- Backdrop -->
-  <div class="backdrop" onclick={onClose}></div>
+  <button class="backdrop" onclick={onClose} aria-label="Close filter panel"
+  ></button>
 
   <!-- Filter Panel -->
   <div class="filter-panel">
@@ -217,9 +233,7 @@
 
     <!-- Footer Actions -->
     <div class="filter-footer">
-      <Button variant="ghost" size="sm" onclick={clearAll}>
-        Limpiar todo
-      </Button>
+      <Button variant="ghost" size="sm" onclick={clearAll}>Limpiar todo</Button>
       <Button variant="primary" onclick={handleApply}>
         <Check size={18} />
         Aplicar {#if activeCount() > 0}({activeCount()}){/if}
@@ -244,8 +258,12 @@
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   /* Filter panel sliding from right */
