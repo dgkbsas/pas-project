@@ -7,7 +7,7 @@ const load = async ({ locals }) => {
   const { data: userProfile } = await locals.supabase.from("users").select("id, email, full_name, company_id, role").eq("id", session.user.id).single();
   return {
     session,
-    userProfile
+    userProfile: userProfile || void 0
   };
 };
 export {

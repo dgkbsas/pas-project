@@ -215,7 +215,7 @@ function PolicyModal($$renderer, $$props) {
     function $$render_inner($$renderer3) {
       if (policyId) {
         $$renderer3.push("<!--[-->");
-        $$renderer3.push(`<div class="backdrop svelte-1yt9re3"></div> <div class="modal-panel svelte-1yt9re3"><div class="modal-header svelte-1yt9re3"><div class="header-content svelte-1yt9re3">`);
+        $$renderer3.push(`<button class="backdrop svelte-1yt9re3" aria-label="Close modal"></button> <div class="modal-panel svelte-1yt9re3"><div class="modal-header svelte-1yt9re3"><div class="header-content svelte-1yt9re3">`);
         if (store_get($$store_subs ??= {}, "$page", page).url.searchParams.get("from") === "client") {
           $$renderer3.push("<!--[-->");
           $$renderer3.push(`<button class="back-btn svelte-1yt9re3" title="Volver a cliente">`);

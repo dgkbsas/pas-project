@@ -472,9 +472,16 @@ function ConfigurationManager($$renderer, $$props) {
           let section = each_array[$$index_1];
           Card($$renderer3, {
             children: ($$renderer4) => {
-              $$renderer4.push(`<div class="section-header svelte-131nf9n"><div class="section-title svelte-131nf9n"><div class="icon-wrapper svelte-131nf9n"><!---->`);
-              section.icon?.($$renderer4, { size: 20 });
-              $$renderer4.push(`<!----></div> <div class="svelte-131nf9n"><h3 class="svelte-131nf9n">${escape_html(section.label)}</h3> <p class="section-description svelte-131nf9n">${escape_html(section.description)}</p></div></div> <div style="display: flex; gap: var(--space-2); align-items: center;" class="svelte-131nf9n">`);
+              $$renderer4.push(`<div class="section-header svelte-131nf9n"><div class="section-title svelte-131nf9n"><div class="icon-wrapper svelte-131nf9n">`);
+              if (section.icon) {
+                $$renderer4.push("<!--[-->");
+                $$renderer4.push(`<!---->`);
+                section.icon($$renderer4, { size: 20 });
+                $$renderer4.push(`<!---->`);
+              } else {
+                $$renderer4.push("<!--[!-->");
+              }
+              $$renderer4.push(`<!--]--></div> <div class="svelte-131nf9n"><h3 class="svelte-131nf9n">${escape_html(section.label)}</h3> <p class="section-description svelte-131nf9n">${escape_html(section.description)}</p></div></div> <div style="display: flex; gap: var(--space-2); align-items: center;" class="svelte-131nf9n">`);
               Badge($$renderer4, {
                 variant: "success",
                 children: ($$renderer5) => {

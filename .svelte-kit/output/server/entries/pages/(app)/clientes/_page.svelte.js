@@ -243,7 +243,7 @@ function ClientModal($$renderer, $$props) {
     function $$render_inner($$renderer3) {
       if (clientId) {
         $$renderer3.push("<!--[-->");
-        $$renderer3.push(`<div class="backdrop svelte-mh26do"></div> <div class="modal-panel svelte-mh26do"><div class="modal-header svelte-mh26do"><div class="header-content svelte-mh26do">`);
+        $$renderer3.push(`<button class="backdrop svelte-mh26do" aria-label="Cerrar modal"></button> <div class="modal-panel svelte-mh26do"><div class="modal-header svelte-mh26do"><div class="header-content svelte-mh26do">`);
         if (store_get($$store_subs ??= {}, "$page", page).url.searchParams.get("from") === "policy") {
           $$renderer3.push("<!--[-->");
           $$renderer3.push(`<button class="back-btn svelte-mh26do" title="Volver a póliza">`);
@@ -563,7 +563,7 @@ function ClientModal($$renderer, $$props) {
                 const each_array = ensure_array_like(client.policies);
                 for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
                   let policy = each_array[$$index];
-                  $$renderer3.push(`<button type="button" class="policy-card svelte-mh26do"><div class="policy-info svelte-mh26do"><div class="policy-header svelte-mh26do"><strong class="policy-number svelte-mh26do">${escape_html(policy.policy_number || "S/N")}</strong> <span${attr_class("policy-status svelte-mh26do", void 0, { "active": policy.active, "inactive": !policy.active })}>${escape_html(policy.active ? "Activa" : "Inactiva")}</span></div> <div class="policy-meta svelte-mh26do"><span class="policy-type svelte-mh26do">${escape_html(policy.policy_type)}</span> `);
+                  $$renderer3.push(`<button type="button" class="policy-card svelte-mh26do"><div class="policy-info svelte-mh26do"><div class="policy-header svelte-mh26do"><strong class="policy-number svelte-mh26do">${escape_html(policy.policy_number || "S/N")}</strong> <span${attr_class("policy-status svelte-mh26do", void 0, { "active": policy.status, "inactive": !policy.status })}>${escape_html(policy.status === "active" ? "Activa" : "Inactiva")}</span></div> <div class="policy-meta svelte-mh26do"><span class="policy-type svelte-mh26do">${escape_html(policy.policy_type)}</span> `);
                   if (policy.insurer) {
                     $$renderer3.push("<!--[-->");
                     $$renderer3.push(`<span class="policy-separator svelte-mh26do">•</span> <span class="policy-insurer svelte-mh26do">${escape_html(policy.insurer)}</span>`);
@@ -571,9 +571,9 @@ function ClientModal($$renderer, $$props) {
                     $$renderer3.push("<!--[!-->");
                   }
                   $$renderer3.push(`<!--]--></div> `);
-                  if (policy.expiry_date) {
+                  if (policy.renewal_date) {
                     $$renderer3.push("<!--[-->");
-                    $$renderer3.push(`<div class="policy-date svelte-mh26do">Vence: ${escape_html(formatDate(policy.expiry_date))}</div>`);
+                    $$renderer3.push(`<div class="policy-date svelte-mh26do">Vence: ${escape_html(formatDate(policy.renewal_date))}</div>`);
                   } else {
                     $$renderer3.push("<!--[!-->");
                   }

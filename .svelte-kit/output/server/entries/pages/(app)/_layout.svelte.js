@@ -1,3 +1,4 @@
+import "clsx";
 import { a3 as sanitize_props, _ as spread_props, a4 as slot, Y as ensure_array_like, W as attr, V as attr_class, a5 as bind_props, a0 as stringify, a1 as store_get, a2 as unsubscribe_stores, a6 as head } from "../../../chunks/index2.js";
 import { p as page } from "../../../chunks/stores.js";
 import { w as writable } from "../../../chunks/index.js";
@@ -10,7 +11,6 @@ import "../../../chunks/notifications.js";
 import { U as User } from "../../../chunks/user.js";
 import { l as logo } from "../../../chunks/logo.js";
 import { X } from "../../../chunks/x.js";
-import "clsx";
 function createSidebarStore() {
   const { subscribe, set, update } = writable(false);
   return {
@@ -671,7 +671,7 @@ function Header($$renderer, $$props) {
 function AppLayout($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
     var $$store_subs;
-    let { data } = $$props;
+    let { data, children } = $$props;
     head($$renderer2, ($$renderer3) => {
       $$renderer3.push(`<style class="svelte-1rlssa4">
     .dropdown {
@@ -697,22 +697,20 @@ function AppLayout($$renderer, $$props) {
       userProfile: data.userProfile,
       onToggleSidebar: sidebarOpen.toggle
     });
-    $$renderer2.push(`<!----> <main class="content svelte-1rlssa4"><div class="content-wrapper svelte-1rlssa4"><!--[-->`);
-    slot($$renderer2, $$props, "default", {});
-    $$renderer2.push(`<!--]--></div></main></div></div>`);
+    $$renderer2.push(`<!----> <main class="content svelte-1rlssa4"><div class="content-wrapper svelte-1rlssa4">`);
+    children($$renderer2);
+    $$renderer2.push(`<!----></div></main></div></div>`);
     if ($$store_subs) unsubscribe_stores($$store_subs);
   });
 }
 function _layout($$renderer, $$props) {
-  let { data } = $$props;
+  let { data, children } = $$props;
   AppLayout($$renderer, {
     data,
     children: ($$renderer2) => {
-      $$renderer2.push(`<!--[-->`);
-      slot($$renderer2, $$props, "default", {});
-      $$renderer2.push(`<!--]-->`);
-    },
-    $$slots: { default: true }
+      children($$renderer2);
+      $$renderer2.push(`<!---->`);
+    }
   });
 }
 export {

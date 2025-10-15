@@ -492,7 +492,7 @@
       "_x.js"
     ],
     "css": [
-      "_app/immutable/assets/_layout.YlYZ4o7l.css"
+      "_app/immutable/assets/_layout.DohNChcZ.css"
     ]
   },
   "src/routes/(app)/actividades/+page.svelte": {
@@ -512,7 +512,7 @@
       "_context.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.D0DuVlBk.css",
+      "_app/immutable/assets/_page.Cod-_xWY.css",
       "_app/immutable/assets/EmptyState.B4MZ4yX9.css",
       "_app/immutable/assets/Button.CSdKk43z.css",
       "_app/immutable/assets/Badge.CZrn8nSr.css"
@@ -554,7 +554,7 @@
       "_trash.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.LW34uv-s.css",
+      "_app/immutable/assets/_page.DNFG_x_x.css",
       "_app/immutable/assets/Input.Dhfm00WS.css",
       "_app/immutable/assets/Button.CSdKk43z.css"
     ]
