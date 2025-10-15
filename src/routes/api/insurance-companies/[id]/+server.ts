@@ -57,7 +57,8 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
 		// Actualizar compañía de seguros
 		const { data: company, error } = await supabase
 			.from('insurance_companies')
-			.update(validation.data as any)
+			// @ts-expect-error - Supabase type inference issue with validation.data
+			.update(validation.data)
 			.eq('id', id)
 			.eq('company_id', userData.company_id)
 			.select()

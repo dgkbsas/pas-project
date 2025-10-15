@@ -99,7 +99,8 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
 		// Update company
 		const { data: company, error: updateError } = await supabase
 			.from('companies')
-			.update(updates as any)
+			// @ts-expect-error - Supabase type inference issue with dynamic updates
+			.update(updates)
 			.eq('id', company_id)
 			.select()
 			.single();

@@ -18,6 +18,6 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 
 	return {
 		session,
-		userProfile
+		userProfile: userProfile || undefined
 	};
 };

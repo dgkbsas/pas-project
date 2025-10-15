@@ -37,6 +37,11 @@ export interface Database {
 			Insert: PolicyFollowupInsert;
 			Update: PolicyFollowupUpdate;
 		};
+		insurance_companies: {
+			Row: InsuranceCompany;
+			Insert: InsuranceCompanyInsert;
+			Update: InsuranceCompanyUpdate;
+		};
 	};
 	};
 }
@@ -190,6 +195,24 @@ export interface PolicyFollowup {
 
 export type PolicyFollowupInsert = Omit<PolicyFollowup, 'id' | 'created_at' | 'updated_at'>;
 export type PolicyFollowupUpdate = Partial<Omit<PolicyFollowupInsert, 'policy_id' | 'created_by'>>;
+
+// Insurance Company types
+export interface InsuranceCompany {
+	id: string;
+	company_id: string;
+	name: string;
+	code: string | null;
+	contact_email: string | null;
+	contact_phone: string | null;
+	website: string | null;
+	created_by: string;
+	created_at: string;
+	updated_at: string;
+	active: boolean;
+}
+
+export type InsuranceCompanyInsert = Omit<InsuranceCompany, 'id' | 'created_at' | 'updated_at'>;
+export type InsuranceCompanyUpdate = Partial<Omit<InsuranceCompanyInsert, 'company_id' | 'created_by'>>;
 
 // Extended types with relations for UI
 export interface ClientWithPolicies extends Client {

@@ -100,7 +100,7 @@
   {:else if client}
     <ClientForm
       mode="edit"
-      initialData={client}
+      initialData={client as any}
       {loading}
       {errors}
       onSubmit={handleSubmit}

@@ -66,7 +66,8 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
 		// RLS will ensure only allowed users can update
 		const { data: followup, error: updateError } = await supabase
 			.from('policy_followups')
-			.update(updates as any)
+			// @ts-expect-error - Supabase type inference issue with dynamic updates
+			.update(updates)
 			.eq('id', followupId)
 			.select()
 			.single();

@@ -27,9 +27,9 @@
     expiry_date: string;
     review_date: string;
     vehicle_plate: string;
-    insured_sum: string;
+    insured_sum: number | null | string;
     accessories: string;
-    premium: string;
+    premium: number | null | string;
     endorsement: string;
     observations: string;
   };
@@ -114,11 +114,11 @@
   function handleSubmit(e: Event) {
     e.preventDefault();
 
-    // Convert numeric strings to numbers or null
+    // Convert numeric strings to numbers or null, and empty strings to null
     const payload = {
       ...formData,
-      insured_sum: formData.insured_sum ? parseFloat(formData.insured_sum) : null,
-      premium: formData.premium ? parseFloat(formData.premium) : null,
+      insured_sum: formData.insured_sum ? parseFloat(String(formData.insured_sum)) : null,
+      premium: formData.premium ? parseFloat(String(formData.premium)) : null,
       insurer_id: formData.insurer_id || null,
       review_date: formData.review_date || null,
       accessories: formData.accessories || null,
@@ -128,7 +128,7 @@
       vehicle_plate: formData.vehicle_plate || null,
     };
 
-    onSubmit(payload);
+    onSubmit(payload as any);
   }
 </script>
 
