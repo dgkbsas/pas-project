@@ -1,5 +1,28 @@
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
+import { json, type RequestHandler } from '@sveltejs/kit';
+import type { Company } from '$lib/types/database.types';
+
+type CompanyUpdate = {
+  name?: string;
+  address?: string | null;
+  city?: string | null;
+  postal_code?: string | null;
+  phone?: string | null;
+  active?: boolean;
+  updated_at: string;
+};
+
+// Type for the new company data
+interface NewCompany {
+  id: string;
+  name: string;
+  address: string | null;
+  city: string | null;
+  postal_code: string | null;
+  phone: string | null;
+  active: boolean;
+  created_at: string;
+  updated_at: string;
+}
 
 /**
  * GET /api/company
@@ -96,40 +119,58 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
 		// Add updated_at timestamp
 		updates.updated_at = new Date().toISOString();
 
-		// Update company
-		const { data: company, error: updateError } = await supabase
-			.from('companies')
-			// @ts-expect-error - Supabase type inference issue with dynamic updates
-			.update(updates)
-			.eq('id', company_id)
-			.select()
-			.single();
+		try {
+			// Check if company exists and user has access to it
+			const { data: company, error: fetchError } = await supabase
+				.from('companies')
+				.select('id')
+				.eq('id', company_id)
+				.single();
 
-		if (updateError) {
-			console.error('Error updating company:', {
-				error: updateError,
-				code: updateError.code,
-				message: updateError.message,
-				details: updateError.details,
-				hint: updateError.hint,
-				company_id,
-				updates: updates
-			});
-			
-			// Check for specific error types
-			if (updateError.code === '42501') {
+			if (fetchError || !company) {
+				console.error('Company not found or access denied:', fetchError?.message);
 				return json({ 
-					message: 'No tienes permisos para actualizar la empresa. Verifica que seas administrador.' 
-				}, { status: 403 });
+					message: 'No se encontró la empresa o no tiene permisos para actualizarla',
+					error: 'Company not found or access denied'
+				}, { status: 404 });
 			}
-			
-			return json({ 
-				message: 'Error al actualizar empresa',
-				error: updateError.message 
-			}, { status: 400 });
-		}
 
-		return json({ company, message: 'Empresa actualizada exitosamente' });
+			// Proceed with the update
+			const { data: updatedCompany, error: updateError } = await supabase
+				.from('companies')
+				.update(updates as never)
+				.eq('id', company_id)
+				.select()
+				.single();
+
+			if (updateError) {
+				console.error('Error updating company:', updateError);
+				return json({ 
+					message: 'Error al actualizar la empresa',
+					error: updateError.message 
+				}, { status: 400 });
+			}
+
+			if (!updatedCompany) {
+				console.error('No data returned after update');
+				return json({
+					message: 'Error al actualizar la empresa',
+					error: 'No se recibieron datos de la actualización'
+				}, { status: 400 });
+			}
+
+			return json({ 
+				company: updatedCompany, 
+				message: 'Empresa actualizada exitosamente' 
+			});
+
+		} catch (err: any) {
+			console.error('Unexpected error:', err);
+			return json({ 
+				message: 'Error inesperado al procesar la solicitud',
+				error: err.message 
+			}, { status: 500 });
+		}
 	} catch (err: any) {
 		console.error('Error in PUT /api/company:', err);
 		return json({ message: 'Error al actualizar empresa' }, { status: 500 });

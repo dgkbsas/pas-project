@@ -134,12 +134,9 @@
         params.append("date_to", appliedFilters.dateTo);
       }
 
-      console.log("Fetching clients:", `/api/clients?${params}`);
       const response = await fetch(`/api/clients?${params}`);
-      console.log("Response status:", response.status);
 
       const result = await response.json();
-      console.log("Result:", result);
 
       if (response.ok) {
         if (append) {
@@ -269,7 +266,7 @@
     if (client.street_number) streetParts.push(client.street_number);
     if (client.floor) streetParts.push(`Piso ${client.floor}`);
     if (client.apartment) streetParts.push(`Depto ${client.apartment}`);
-    
+
     if (streetParts.length > 0) {
       parts.push(streetParts.join(" "));
     }
