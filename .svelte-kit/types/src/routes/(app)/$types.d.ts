@@ -11,7 +11,7 @@ type OutputDataShape<T> = MaybeWithVoid<Omit<App.PageData, RequiredKeys<T>> & Pa
 type EnsureDefined<T> = T extends null | undefined ? {} : T;
 type OptionalUnion<U extends Record<string, any>, A extends keyof U = U extends U ? keyof U : never> = U extends unknown ? { [P in Exclude<A, keyof U>]?: never } & U : never;
 export type Snapshot<T = any> = Kit.Snapshot<T>;
-type LayoutRouteId = RouteId | "/(app)/actividades" | "/(app)/clientes" | "/(app)/clientes/[id]" | "/(app)/clientes/[id]/editar" | "/(app)/clientes/nuevo" | "/(app)/configuracion" | "/(app)/dashboard" | "/(app)/polizas" | "/(app)/polizas/[id]/editar" | "/(app)/polizas/nuevo"
+type LayoutRouteId = RouteId | "/(app)/actividades" | "/(app)/clientes" | "/(app)/clientes/[id]" | "/(app)/clientes/[id]/editar" | "/(app)/clientes/nuevo" | "/(app)/configuracion" | "/(app)/dashboard" | "/(app)/polizas" | "/(app)/polizas/nuevo"
 type LayoutParams = RouteParams & { id?: string }
 type LayoutServerParentData = EnsureDefined<import('../$types.js').LayoutServerData>;
 type LayoutParentData = EnsureDefined<import('../$types.js').LayoutData>;

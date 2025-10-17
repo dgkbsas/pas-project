@@ -3,70 +3,22 @@
  * Utilities for working with configuration items
  */
 
-export type ConfigItem = {
-  value: string;
-  label: string;
-  active?: boolean;
-};
-
-export type ConfigData = {
-  items?: ConfigItem[];
-} | ConfigItem[] | string[];
+import type { ConfigItem } from '$lib/types/config.types';
+import { generateConfigKey, getActiveItems } from '$lib/types/config.types';
 
 /**
- * Get active configuration items from config data
- * Handles both old array format and new object format with active status
+ * Get active configuration items
  */
-export function getActiveConfigItems(configData: ConfigData | undefined): ConfigItem[] {
-  if (!configData) return [];
-
-  // New format: object with items array
-  if (typeof configData === 'object' && 'items' in configData && Array.isArray(configData.items)) {
-    return configData.items.filter(item => item.active !== false);
-  }
-
-  // Old format: direct array of ConfigItems
-  if (Array.isArray(configData)) {
-    // Check if it's an array of strings (very old format)
-    if (configData.length > 0 && typeof configData[0] === 'string') {
-      return (configData as string[]).map(label => ({
-        value: generateSlug(label),
-        label,
-        active: true
-      }));
-    }
-    
-    // Array of ConfigItems
-    return (configData as ConfigItem[]).filter(item => item.active !== false);
-  }
-
-  return [];
+export function getActiveConfigItems(items: ConfigItem[] | undefined): ConfigItem[] {
+  return getActiveItems(items);
 }
 
 /**
  * Get all configuration items including inactive ones
  */
-export function getAllConfigItems(configData: ConfigData | undefined): ConfigItem[] {
-  if (!configData) return [];
-
-  // New format: object with items array
-  if (typeof configData === 'object' && 'items' in configData && Array.isArray(configData.items)) {
-    return configData.items;
-  }
-
-  // Old format: direct array
-  if (Array.isArray(configData)) {
-    if (configData.length > 0 && typeof configData[0] === 'string') {
-      return (configData as string[]).map(label => ({
-        value: generateSlug(label),
-        label,
-        active: true
-      }));
-    }
-    return configData as ConfigItem[];
-  }
-
-  return [];
+export function getAllConfigItems(items: ConfigItem[] | undefined): ConfigItem[] {
+  if (!items) return [];
+  return items;
 }
 
 /**
@@ -74,19 +26,32 @@ export function getAllConfigItems(configData: ConfigData | undefined): ConfigIte
  */
 export function configItemsToOptions(items: ConfigItem[]) {
   return items.map(item => ({
-    value: item.value,
-    label: item.label
+    value: item.key,
+    label: item.value
   }));
 }
 
 /**
- * Generate a slug from a label
+ * Create a new config item from a label
  */
-function generateSlug(label: string): string {
-  return label
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Remove accents
-    .replace(/[^a-z0-9]+/g, '_')      // Replace non-alphanumeric with underscore
-    .replace(/^_+|_+$/g, '');          // Trim underscores
+export function createConfigItem(label: string, active: boolean = true): ConfigItem {
+  return {
+    key: generateConfigKey(label),
+    value: label,
+    active
+  };
+}
+
+/**
+ * Find config item by key
+ */
+export function findConfigItemByKey(items: ConfigItem[], key: string): ConfigItem | undefined {
+  return items.find(item => item.key === key);
+}
+
+/**
+ * Find config item by value (label)
+ */
+export function findConfigItemByValue(items: ConfigItem[], value: string): ConfigItem | undefined {
+  return items.find(item => item.value.toLowerCase() === value.toLowerCase());
 }

@@ -53,6 +53,9 @@
 	"/api/invitations/validate": [
 		"src/routes/api/invitations/validate/+server.ts"
 	],
+	"/api/notifications": [
+		"src/routes/api/notifications/+server.ts"
+	],
 	"/api/policies": [
 		"src/routes/api/policies/+server.ts"
 	],
@@ -103,11 +106,6 @@
 	],
 	"/(app)/polizas/nuevo": [
 		"src/routes/(app)/polizas/nuevo/+page.server.ts",
-		"src/routes/(app)/+layout.server.ts",
-		"src/routes/+layout.server.ts"
-	],
-	"/(app)/polizas/[id]/editar": [
-		"src/routes/(app)/polizas/[id]/editar/+page.server.ts",
 		"src/routes/(app)/+layout.server.ts",
 		"src/routes/+layout.server.ts"
 	]

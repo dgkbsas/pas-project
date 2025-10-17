@@ -19,7 +19,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
 
 		// Validate and filter allowed fields
 		// Never allow changing policy_id or created_by
-		const allowedFields = ['followup_type', 'date', 'description', 'status'];
+		const allowedFields = ['followup_type', 'date', 'description', 'status', 'alert_date'];
 		const updates: Record<string, any> = {};
 
 		for (const field of allowedFields) {

@@ -6,11 +6,16 @@
    */
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
+  import { invalidateAll } from "$app/navigation";
   import Button from "$lib/components/ui/Button.svelte";
   import Input from "$lib/components/ui/Input.svelte";
+  import Tabs from "$lib/components/ui/Tabs.svelte";
+  import FollowupsList from "$lib/components/FollowupsList.svelte";
+  import FollowupForm from "$lib/components/FollowupForm.svelte";
   import { showToast } from "$lib/stores/notifications";
   import { X, Save, Edit2, FileText, User, ArrowLeft } from "lucide-svelte";
   import type { PolicyWithClient, PolicyType, PaymentMode } from "$lib/types";
+  import type { PolicyFollowup } from "$lib/types/database.types";
 
   // Props
   interface Props {
@@ -28,6 +33,16 @@
   let isEditMode = $state(mode === "edit");
   let insurers = $state<Array<{ id: string; name: string }>>([]);
   let loadingInsurers = $state(false);
+
+  // Tab state
+  let activeTab = $state("info");
+
+  // Followups state
+  let followups = $state<PolicyFollowup[]>([]);
+  let loadingFollowups = $state(false);
+  let showFollowupForm = $state(false);
+  let selectedFollowup = $state<PolicyFollowup | null>(null);
+  let followupTypes = $state<string[]>([]);
 
   // Form data
   let formData = $state({
@@ -54,7 +69,10 @@
   $effect(() => {
     if (policyId) {
       isEditMode = mode === "edit";
+      activeTab = "info"; // Reset to info tab
       loadPolicy();
+      loadFollowups();
+      loadFollowupTypes();
     }
   });
 
@@ -112,6 +130,64 @@
     } finally {
       loading = false;
     }
+  }
+
+  // Load followups for this policy
+  async function loadFollowups() {
+    if (!policyId) return;
+
+    loadingFollowups = true;
+    try {
+      const response = await fetch(`/api/policies/${policyId}/followups`);
+      const result = await response.json();
+
+      if (response.ok) {
+        followups = result.followups || [];
+      } else {
+        console.error("Error loading followups:", result.message);
+      }
+    } catch (err) {
+      console.error("Error loading followups:", err);
+    } finally {
+      loadingFollowups = false;
+    }
+  }
+
+  // Load followup types configuration
+  async function loadFollowupTypes() {
+    try {
+      const response = await fetch('/api/configuration?key=followup_types');
+      const result = await response.json();
+
+      if (response.ok && result.config_value) {
+        followupTypes = result.config_value;
+      } else {
+        // Default types
+        followupTypes = ['Seguimiento', 'Reclamo', 'Siniestro', 'Renovación', 'Otro'];
+      }
+    } catch (err) {
+      console.error("Error loading followup types:", err);
+      followupTypes = ['Seguimiento', 'Reclamo', 'Siniestro', 'Renovación', 'Otro'];
+    }
+  }
+
+  // Followup handlers
+  function handleCreateFollowup() {
+    selectedFollowup = null;
+    showFollowupForm = true;
+  }
+
+  function handleEditFollowup(event: CustomEvent) {
+    selectedFollowup = event.detail;
+    showFollowupForm = true;
+  }
+
+  function handleFollowupSuccess() {
+    loadFollowups();
+  }
+
+  function handleFollowupDelete() {
+    loadFollowups();
   }
 
   // Save policy changes
@@ -267,7 +343,17 @@
           <p>Cargando detalles de póliza...</p>
         </div>
       {:else if policy}
-        <form
+        <!-- Tabs -->
+        <Tabs
+          tabs={[
+            { id: "info", label: "Información" },
+            { id: "followups", label: `Seguimientos (${followups.length})` }
+          ]}
+          bind:activeTab
+          on:change={(e) => (activeTab = e.detail)}
+        >
+          {#if activeTab === "info"}
+            <form
           onsubmit={(e) => {
             e.preventDefault();
             handleSave();
@@ -454,6 +540,18 @@
             </div>
           </section>
         </form>
+          {:else if activeTab === "followups"}
+            <div class="followups-container">
+              <FollowupsList
+                {followups}
+                loading={loadingFollowups}
+                on:create={handleCreateFollowup}
+                on:edit={handleEditFollowup}
+                on:delete={handleFollowupDelete}
+              />
+            </div>
+          {/if}
+        </Tabs>
       {/if}
     </div>
 
@@ -474,6 +572,17 @@
       </div>
     {/if}
   </div>
+
+  <!-- Followup Form Modal -->
+  {#if policyId}
+    <FollowupForm
+      bind:open={showFollowupForm}
+      followup={selectedFollowup}
+      {followupTypes}
+      {policyId}
+      on:success={handleFollowupSuccess}
+    />
+  {/if}
 {/if}
 
 <style lang="scss">
@@ -774,5 +883,10 @@
     padding: var(--space-4);
     border-top: 1px solid var(--border-primary);
     gap: var(--space-3);
+  }
+
+  /* Followups container */
+  .followups-container {
+    padding-top: var(--space-2);
   }
 </style>

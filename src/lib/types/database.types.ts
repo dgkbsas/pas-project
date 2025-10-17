@@ -188,6 +188,7 @@ export interface PolicyFollowup {
 	date: string;
 	description: string | null;
 	status: string | null;
+	alert_date: string | null; // Optional date for alert notification
 	created_by: string;
 	created_at: string;
 	updated_at: string;

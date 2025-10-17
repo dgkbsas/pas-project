@@ -16,12 +16,7 @@
     Calendar,
     Tag,
   } from "lucide-svelte";
-
-  type ConfigItem = {
-    value: string;
-    label: string;
-    active?: boolean; // Soft delete flag
-  };
+  import type { ConfigItem } from "$lib/types/config.types";
 
   type ConfigSection = {
     key: string;
@@ -56,9 +51,9 @@
     },
   ]);
 
-  let editingItem = $state<{ sectionKey: string; index: number } | null>(null);
-  let newItemLabel = $state("");
-  let editItemLabel = $state("");
+  let editingItem = $state<{ sectionKey: string; itemKey: string } | null>(null);
+  let newItemValue = $state("");
+  let editItemValue = $state("");
   let activeSectionKey = $state<string | null>(null);
   let showInactive = $state(false);
 
@@ -72,37 +67,14 @@
       const response = await fetch("/api/config");
       const result = await response.json();
 
-      if (response.ok && result.configs) {
-        // Map configs to sections
+      if (response.ok && result.config) {
+        // Map config fields to sections
         sections = sections.map((section) => {
-          const config = result.configs.find(
-            (c: any) => c.config_key === section.key
-          );
-          if (config) {
-            // Handle both array format (old) and object format (new with active status)
-            let items: ConfigItem[] = [];
-
-            if (Array.isArray(config.config_value)) {
-              // Old format - all items active by default
-              items = config.config_value.map((label: string) => ({
-                value: generateValue(label),
-                label,
-                active: true,
-              }));
-            } else if (
-              typeof config.config_value === "object" &&
-              config.config_value.items
-            ) {
-              // New format with active status
-              items = config.config_value.items;
-            }
-
-            return {
-              ...section,
-              items,
-            };
-          }
-          return section;
+          const items: ConfigItem[] = result.config[section.key] || [];
+          return {
+            ...section,
+            items,
+          };
         });
       }
     } catch (err) {
@@ -113,18 +85,8 @@
     }
   }
 
-  function generateValue(label: string): string {
-    // Generate a slug-like value from the label
-    return label
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "") // Remove accents
-      .replace(/[^a-z0-9]+/g, "_") // Replace non-alphanumeric with underscore
-      .replace(/^_+|_+$/g, ""); // Trim underscores
-  }
-
   async function addItem(sectionKey: string) {
-    if (!newItemLabel.trim()) {
+    if (!newItemValue.trim()) {
       showToast({ type: "error", message: "El nombre no puede estar vacío" });
       return;
     }
@@ -132,143 +94,159 @@
     const section = sections.find((s) => s.key === sectionKey);
     if (!section) return;
 
-    // Check for duplicate labels
+    // Check for duplicate values
     if (
       section.items.some(
-        (item) => item.label.toLowerCase() === newItemLabel.trim().toLowerCase()
+        (item) => item.value.toLowerCase() === newItemValue.trim().toLowerCase()
       )
     ) {
       showToast({ type: "error", message: "Este item ya existe" });
       return;
     }
 
-    const newItem: ConfigItem = {
-      value: generateValue(newItemLabel),
-      label: newItemLabel.trim(),
-      active: true,
-    };
-
-    const updatedItems = [...section.items, newItem];
-
-    await saveConfiguration(sectionKey, updatedItems);
-    newItemLabel = "";
-    activeSectionKey = null;
-  }
-
-  async function updateItem(sectionKey: string, index: number) {
-    if (!editItemLabel.trim()) {
-      showToast({ type: "error", message: "El nombre no puede estar vacío" });
-      return;
-    }
-
-    const section = sections.find((s) => s.key === sectionKey);
-    if (!section) return;
-
-    // Check for duplicate labels (excluding current item)
-    if (
-      section.items.some(
-        (item, i) =>
-          i !== index &&
-          item.label.toLowerCase() === editItemLabel.trim().toLowerCase()
-      )
-    ) {
-      showToast({ type: "error", message: "Este item ya existe" });
-      return;
-    }
-
-    const updatedItems = section.items.map((item, i) =>
-      i === index
-        ? {
-            value: item.value,
-            label: editItemLabel.trim(),
-            active: item.active ?? true,
-          } // Keep original value and status
-        : item
-    );
-
-    await saveConfiguration(sectionKey, updatedItems);
-    editingItem = null;
-    editItemLabel = "";
-  }
-
-  async function toggleItemStatus(sectionKey: string, index: number) {
-    const section = sections.find((s) => s.key === sectionKey);
-    if (!section) return;
-
-    const item = section.items[index];
-    const isActive = item.active ?? true;
-    const action = isActive ? "desactivar" : "activar";
-
-    if (!confirm(`¿Seguro que deseas ${action} "${item.label}"?`)) return;
-
-    const updatedItems = section.items.map((it, i) =>
-      i === index ? { ...it, active: !isActive } : it
-    );
-
-    await saveConfiguration(sectionKey, updatedItems);
-  }
-
-  async function saveConfiguration(sectionKey: string, items: ConfigItem[]) {
     try {
-      // Save items with their active status
-      const config_value = {
-        items: items.map((item) => ({
-          value: item.value,
-          label: item.label,
-          active: item.active ?? true,
-        })),
-      };
-
-      const response = await fetch("/api/config", {
+      const response = await fetch(`/api/config/${sectionKey}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          config_key: sectionKey,
-          config_value,
+          value: newItemValue.trim(),
+          active: true,
         }),
       });
 
       if (response.ok) {
-        showToast({ type: "success", message: "Configuración guardada" });
+        showToast({ type: "success", message: "Item agregado exitosamente" });
+        await loadAllConfigurations();
+        newItemValue = "";
+        activeSectionKey = null;
+      } else {
+        const result = await response.json();
+        showToast({
+          type: "error",
+          message: result.message || "Error al agregar item",
+        });
+      }
+    } catch (err) {
+      showToast({ type: "error", message: "Error al agregar item" });
+    }
+  }
+
+  async function updateItem(sectionKey: string, itemKey: string) {
+    if (!editItemValue.trim()) {
+      showToast({ type: "error", message: "El nombre no puede estar vacío" });
+      return;
+    }
+
+    const section = sections.find((s) => s.key === sectionKey);
+    if (!section) return;
+
+    const item = section.items.find((i) => i.key === itemKey);
+    if (!item) return;
+
+    // Check for duplicate values (excluding current item)
+    if (
+      section.items.some(
+        (i) =>
+          i.key !== itemKey &&
+          i.value.toLowerCase() === editItemValue.trim().toLowerCase()
+      )
+    ) {
+      showToast({ type: "error", message: "Este item ya existe" });
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/config/${sectionKey}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          key: itemKey,
+          value: editItemValue.trim(),
+          active: item.active,
+        }),
+      });
+
+      if (response.ok) {
+        showToast({ type: "success", message: "Item actualizado exitosamente" });
+        await loadAllConfigurations();
+        editingItem = null;
+        editItemValue = "";
+      } else {
+        const result = await response.json();
+        showToast({
+          type: "error",
+          message: result.message || "Error al actualizar item",
+        });
+      }
+    } catch (err) {
+      showToast({ type: "error", message: "Error al actualizar item" });
+    }
+  }
+
+  async function toggleItemStatus(sectionKey: string, itemKey: string) {
+    const section = sections.find((s) => s.key === sectionKey);
+    if (!section) return;
+
+    const item = section.items.find((i) => i.key === itemKey);
+    if (!item) return;
+
+    const action = item.active ? "desactivar" : "activar";
+
+    if (!confirm(`¿Seguro que deseas ${action} "${item.value}"?`)) return;
+
+    try {
+      const response = await fetch(
+        `/api/config/${sectionKey}?itemKey=${itemKey}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        showToast({ type: "success", message: result.message });
         await loadAllConfigurations();
       } else {
         const result = await response.json();
         showToast({
           type: "error",
-          message: result.message || "Error al guardar",
+          message: result.message || "Error al cambiar estado",
         });
       }
     } catch (err) {
-      showToast({ type: "error", message: "Error al guardar configuración" });
+      showToast({ type: "error", message: "Error al cambiar estado del item" });
     }
   }
 
-  function startEdit(sectionKey: string, index: number) {
+  function startEdit(sectionKey: string, itemKey: string) {
     const section = sections.find((s) => s.key === sectionKey);
     if (!section) return;
 
-    editingItem = { sectionKey, index };
-    editItemLabel = section.items[index].label;
+    const item = section.items.find((i) => i.key === itemKey);
+    if (!item) return;
+
+    editingItem = { sectionKey, itemKey };
+    editItemValue = item.value;
   }
 
   function cancelEdit() {
     editingItem = null;
-    editItemLabel = "";
+    editItemValue = "";
   }
 
   // Filter items based on showInactive flag
   function getVisibleItems(items: ConfigItem[]) {
     if (showInactive) return items;
-    return items.filter((item) => item.active ?? true);
+    return items.filter((item) => item.active);
   }
 
   // Get counts
   function getActiveCount(items: ConfigItem[]) {
-    return items.filter((item) => item.active ?? true).length;
+    return items.filter((item) => item.active).length;
   }
 
   function getInactiveCount(items: ConfigItem[]) {
-    return items.filter((item) => !(item.active ?? true)).length;
+    return items.filter((item) => !item.active).length;
   }
 </script>
 
@@ -318,22 +296,19 @@
           {/if}
 
           <div class="items-list">
-            {#each getVisibleItems(section.items) as item, index (item.value)}
-              {@const actualIndex = section.items.findIndex(
-                (it) => it.value === item.value
-              )}
-              <div class="item-row" class:inactive={!(item.active ?? true)}>
-                {#if editingItem?.sectionKey === section.key && editingItem?.index === actualIndex}
+            {#each getVisibleItems(section.items) as item (item.key)}
+              <div class="item-row" class:inactive={!item.active}>
+                {#if editingItem?.sectionKey === section.key && editingItem?.itemKey === item.key}
                   <div class="item-edit-form">
                     <Input
-                      bind:value={editItemLabel}
+                      bind:value={editItemValue}
                       placeholder="Nombre del item"
                       autofocus
                     />
                     <div class="item-actions">
                       <button
                         class="action-btn success"
-                        onclick={() => updateItem(section.key, actualIndex)}
+                        onclick={() => updateItem(section.key, item.key)}
                         title="Guardar"
                       >
                         <Check size={16} />
@@ -350,30 +325,30 @@
                 {:else}
                   <div class="item-content">
                     <div class="item-label-wrapper">
-                      <span class="item-label">{item.label}</span>
-                      {#if !(item.active ?? true)}
+                      <span class="item-label">{item.value}</span>
+                      {#if !item.active}
                         <Badge variant="default">Inactivo</Badge>
                       {/if}
                     </div>
-                    <code class="item-value">{item.value}</code>
+                    <code class="item-value">{item.key}</code>
                   </div>
                   <div class="item-actions">
                     <button
                       class="action-btn"
-                      onclick={() => startEdit(section.key, actualIndex)}
+                      onclick={() => startEdit(section.key, item.key)}
                       title="Editar"
-                      disabled={!(item.active ?? true)}
+                      disabled={!item.active}
                     >
                       <Edit2 size={16} />
                     </button>
                     <button
-                      class="action-btn {(item.active ?? true)
+                      class="action-btn {item.active
                         ? 'warning'
                         : 'success'}"
-                      onclick={() => toggleItemStatus(section.key, actualIndex)}
-                      title={(item.active ?? true) ? "Desactivar" : "Activar"}
+                      onclick={() => toggleItemStatus(section.key, item.key)}
+                      title={item.active ? "Desactivar" : "Activar"}
                     >
-                      {#if item.active ?? true}
+                      {#if item.active}
                         <Trash size={16} />
                       {:else}
                         <Check size={16} />
@@ -402,7 +377,7 @@
             {#if activeSectionKey === section.key}
               <div class="add-item-input">
                 <Input
-                  bind:value={newItemLabel}
+                  bind:value={newItemValue}
                   placeholder="Nombre del nuevo item"
                   autofocus
                   onkeydown={(e) => {
@@ -411,7 +386,7 @@
                       addItem(section.key);
                     } else if (e.key === "Escape") {
                       activeSectionKey = null;
-                      newItemLabel = "";
+                      newItemValue = "";
                     }
                   }}
                 />
@@ -428,7 +403,7 @@
                   size="sm"
                   onclick={() => {
                     activeSectionKey = null;
-                    newItemLabel = "";
+                    newItemValue = "";
                   }}
                 >
                   Cancelar
