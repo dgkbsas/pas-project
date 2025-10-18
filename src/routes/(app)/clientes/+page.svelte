@@ -427,20 +427,22 @@
         : { label: "Nuevo Cliente", onclick: () => goto("/clientes/nuevo") }}
     />
   {:else}
-    <Table>
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>DNI/CUIT</th>
-          <th>Email</th>
-          <th>Celular</th>
-          <th>Teléfono</th>
-          <th>Domicilio</th>
-          <th>Creado</th>
-          <th class="text-center">Pólizas</th>
-          <th class="text-right">Acciones</th>
-        </tr>
-      </thead>
+    <!-- Desktop Table View -->
+    <div class="desktop-view">
+      <Table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>DNI/CUIT</th>
+            <th>Email</th>
+            <th>Celular</th>
+            <th>Teléfono</th>
+            <th>Domicilio</th>
+            <th>Creado</th>
+            <th class="text-center">Pólizas</th>
+            <th class="text-right">Acciones</th>
+          </tr>
+        </thead>
       <tbody>
         {#each clients as client}
           <tr>
@@ -583,6 +585,121 @@
         {/each}
       </tbody>
     </Table>
+    </div>
+
+    <!-- Mobile Card View -->
+    <div class="mobile-view">
+      <div class="clients-cards">
+        {#each clients as client}
+          <div class="client-card" onclick={() => openClientModal(client.id, "view")}>
+            <div class="card-header">
+              <div class="client-name">
+                {client.first_name} {client.last_name}
+              </div>
+              <div class="card-actions">
+                <button
+                  class="action-btn view-btn"
+                  onclick={(e) => {
+                    e.stopPropagation();
+                    openClientModal(client.id, "view");
+                  }}
+                  title="Ver detalles"
+                >
+                  <Eye size={16} />
+                </button>
+                <button
+                  class="action-btn danger"
+                  onclick={(e) => {
+                    e.stopPropagation();
+                    deleteClient(client.id, client.first_name, client.last_name);
+                  }}
+                  title="Eliminar"
+                >
+                  <Trash size={16} />
+                </button>
+              </div>
+            </div>
+
+            <div class="card-body">
+              {#if client.document_number}
+                <div class="card-row">
+                  <span class="label">DNI/CUIT:</span>
+                  <button
+                    class="copyable-value"
+                    onclick={(e) => {
+                      e.stopPropagation();
+                      copyToClipboard(client.document_number!, "DNI/CUIT");
+                    }}
+                  >
+                    {client.document_number}
+                  </button>
+                </div>
+              {/if}
+
+              {#if client.phone}
+                <div class="card-row">
+                  <span class="label">Celular:</span>
+                  <div class="phone-row">
+                    <button
+                      class="copyable-value"
+                      onclick={(e) => {
+                        e.stopPropagation();
+                        copyToClipboard(client.phone!, "Celular");
+                      }}
+                    >
+                      <Phone size={14} />
+                      {client.phone}
+                    </button>
+                    {#if isMobileNumber(client.phone)}
+                      <a
+                        href={getWhatsAppUrl(client.phone)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="whatsapp-btn-small"
+                        onclick={(e) => e.stopPropagation()}
+                        title="WhatsApp"
+                      >
+                        <MessageCircle size={16} fill="#25d366" />
+                      </a>
+                    {/if}
+                  </div>
+                </div>
+              {/if}
+
+              {#if client.email_primary}
+                <div class="card-row">
+                  <span class="label">Email:</span>
+                  <button
+                    class="copyable-value email-value"
+                    onclick={(e) => {
+                      e.stopPropagation();
+                      copyToClipboard(client.email_primary!, "Email");
+                    }}
+                  >
+                    <Mail size={14} />
+                    {client.email_primary}
+                  </button>
+                </div>
+              {/if}
+
+              <div class="card-footer">
+                <div class="policies-badge">
+                  <FileText size={14} />
+                  <span>{client.active_policies_count || 0} pólizas</span>
+                </div>
+                <div class="created-date">
+                  {new Date(client.created_at).toLocaleDateString("es-ES", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+        {/each}
+      </div>
+    </div>
 
     <InfiniteScroll {hasMore} onLoadMore={loadMore} />
   {/if}
@@ -1010,5 +1127,180 @@
       background: var(--error-50);
       color: var(--error-600);
     }
+  }
+
+  /* Desktop/Mobile Views */
+  .desktop-view {
+    display: block;
+  }
+
+  .mobile-view {
+    display: none;
+  }
+
+  @media (max-width: 968px) {
+    .desktop-view {
+      display: none;
+    }
+
+    .mobile-view {
+      display: block;
+    }
+
+    .toolbar-actions {
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .sort-select {
+      flex: 1;
+
+      select {
+        width: 100%;
+      }
+    }
+  }
+
+  /* Mobile Card Styles */
+  .clients-cards {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .client-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+
+    &:hover {
+      border-color: var(--primary-300);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-3);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--border-primary);
+  }
+
+  .client-name {
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+  }
+
+  .card-actions {
+    display: flex;
+    gap: var(--space-2);
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .card-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+
+    .label {
+      color: var(--text-tertiary);
+      font-weight: var(--font-medium);
+      min-width: 80px;
+      flex-shrink: 0;
+    }
+
+    .copyable-value {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      background: none;
+      border: none;
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: all var(--transition-fast);
+      font-size: var(--text-sm);
+      text-align: left;
+
+      &:hover {
+        background: var(--bg-secondary);
+        color: var(--primary-600);
+      }
+
+      &:active {
+        transform: scale(0.98);
+      }
+
+      &.email-value {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+
+  .phone-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .whatsapp-btn-small {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-1);
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+    text-decoration: none;
+
+    &:hover {
+      background: var(--success-50);
+      transform: scale(1.1);
+    }
+  }
+
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--space-2);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--border-primary);
+  }
+
+  .policies-badge {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+    background: var(--primary-50);
+    color: var(--primary-700);
+    border-radius: var(--radius-md);
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+  }
+
+  .created-date {
+    font-size: var(--text-xs);
+    color: var(--text-tertiary);
   }
 </style>

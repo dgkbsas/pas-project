@@ -8,7 +8,7 @@ const PUT = async ({ params, request, locals }) => {
   try {
     const followupId = params.id;
     const body = await request.json();
-    const allowedFields = ["followup_type", "date", "description", "status"];
+    const allowedFields = ["followup_type", "date", "description", "status", "alert_date"];
     const updates = {};
     for (const field of allowedFields) {
       if (field in body) {

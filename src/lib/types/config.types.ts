@@ -28,30 +28,37 @@ export interface EmailSettings {
 // Company configuration table structure (normalized - one row per company)
 export interface CompanyConfig {
   company_id: string;
-
-  // Simple values
-  currency: string;
-  date_format: string;
-  timezone: string;
-  default_alert_days: number;
-
-  // Array configurations (JSONB)
-  payment_modes: ConfigItem[];
-  policy_types: ConfigItem[];
-  followup_types: ConfigItem[];
-
-  // Object configurations (JSONB)
-  alert_settings: AlertSettings;
-  email_settings?: EmailSettings | null;
-
-  // Metadata
+  currency: string | null;
+  date_format: string | null;
+  timezone: string | null;
+  default_alert_days: number | null;
+  payment_modes: ConfigItem[] | null;
+  policy_types: ConfigItem[] | null;
+  followup_types: ConfigItem[] | null;
+  alert_settings: AlertSettings | null;
+  email_settings: EmailSettings | null;
   created_at: string;
   updated_at: string;
-  updated_by?: string | null;
+  updated_by: string | null;
 }
 
 // Insert/Update types
-export type CompanyConfigInsert = Omit<CompanyConfig, 'created_at' | 'updated_at'>;
+// Para insertar: todos los campos menos created_at y updated_at, pero respetando los nullables
+export type CompanyConfigInsert = {
+  company_id: string;
+  currency?: string | null;
+  date_format?: string | null;
+  timezone?: string | null;
+  default_alert_days?: number | null;
+  payment_modes?: ConfigItem[] | null;
+  policy_types?: ConfigItem[] | null;
+  followup_types?: ConfigItem[] | null;
+  alert_settings?: AlertSettings | null;
+  email_settings?: EmailSettings | null;
+  updated_by?: string | null;
+};
+
+// Para update: todos opcionales menos company_id, created_at y updated_at
 export type CompanyConfigUpdate = Partial<Omit<CompanyConfig, 'company_id' | 'created_at' | 'updated_at'>>;
 
 // Configuration field keys (for API)

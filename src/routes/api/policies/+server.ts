@@ -26,6 +26,18 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 			return json({ message: 'Usuario no encontrado' }, { status: 404 });
 		}
 
+		// Auto-inactivar pólizas vencidas
+		const today = new Date().toISOString().split('T')[0];
+		await supabase
+			.from('policies')
+			.update({
+				active: false,
+				updated_at: new Date().toISOString()
+			})
+			.eq('company_id', userData.company_id)
+			.eq('active', true)
+			.lt('expiry_date', today);
+
 		// Parse filters with support for multiple values
 		const policyTypes = url.searchParams.getAll('policy_type');
 		const paymentModes = url.searchParams.getAll('payment_mode');
@@ -68,7 +80,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 					last_name,
 					email_primary,
 					phone
-				)
+				),
+				followups_count:policy_followups(count)
 			`,
 				{ count: 'exact' }
 			)
@@ -91,11 +104,13 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 				query = query.eq('active', false);
 			} else if (status === 'expiring_soon') {
 				// Pólizas activas que vencen en los próximos 30 días
-				const today = new Date().toISOString().split('T')[0];
 				const futureDate = new Date();
 				futureDate.setDate(futureDate.getDate() + 30);
 				const future = futureDate.toISOString().split('T')[0];
 				query = query.eq('active', true).gte('expiry_date', today).lte('expiry_date', future);
+			} else if (status === 'expired') {
+				// Pólizas inactivas con fecha de vencimiento pasada
+				query = query.eq('active', false).lt('expiry_date', today);
 			}
 		}
 

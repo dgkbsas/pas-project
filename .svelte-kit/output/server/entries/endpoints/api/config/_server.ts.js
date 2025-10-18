@@ -1,5 +1,4 @@
 import { json } from "@sveltejs/kit";
-import { S as SYSTEM_CONFIG_KEYS } from "../../../../chunks/config.types.js";
 const GET = async ({ locals }) => {
   const supabase = locals.supabase;
   const session = locals.session;
@@ -12,66 +11,56 @@ const GET = async ({ locals }) => {
       return json({ message: "Usuario no encontrado" }, { status: 404 });
     }
     const company_id = userData.company_id;
-    const { data: configs, error: configError } = await supabase.from("configuration").select("*").eq("company_id", company_id).order("config_key");
+    const { data: config, error: configError } = await supabase.from("company_config").select("*").eq("company_id", company_id).single();
     if (configError) {
-      console.error("Error fetching configs:", configError);
+      if (configError.code === "PGRST116") {
+        const { data: newConfig, error: insertError } = await supabase.from("company_config").insert({ company_id }).select().single();
+        if (insertError) {
+          console.error("Error creating default config:", insertError);
+          return json({ message: "Error al crear configuración" }, { status: 500 });
+        }
+        return json({ config: newConfig });
+      }
+      console.error("Error fetching config:", configError);
       return json({ message: "Error al obtener configuración" }, { status: 500 });
     }
-    return json({ configs: configs || [] });
+    return json({ config });
   } catch (err) {
     console.error("Error in GET /api/config:", err);
     return json({ message: "Error al obtener configuración" }, { status: 500 });
   }
 };
-const POST = async ({ request, locals }) => {
+const PATCH = async ({ request, locals }) => {
   const supabase = locals.supabase;
   const session = locals.session;
   if (!session?.user) {
     return json({ message: "No autenticado" }, { status: 401 });
   }
   try {
-    const body = await request.json();
-    const { config_key, config_value } = body;
-    if (!config_key) {
-      return json({ message: "config_key es requerido" }, { status: 400 });
-    }
-    if (!SYSTEM_CONFIG_KEYS.includes(config_key)) {
-      return json({
-        message: `Solo se permiten variables del sistema: ${SYSTEM_CONFIG_KEYS.join(", ")}`
-      }, { status: 400 });
-    }
-    if (config_value === void 0) {
-      return json({ message: "config_value es requerido" }, { status: 400 });
-    }
+    const updates = await request.json();
     const { data: userData, error: userError } = await supabase.from("users").select("company_id, role").eq("id", session.user.id).single();
     if (userError || !userData) {
       return json({ message: "Usuario no encontrado" }, { status: 404 });
     }
     const { company_id, role } = userData;
     if (role !== "admin") {
-      return json({ message: "Sin permisos para crear configuración" }, { status: 403 });
+      return json({ message: "Sin permisos para actualizar configuración" }, { status: 403 });
     }
-    const { data: existing } = await supabase.from("configuration").select("id").eq("company_id", company_id).eq("config_key", config_key).single();
-    if (existing) {
-      return json({ message: "Esta clave ya existe" }, { status: 400 });
-    }
-    const { data: config, error: insertError } = await supabase.from("configuration").insert({
-      company_id,
-      config_key,
-      config_value: config_value || {},
+    const { data: config, error: updateError } = await supabase.from("company_config").update({
+      ...updates,
       updated_by: session.user.id
-    }).select().single();
-    if (insertError) {
-      console.error("Error creating config:", insertError);
-      return json({ message: "Error al crear configuración" }, { status: 400 });
+    }).eq("company_id", company_id).select().single();
+    if (updateError) {
+      console.error("Error updating config:", updateError);
+      return json({ message: "Error al actualizar configuración" }, { status: 400 });
     }
-    return json({ config, message: "Configuración creada exitosamente" }, { status: 201 });
+    return json({ config, message: "Configuración actualizada exitosamente" });
   } catch (err) {
-    console.error("Error in POST /api/config:", err);
-    return json({ message: "Error al crear configuración" }, { status: 500 });
+    console.error("Error in PATCH /api/config:", err);
+    return json({ message: "Error al actualizar configuración" }, { status: 500 });
   }
 };
 export {
   GET,
-  POST
+  PATCH
 };

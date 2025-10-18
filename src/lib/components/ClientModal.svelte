@@ -19,6 +19,7 @@
     Plus,
     ArrowLeft,
     MessageCircle,
+    RefreshCw,
   } from "lucide-svelte";
   import type { ClientWithPolicies } from "$lib/types";
   import { isMobileNumber, getWhatsAppUrl } from "$lib/utils/phone";
@@ -533,44 +534,63 @@
               {#if client.policies && client.policies.length > 0}
                 <div class="policies-list">
                   {#each client.policies as policy}
-                    <button
-                      type="button"
-                      class="policy-card"
-                      onclick={() => {
-                        onClose();
-                        goto(
-                          `/polizas?policyId=${policy.id}&mode=view&from=client&fromId=${client!.id}`
-                        );
-                      }}
-                    >
-                      <div class="policy-info">
-                        <div class="policy-header">
-                          <strong class="policy-number"
-                            >{policy.policy_number || "S/N"}</strong
-                          >
-                          <span
-                            class="policy-status"
-                            class:active={policy.status}
-                            class:inactive={!policy.status}
-                          >
-                            {policy.status === "active" ? "Activa" : "Inactiva"}
-                          </span>
-                        </div>
-                        <div class="policy-meta">
-                          <span class="policy-type">{policy.policy_type}</span>
-                          {#if policy.insurer}
-                            <span class="policy-separator">•</span>
-                            <span class="policy-insurer">{policy.insurer}</span>
+                    <div class="policy-card">
+                      <button
+                        type="button"
+                        class="policy-content"
+                        onclick={() => {
+                          onClose();
+                          goto(
+                            `/polizas?policyId=${policy.id}&mode=view&from=client&fromId=${client!.id}`
+                          );
+                        }}
+                      >
+                        <div class="policy-info">
+                          <div class="policy-header">
+                            <strong class="policy-number"
+                              >{policy.policy_number || "S/N"}</strong
+                            >
+                            <span
+                              class="policy-status"
+                              class:active={policy.active}
+                              class:inactive={!policy.active}
+                            >
+                              {policy.active ? "Activa" : "Inactiva"}
+                            </span>
+                          </div>
+                          <div class="policy-meta">
+                            <span class="policy-type">{policy.policy_type}</span
+                            >
+                            {#if policy.insurer}
+                              <span class="policy-separator">•</span>
+                              <span class="policy-insurer"
+                                >{policy.insurer}</span
+                              >
+                            {/if}
+                          </div>
+                          {#if policy.expiry_date}
+                            <div class="policy-date">
+                              Vence: {formatDate(policy.expiry_date)}
+                            </div>
                           {/if}
                         </div>
-                        {#if policy.renewal_date}
-                          <div class="policy-date">
-                            Vence: {formatDate(policy.renewal_date)}
-                          </div>
-                        {/if}
-                      </div>
-                      <div class="policy-arrow">→</div>
-                    </button>
+                        <div class="policy-arrow">→</div>
+                      </button>
+                      <button
+                        type="button"
+                        class="renew-btn"
+                        onclick={(e) => {
+                          e.stopPropagation();
+                          onClose();
+                          goto(
+                            `/polizas/nuevo?renew_from=${policy.id}&client_id=${client!.id}`
+                          );
+                        }}
+                        title="Renovar póliza"
+                      >
+                        <RefreshCw size={16} />
+                      </button>
+                    </div>
                   {/each}
                 </div>
               {:else}
@@ -904,7 +924,7 @@
     align-items: center;
     gap: var(--space-2);
     padding: var(--space-2) var(--space-3);
-    background: var(--primary);
+    background: var(--primary-600);
     color: white;
     border: none;
     border-radius: var(--radius-md);
@@ -914,7 +934,7 @@
     transition: all var(--transition-fast);
 
     &:hover {
-      background: var(--primary-600);
+      background: var(--primary-700);
       transform: translateY(-1px);
       box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
     }
@@ -929,21 +949,58 @@
   .policy-card {
     width: 100%;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-3);
-    padding: var(--space-4);
+    align-items: stretch;
+    gap: 0;
     background: var(--bg-primary);
     border: 1px solid var(--border-primary);
     border-radius: var(--radius-md);
-    text-align: left;
-    cursor: pointer;
+    overflow: hidden;
     transition: all var(--transition-fast);
 
     &:hover {
       border-color: var(--primary-300);
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      transform: translateX(4px);
+    }
+  }
+
+  .policy-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background: transparent;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+
+    &:hover {
+      background: var(--bg-secondary);
+    }
+  }
+
+  .renew-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 var(--space-3);
+    border: none;
+    border-left: 1px solid var(--border-primary);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    flex-shrink: 0;
+
+    &:hover {
+      background: var(--primary-50);
+      color: var(--primary-600);
+    }
+
+    &:active {
+      transform: scale(0.95);
     }
   }
 
@@ -1010,7 +1067,7 @@
     font-size: var(--text-xl);
     transition: transform var(--transition-fast);
 
-    .policy-card:hover & {
+    .policy-content:hover & {
       transform: translateX(4px);
       color: var(--primary-600);
     }

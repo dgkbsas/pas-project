@@ -1,21 +1,33 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
   import Button from "$lib/components/ui/Button.svelte";
   import PolicyForm from "$lib/components/form/PolicyForm.svelte";
   import { showToast } from "$lib/stores/notifications";
   import { ArrowLeft } from "lucide-svelte";
+  import type { PageData } from "./$types";
+
+  let { data }: { data: PageData } = $props();
 
   let loading = $state(false);
   let errors = $state({});
   let initialData = $state<any>({});
 
-  // Check for client_id in URL query params
-  onMount(() => {
+  // Initialize form data based on URL params and server data
+  $effect(() => {
     const clientId = $page.url.searchParams.get('client_id');
-    if (clientId) {
-      initialData.client_id = clientId;
+    const renewFrom = $page.url.searchParams.get('renew_from');
+
+    if (renewFrom && data.renewData) {
+      // Pre-populate with renewal data
+      initialData = {
+        ...data.renewData,
+        // Override client_id if provided in URL
+        ...(clientId ? { client_id: clientId } : {})
+      };
+    } else if (clientId) {
+      // Just set client_id
+      initialData = { client_id: clientId };
     }
   });
 

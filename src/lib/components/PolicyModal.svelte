@@ -13,7 +13,7 @@
   import FollowupsList from "$lib/components/FollowupsList.svelte";
   import FollowupForm from "$lib/components/FollowupForm.svelte";
   import { showToast } from "$lib/stores/notifications";
-  import { X, Save, Edit2, FileText, User, ArrowLeft } from "lucide-svelte";
+  import { X, Save, Edit2, FileText, User, ArrowLeft, RefreshCw } from "lucide-svelte";
   import type { PolicyWithClient, PolicyType, PaymentMode } from "$lib/types";
   import type { PolicyFollowup } from "$lib/types/database.types";
 
@@ -326,6 +326,16 @@
 
       <div class="header-actions">
         {#if !isEditMode && !loading}
+          <button
+            class="icon-btn renew-icon-btn"
+            onclick={() => {
+              onClose();
+              goto(`/polizas/nuevo?renew_from=${policyId}&client_id=${policy?.client_id}`);
+            }}
+            title="Renovar póliza"
+          >
+            <RefreshCw size={18} />
+          </button>
           <button class="icon-btn" onclick={toggleEdit} title="Edit policy">
             <Edit2 size={18} />
           </button>
@@ -730,6 +740,15 @@
       &:hover {
         background: var(--bg-secondary);
         color: var(--text-primary);
+      }
+
+      &.renew-icon-btn {
+        color: var(--success-600);
+
+        &:hover {
+          background: var(--success-50);
+          color: var(--success-700);
+        }
       }
     }
   }

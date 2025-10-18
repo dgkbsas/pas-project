@@ -2,6 +2,7 @@ import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
 import type { ConfigItem, ArrayConfigKey } from '$lib/types/config.types';
 import { ARRAY_CONFIG_KEYS, generateConfigKey } from '$lib/types/config.types';
+import type { Database } from '$lib/types/database.types';
 
 /**
  * GET /api/config/[key]
@@ -92,6 +93,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
 		// Update configuration field
 		const { data: config, error: updateError } = await supabase
 			.from('company_config')
+			// @ts-expect-error - Supabase types not fully generated for company_config yet
 			.update({
 				[fieldKey]: value,
 				updated_by: session.user.id
@@ -194,6 +196,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
 		// Update configuration
 		const { data: config, error: updateError } = await supabase
 			.from('company_config')
+			// @ts-expect-error - Supabase types not fully generated for company_config yet
 			.update({
 				[fieldKey]: updatedItems,
 				updated_by: session.user.id
@@ -295,6 +298,7 @@ export const DELETE: RequestHandler = async ({ params, url, locals }) => {
 		// Update configuration
 		const { data: config, error: updateError } = await supabase
 			.from('company_config')
+			// @ts-expect-error - Supabase types not fully generated for company_config yet
 			.update({
 				[fieldKey]: updatedItems,
 				updated_by: session.user.id

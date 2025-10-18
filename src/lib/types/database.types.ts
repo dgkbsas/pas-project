@@ -3,6 +3,7 @@
  */
 
 import type { UserRole, PolicyType, PaymentMode } from './enums';
+import type { CompanyConfig, CompanyConfigInsert, CompanyConfigUpdate } from './config.types';
 
 export interface Database {
 	public: {
@@ -41,6 +42,11 @@ export interface Database {
 			Row: InsuranceCompany;
 			Insert: InsuranceCompanyInsert;
 			Update: InsuranceCompanyUpdate;
+		};
+		company_config: {
+			Row: CompanyConfig;
+			Insert: CompanyConfigInsert;
+			Update: CompanyConfigUpdate;
 		};
 	};
 	};

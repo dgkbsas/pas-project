@@ -10,7 +10,7 @@ return {
 	assets: new Set([".DS_Store","favicon.ico","favicon.png","icons/apple-touch-icon.png","icons/icon-128x128.png","icons/icon-144x144.png","icons/icon-152x152.png","icons/icon-192x192.png","icons/icon-384x384.png","icons/icon-512x512.png","icons/icon-72x72.png","icons/icon-96x96.png","manifest.json"]),
 	mimeTypes: {".png":"image/png",".json":"application/json"},
 	_: {
-		client: {start:"_app/immutable/entry/start.DDVCKoKb.js",app:"_app/immutable/entry/app.CkyfigZM.js",imports:["_app/immutable/entry/start.DDVCKoKb.js","_app/immutable/chunks/EB3MSLgs.js","_app/immutable/chunks/DFUbiISE.js","_app/immutable/chunks/BKJL6YfG.js","_app/immutable/chunks/D-f8WZxc.js","_app/immutable/entry/app.CkyfigZM.js","_app/immutable/chunks/C1FmrZbK.js","_app/immutable/chunks/BKJL6YfG.js","_app/immutable/chunks/CWj6FrbW.js","_app/immutable/chunks/DFUbiISE.js","_app/immutable/chunks/CX_YFbLR.js","_app/immutable/chunks/CSW8TH0X.js","_app/immutable/chunks/1cUr6nmd.js","_app/immutable/chunks/B-WhYZDZ.js"],stylesheets:[],fonts:[],uses_env_dynamic_public:false},
+		client: {start:"_app/immutable/entry/start.oZJMxwzW.js",app:"_app/immutable/entry/app.fMAakEY2.js",imports:["_app/immutable/entry/start.oZJMxwzW.js","_app/immutable/chunks/DboXdvGe.js","_app/immutable/chunks/P-h-QmmT.js","_app/immutable/chunks/DXalFYC5.js","_app/immutable/chunks/W0raZGAH.js","_app/immutable/entry/app.fMAakEY2.js","_app/immutable/chunks/C1FmrZbK.js","_app/immutable/chunks/DXalFYC5.js","_app/immutable/chunks/CWj6FrbW.js","_app/immutable/chunks/P-h-QmmT.js","_app/immutable/chunks/DgS_HarA.js","_app/immutable/chunks/2cUHOQ7Q.js","_app/immutable/chunks/BjGM86Mo.js","_app/immutable/chunks/BkTacmYQ.js"],stylesheets:[],fonts:[],uses_env_dynamic_public:false},
 		nodes: [
 			__memo(() => import('./nodes/0.js')),
 			__memo(() => import('./nodes/1.js')),
@@ -25,8 +25,7 @@ return {
 			__memo(() => import('./nodes/10.js')),
 			__memo(() => import('./nodes/11.js')),
 			__memo(() => import('./nodes/12.js')),
-			__memo(() => import('./nodes/13.js')),
-			__memo(() => import('./nodes/14.js'))
+			__memo(() => import('./nodes/13.js'))
 		],
 		remotes: {
 			
@@ -145,6 +144,13 @@ return {
 				endpoint: __memo(() => import('./entries/endpoints/api/invitations/validate/_server.ts.js'))
 			},
 			{
+				id: "/api/notifications",
+				pattern: /^\/api\/notifications\/?$/,
+				params: [],
+				page: null,
+				endpoint: __memo(() => import('./entries/endpoints/api/notifications/_server.ts.js'))
+			},
+			{
 				id: "/api/policies",
 				pattern: /^\/api\/policies\/?$/,
 				params: [],
@@ -176,7 +182,7 @@ return {
 				id: "/auth/login",
 				pattern: /^\/auth\/login\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 14 },
+				page: { layouts: [0,], errors: [1,], leaf: 13 },
 				endpoint: null
 			},
 			{
@@ -232,13 +238,6 @@ return {
 				id: "/(app)/polizas/nuevo",
 				pattern: /^\/polizas\/nuevo\/?$/,
 				params: [],
-				page: { layouts: [0,2,], errors: [1,,], leaf: 13 },
-				endpoint: null
-			},
-			{
-				id: "/(app)/polizas/[id]/editar",
-				pattern: /^\/polizas\/([^/]+?)\/editar\/?$/,
-				params: [{"name":"id","optional":false,"rest":false,"chained":false}],
 				page: { layouts: [0,2,], errors: [1,,], leaf: 12 },
 				endpoint: null
 			}

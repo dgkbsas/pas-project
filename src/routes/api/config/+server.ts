@@ -1,6 +1,7 @@
 import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
-import type { CompanyConfig, CompanyConfigUpdate } from '$lib/types/config.types';
+import type { CompanyConfigUpdate } from '$lib/types/config.types';
+import type { Database } from '$lib/types/database.types';
 
 /**
  * GET /api/config
@@ -40,7 +41,7 @@ export const GET: RequestHandler = async ({ locals }) => {
 				// Config doesn't exist, create default one
 				const { data: newConfig, error: insertError } = await supabase
 					.from('company_config')
-					.insert({ company_id })
+					.insert({ company_id } as any)
 					.select()
 					.single();
 
@@ -99,6 +100,7 @@ export const PATCH: RequestHandler = async ({ request, locals }) => {
 		// Update configuration
 		const { data: config, error: updateError } = await supabase
 			.from('company_config')
+			// @ts-expect-error - Supabase types not fully generated for company_config yet
 			.update({
 				...updates,
 				updated_by: session.user.id

@@ -38,6 +38,9 @@
 	"/api/debug/policies-schema": [
 		"src/routes/api/debug/policies-schema/+server.ts"
 	],
+	"/api/followups": [
+		"src/routes/api/followups/+server.ts"
+	],
 	"/api/followups/[id]": [
 		"src/routes/api/followups/[id]/+server.ts"
 	],
@@ -58,6 +61,9 @@
 	],
 	"/api/policies": [
 		"src/routes/api/policies/+server.ts"
+	],
+	"/api/policies/update-expired": [
+		"src/routes/api/policies/update-expired/+server.ts"
 	],
 	"/api/policies/[id]": [
 		"src/routes/api/policies/[id]/+server.ts"
@@ -106,6 +112,11 @@
 	],
 	"/(app)/polizas/nuevo": [
 		"src/routes/(app)/polizas/nuevo/+page.server.ts",
+		"src/routes/(app)/+layout.server.ts",
+		"src/routes/+layout.server.ts"
+	],
+	"/(app)/seguimientos": [
+		"src/routes/(app)/seguimientos/+page.server.ts",
 		"src/routes/(app)/+layout.server.ts",
 		"src/routes/+layout.server.ts"
 	]

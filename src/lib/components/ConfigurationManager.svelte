@@ -15,6 +15,10 @@
     FileText,
     Calendar,
     Tag,
+    Settings,
+    Globe,
+    Clock,
+    Bell,
   } from "lucide-svelte";
   import type { ConfigItem } from "$lib/types/config.types";
 
@@ -27,6 +31,23 @@
   };
 
   let loading = $state(false);
+  let savingGeneral = $state(false);
+
+  // General configuration fields
+  let generalConfig = $state({
+    currency: "ARS",
+    date_format: "DD/MM/YYYY",
+    timezone: "America/Argentina/Buenos_Aires",
+    default_alert_days: 30,
+  });
+
+  // Alert settings
+  let alertSettings = $state({
+    days_before_expiry: 30,
+    days_critical: 7,
+    notify_on_create: true,
+  });
+
   let sections = $state<ConfigSection[]>([
     {
       key: "payment_modes",
@@ -68,6 +89,23 @@
       const result = await response.json();
 
       if (response.ok && result.config) {
+        // Load general config
+        generalConfig = {
+          currency: result.config.currency || "ARS",
+          date_format: result.config.date_format || "DD/MM/YYYY",
+          timezone: result.config.timezone || "America/Argentina/Buenos_Aires",
+          default_alert_days: result.config.default_alert_days || 30,
+        };
+
+        // Load alert settings
+        if (result.config.alert_settings) {
+          alertSettings = {
+            days_before_expiry: result.config.alert_settings.days_before_expiry || 30,
+            days_critical: result.config.alert_settings.days_critical || 7,
+            notify_on_create: result.config.alert_settings.notify_on_create !== false,
+          };
+        }
+
         // Map config fields to sections
         sections = sections.map((section) => {
           const items: ConfigItem[] = result.config[section.key] || [];
@@ -82,6 +120,34 @@
       showToast({ type: "error", message: "Error al cargar configuraciones" });
     } finally {
       loading = false;
+    }
+  }
+
+  async function saveGeneralConfig() {
+    savingGeneral = true;
+    try {
+      const response = await fetch("/api/config", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...generalConfig,
+          alert_settings: alertSettings,
+        }),
+      });
+
+      if (response.ok) {
+        showToast({ type: "success", message: "Configuración guardada exitosamente" });
+      } else {
+        const result = await response.json();
+        showToast({
+          type: "error",
+          message: result.message || "Error al guardar configuración",
+        });
+      }
+    } catch (err) {
+      showToast({ type: "error", message: "Error al guardar configuración" });
+    } finally {
+      savingGeneral = false;
     }
   }
 
@@ -256,6 +322,123 @@
       <p>Cargando configuraciones...</p>
     </div>
   {:else}
+    <!-- General Settings Section -->
+    <Card>
+      <div class="section-header">
+        <div class="section-title">
+          <div class="icon-wrapper">
+            <Settings size={20} />
+          </div>
+          <div>
+            <h3>Configuración General</h3>
+            <p class="section-description">Parámetros generales del sistema</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="general-config-form">
+        <div class="config-row">
+          <div class="config-field">
+            <label>
+              <span class="field-icon"><DollarSign size={16} /></span>
+              Moneda
+            </label>
+            <select bind:value={generalConfig.currency}>
+              <option value="ARS">ARS - Peso Argentino</option>
+              <option value="USD">USD - Dólar</option>
+              <option value="EUR">EUR - Euro</option>
+              <option value="BRL">BRL - Real Brasileño</option>
+              <option value="CLP">CLP - Peso Chileno</option>
+              <option value="UYU">UYU - Peso Uruguayo</option>
+            </select>
+          </div>
+
+          <div class="config-field">
+            <label>
+              <span class="field-icon"><Calendar size={16} /></span>
+              Formato de Fecha
+            </label>
+            <select bind:value={generalConfig.date_format}>
+              <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+              <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+              <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="config-row">
+          <div class="config-field full-width">
+            <label>
+              <span class="field-icon"><Globe size={16} /></span>
+              Zona Horaria
+            </label>
+            <select bind:value={generalConfig.timezone}>
+              <option value="America/Argentina/Buenos_Aires">Buenos Aires (GMT-3)</option>
+              <option value="America/Sao_Paulo">São Paulo (GMT-3)</option>
+              <option value="America/Santiago">Santiago (GMT-3/GMT-4)</option>
+              <option value="America/Montevideo">Montevideo (GMT-3)</option>
+              <option value="America/Mexico_City">Ciudad de México (GMT-6)</option>
+              <option value="America/Bogota">Bogotá (GMT-5)</option>
+              <option value="America/Lima">Lima (GMT-5)</option>
+              <option value="Europe/Madrid">Madrid (GMT+1/GMT+2)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="alert-settings-section">
+          <h4>
+            <Bell size={18} />
+            Configuración de Alertas
+          </h4>
+
+          <div class="config-row">
+            <div class="config-field">
+              <label>
+                <span class="field-icon"><Clock size={16} /></span>
+                Días de alerta antes del vencimiento
+              </label>
+              <Input
+                type="number"
+                bind:value={alertSettings.days_before_expiry}
+                min="1"
+                max="365"
+              />
+              <small class="help-text">Días de anticipación para notificar vencimientos</small>
+            </div>
+
+            <div class="config-field">
+              <label>
+                <span class="field-icon"><Bell size={16} /></span>
+                Días críticos
+              </label>
+              <Input
+                type="number"
+                bind:value={alertSettings.days_critical}
+                min="1"
+                max="30"
+              />
+              <small class="help-text">Días para marcar como crítico</small>
+            </div>
+          </div>
+
+          <div class="config-row">
+            <div class="config-field checkbox-field">
+              <label class="checkbox-label">
+                <input type="checkbox" bind:checked={alertSettings.notify_on_create} />
+                <span>Notificar al crear nuevas pólizas</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <Button variant="primary" onclick={saveGeneralConfig} disabled={savingGeneral}>
+            {savingGeneral ? "Guardando..." : "Guardar Configuración General"}
+          </Button>
+        </div>
+      </div>
+    </Card>
+
     <div class="sections-grid">
       {#each sections as section}
         <Card>
@@ -703,5 +886,122 @@
         }
       }
     }
+  }
+
+  /* General Configuration Styles */
+  .general-config-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .config-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .config-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+
+    &.full-width {
+      grid-column: 1 / -1;
+    }
+
+    &.checkbox-field {
+      padding: var(--space-3) 0;
+    }
+
+    label {
+      font-size: var(--text-sm);
+      font-weight: var(--font-medium);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+
+      .field-icon {
+        display: flex;
+        align-items: center;
+        color: var(--primary-600);
+      }
+
+      &.checkbox-label {
+        font-weight: var(--font-normal);
+        cursor: pointer;
+        user-select: none;
+
+        input[type="checkbox"] {
+          width: 18px;
+          height: 18px;
+          cursor: pointer;
+        }
+
+        &:hover {
+          color: var(--text-primary);
+        }
+      }
+    }
+
+    select {
+      padding: var(--space-3);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-md);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: var(--text-sm);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+
+      &:hover {
+        border-color: var(--border-hover);
+      }
+
+      &:focus {
+        outline: none;
+        border-color: var(--primary-500);
+        box-shadow: 0 0 0 3px var(--primary-100);
+      }
+    }
+
+    .help-text {
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+      margin: 0;
+    }
+  }
+
+  .alert-settings-section {
+    padding-top: var(--space-5);
+    margin-top: var(--space-4);
+    border-top: 1px solid var(--border-primary);
+
+    h4 {
+      font-size: var(--text-base);
+      font-weight: var(--font-semibold);
+      color: var(--text-primary);
+      margin: 0 0 var(--space-4);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+
+      :global(svg) {
+        color: var(--primary-600);
+      }
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: var(--space-4);
+    margin-top: var(--space-4);
+    border-top: 1px solid var(--border-primary);
   }
 </style>

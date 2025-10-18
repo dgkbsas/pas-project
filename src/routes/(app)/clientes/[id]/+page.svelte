@@ -57,22 +57,10 @@
     }).format(amount);
   }
 
-  function getStatusBadge(status: string): { variant: 'error' | 'success' | 'info' | 'warning' | 'default'; label: string } {
-    const variants: Record<string, 'error' | 'success' | 'info' | 'warning' | 'default'> = {
-      active: "success",
-      cancelled: "error",
-      expired: "warning",
-    };
-
-    const labels: Record<string, string> = {
-      active: "Activa",
-      cancelled: "Cancelada",
-      expired: "Vencida",
-    };
-
+  function getStatusBadge(active: boolean): { variant: 'error' | 'success' | 'info' | 'warning' | 'default'; label: string } {
     return {
-      variant: variants[status] || "default",
-      label: labels[status] || status,
+      variant: active ? "success" : "error",
+      label: active ? "Activa" : "Inactiva",
     };
   }
 </script>
@@ -306,7 +294,7 @@
             </thead>
             <tbody>
               {#each filteredPolicies as policy}
-                {@const statusBadge = getStatusBadge(policy.status)}
+                {@const statusBadge = getStatusBadge(policy.active)}
                 <tr
                   onclick={() => goto(`/polizas/${policy.id}/editar`)}
                   class="clickable-row"

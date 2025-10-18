@@ -1,9 +1,3 @@
-import "clsx";
-import "@sveltejs/kit/internal";
-import "../../chunks/exports.js";
-import "../../chunks/utils.js";
-import "@sveltejs/kit/internal/server";
-import "../../chunks/state.svelte.js";
 const load = async ({ locals }) => {
   const { session, user } = await locals.safeGetSession();
   return {

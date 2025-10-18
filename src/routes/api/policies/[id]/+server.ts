@@ -138,7 +138,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
 
 /**
  * DELETE /api/policies/[id]
- * Elimina una póliza
+ * Soft delete de una póliza (marca como inactiva)
  */
 export const DELETE: RequestHandler = async ({ params, locals }) => {
 	const supabase = locals.supabase;
@@ -166,18 +166,27 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
 			return json({ message: 'Sin permisos para eliminar pólizas' }, { status: 403 });
 		}
 
-		// Eliminar póliza
-		const { error } = await supabase
+		// Soft delete: marcar como inactiva
+		const { data: policy, error } = await supabase
 			.from('policies')
-			.delete()
+			.update({
+				active: false,
+				updated_at: new Date().toISOString()
+			})
 			.eq('id', id)
-			.eq('company_id', userData.company_id);
+			.eq('company_id', userData.company_id)
+			.select()
+			.single();
 
 		if (error) {
 			return json({ message: error.message }, { status: 400 });
 		}
 
-		return new Response(null, { status: 204 });
+		if (!policy) {
+			return json({ message: 'Póliza no encontrada' }, { status: 404 });
+		}
+
+		return json({ message: 'Póliza marcada como inactiva', policy });
 	} catch (err: any) {
 		return json({ message: err.message || 'Error interno' }, { status: 500 });
 	}

@@ -2,13 +2,13 @@
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-export const load = async ({ locals }: Parameters<PageServerLoad>[0]) => {
+export const load = async ({ locals, url }: Parameters<PageServerLoad>[0]) => {
 	const { supabase, session } = locals;
-	
+
 	if (!session) {
 		throw error(401, 'No autorizado');
 	}
-	
+
 	// Obtener datos del usuario para conseguir company_id
 	const { data: userData, error: userError } = await supabase
 		.from('users')
@@ -28,13 +28,31 @@ export const load = async ({ locals }: Parameters<PageServerLoad>[0]) => {
 		.eq('company_id', (userData as any).company_id)
 		.eq('active', true)
 		.order('first_name');
-	
+
 	if (clientsError) {
 		console.error('[NUEVA POLIZA] Error al cargar clientes:', clientsError);
 		throw error(500, 'Error al cargar clientes');
 	}
-	
+
+	// Si hay renew_from, cargar datos de la póliza a renovar
+	const renewFromId = url.searchParams.get('renew_from');
+	let renewData = null;
+
+	if (renewFromId) {
+		const { data: policyData, error: policyError } = await supabase
+			.from('policies')
+			.select('client_id, policy_type, insurer, payment_mode, vehicle_plate, vehicle_brand, vehicle_model')
+			.eq('id', renewFromId)
+			.eq('company_id', (userData as any).company_id)
+			.single();
+
+		if (!policyError && policyData) {
+			renewData = policyData;
+		}
+	}
+
 	return {
-		clients: clients || []
+		clients: clients || [],
+		renewData
 	};
 };

@@ -28,6 +28,7 @@
     X,
     ArrowUp,
     ArrowDown,
+    RefreshCw,
   } from "lucide-svelte";
   import { debounce } from "$lib/utils";
   import type { Policy, Client } from "$lib/types/database.types";
@@ -437,6 +438,7 @@
             <th>Estado</th>
             <th>Vencimiento</th>
             <th>Creado</th>
+            <th style="width: 100px">Seguimientos</th>
             <th class="text-right">Acciones</th>
           </tr>
         </thead>
@@ -497,6 +499,16 @@
               <td class="text-nowrap">
                 {formatDate(policy.created_at)}
               </td>
+              <td>
+                <button
+                  class="followups-counter"
+                  onclick={() => goto(`/seguimientos?policy_id=${policy.id}`)}
+                  title="Ver seguimientos"
+                >
+                  <Calendar size={14} />
+                  {policy.followups_count?.[0]?.count || 0}
+                </button>
+              </td>
               <td class="text-right">
                 <div class="actions">
                   <button
@@ -505,6 +517,13 @@
                     title="Ver"
                   >
                     <Eye size={16} />
+                  </button>
+                  <button
+                    class="action-btn success"
+                    onclick={() => goto(`/polizas/nuevo?renew_from=${policy.id}&client_id=${policy.client_id}`)}
+                    title="Renovar"
+                  >
+                    <RefreshCw size={16} />
                   </button>
                   <button
                     class="action-btn danger"
@@ -1010,9 +1029,50 @@
       color: var(--primary-600);
     }
 
+    &.success:hover {
+      background: var(--success-50);
+      color: var(--success-600);
+    }
+
     &.danger:hover {
       background: var(--error-50);
       color: var(--error-600);
+    }
+  }
+
+  .followups-counter {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+
+    :global(svg) {
+      color: var(--primary-600);
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      background: var(--primary-50);
+      border-color: var(--primary-300);
+      color: var(--primary-600);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+
+      :global(svg) {
+        color: var(--primary-700);
+      }
+    }
+
+    &:active {
+      transform: translateY(0);
     }
   }
 

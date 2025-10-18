@@ -3,7 +3,7 @@ import { g as goto } from "../../../../chunks/client.js";
 import { p as page } from "../../../../chunks/stores.js";
 import { B as Button } from "../../../../chunks/Button.js";
 /* empty css                                                     */
-import { E as EmptyState, T as Table } from "../../../../chunks/Table.js";
+import { P as Plus, E as EmptyState, T as Table } from "../../../../chunks/Table.js";
 import { F as Funnel, S as Skeleton } from "../../../../chunks/Skeleton.js";
 import { I as InfiniteScroll } from "../../../../chunks/InfiniteScroll.js";
 import "@sveltejs/kit/internal";
@@ -17,11 +17,10 @@ import { s as showToast } from "../../../../chunks/notifications.js";
 import { i as isMobileNumber, g as getWhatsAppUrl, M as Message_circle, P as Phone } from "../../../../chunks/phone.js";
 import { A as Arrow_left } from "../../../../chunks/arrow-left.js";
 import { U as User } from "../../../../chunks/user.js";
-import { P as Pen } from "../../../../chunks/pen.js";
+import { P as Pen, T as Trash } from "../../../../chunks/trash.js";
 import { X } from "../../../../chunks/x.js";
 import { S as Save } from "../../../../chunks/save.js";
 import { F as File_text } from "../../../../chunks/file-text.js";
-import { P as Plus } from "../../../../chunks/plus.js";
 import { e as escape_html } from "../../../../chunks/context.js";
 import "clsx";
 /* empty css                                                      */
@@ -30,7 +29,6 @@ import { I as Icon } from "../../../../chunks/Icon.js";
 import { U as Users } from "../../../../chunks/users.js";
 import { M as Mail } from "../../../../chunks/mail.js";
 import { E as Eye } from "../../../../chunks/eye.js";
-import { T as Trash } from "../../../../chunks/trash.js";
 function Arrow_up($$renderer, $$props) {
   const $$sanitized_props = sanitize_props($$props);
   /**
@@ -718,11 +716,8 @@ function _page($$renderer, $$props) {
         if (appliedFilters.dateTo) {
           params.append("date_to", appliedFilters.dateTo);
         }
-        console.log("Fetching clients:", `/api/clients?${params}`);
         const response = await fetch(`/api/clients?${params}`);
-        console.log("Response status:", response.status);
         const result = await response.json();
-        console.log("Result:", result);
         if (response.ok) {
           if (append) {
             clients = [...clients, ...result.clients || []];

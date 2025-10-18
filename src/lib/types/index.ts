@@ -32,10 +32,8 @@ export type {
 
 // Configuration types
 export type {
-  InsuranceCompany,
-  CompanyConfiguration,
-  Configuration,
-  ConfigKey,
+  CompanyConfig,
+  ConfigFieldKey,
 } from './config.types';
 
 // Re-export database types for backward compatibility

@@ -1,342 +1,340 @@
-# Variables de Configuración
+# Configuración de Empresa
 
 ## 📋 Descripción
 
-Sistema de gestión de variables de configuración personalizadas para cada empresa. Permite almacenar y gestionar configuraciones específicas del negocio como tasas de comisión, monedas por defecto, umbrales de alertas, y cualquier otro dato configurable.
+Sistema de configuración normalizado por empresa. Cada empresa tiene **una única fila** en la tabla `company_config` que contiene toda su configuración: opciones simples (moneda, zona horaria) y arrays de configuración estructurados para modos de pago, tipos de póliza y tipos de seguimiento.
 
 ## 🎯 Características
 
 ### ✅ Funcionalidad Implementada
 
 1. **API REST Completa**
-   - `GET /api/config` - Lista todas las variables
-   - `POST /api/config` - Crea nueva variable
-   - `PUT /api/config/[id]` - Actualiza variable existente
-   - `DELETE /api/config/[id]` - Elimina variable
+   - `GET /api/config` - Obtiene toda la configuración de la empresa
+   - `PATCH /api/config` - Actualiza campos específicos de configuración
+   - `GET /api/config/[field]` - Obtiene un campo específico
+   - `PUT /api/config/[field]` - Reemplaza un campo completo
+   - `POST /api/config/[field]` - Agrega/actualiza items en arrays de configuración
+   - `DELETE /api/config/[field]?itemKey=xxx` - Soft-delete de items (marca como inactivo)
 
 2. **Interfaz de Usuario**
-   - Pestaña "Variables" en página de configuración
-   - Formulario para crear/editar variables
-   - Tabla con listado de variables existentes
-   - Validación y mensajes de error
+   - Gestión visual de modos de pago, tipos de póliza y tipos de seguimiento
+   - Agregar nuevos items con auto-generación de `key`
+   - Editar labels (el `key` es inmutable)
+   - Soft delete con toggle activo/inactivo
+   - Visualización de items inactivos (opcional)
 
 3. **Características de Seguridad**
-   - Solo administradores pueden gestionar variables
-   - Variables protegidas del sistema no se pueden eliminar
-   - Validación de claves únicas por empresa
+   - Solo administradores pueden modificar la configuración
    - Row Level Security (RLS) en base de datos
+   - Validación de permisos en API
 
 ## 📊 Base de Datos
 
-### Tabla: `configuration`
+### Tabla: `company_config`
+
+Estructura normalizada - **una fila por empresa**:
 
 ```sql
-CREATE TABLE public.configuration (
-  id UUID PRIMARY KEY,
-  company_id UUID NOT NULL,
-  config_key VARCHAR(100) NOT NULL,
-  config_value JSONB NOT NULL,
-  created_at TIMESTAMP,
-  updated_at TIMESTAMP,
-  updated_by UUID,
-  UNIQUE(company_id, config_key)
+CREATE TABLE public.company_config (
+  company_id UUID PRIMARY KEY REFERENCES companies(id),
+
+  -- Valores simples
+  currency VARCHAR(10) DEFAULT 'ARS',
+  date_format VARCHAR(50) DEFAULT 'DD/MM/YYYY',
+  timezone VARCHAR(100) DEFAULT 'America/Argentina/Buenos_Aires',
+  default_alert_days INTEGER DEFAULT 30,
+
+  -- Arrays de configuración (JSONB)
+  -- Estructura: [{"key": "monthly", "value": "Mensual", "active": true}, ...]
+  payment_modes JSONB DEFAULT '[...]',
+  policy_types JSONB DEFAULT '[...]',
+  followup_types JSONB DEFAULT '[...]',
+
+  -- Objetos de configuración (JSONB)
+  alert_settings JSONB DEFAULT '{"days_before_expiry": 30, ...}',
+  email_settings JSONB DEFAULT NULL,
+
+  -- Metadata
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW(),
+  updated_by UUID REFERENCES users(id)
 );
 ```
 
-### Variables del Sistema (Protegidas)
+### Estructura de Items de Configuración
 
-Estas variables se crean automáticamente y no se pueden eliminar:
+Cada item en los arrays (`payment_modes`, `policy_types`, `followup_types`) tiene esta estructura:
 
-1. **`payment_modes`**
-   - Modos de pago disponibles
-   - Valor: `["monthly", "quarterly", "semi-annual", "annual"]`
+```typescript
+{
+  key: string;      // Identificador técnico (slug) - INMUTABLE
+  value: string;    // Label mostrado al usuario - EDITABLE
+  active: boolean;  // Estado (true/false) para soft-delete
+}
+```
 
-2. **`policy_types`**
-   - Tipos de pólizas disponibles
-   - Valor: `["auto", "home", "life", "health", "business", "other"]`
+**Ejemplo:**
+```json
+{
+  "key": "monthly",
+  "value": "Mensual",
+  "active": true
+}
+```
 
-3. **`alert_settings`**
-   - Configuración de alertas
-   - Valor: `{"default_alert_days": 30}`
+### Valores por Defecto
 
-## 🔧 Uso
+#### Payment Modes
+```json
+[
+  {"key": "monthly", "value": "Mensual", "active": true},
+  {"key": "quarterly", "value": "Trimestral", "active": true},
+  {"key": "semi_annual", "value": "Semestral", "active": true},
+  {"key": "annual", "value": "Anual", "active": true}
+]
+```
 
-### Crear Variable
+#### Policy Types
+```json
+[
+  {"key": "auto", "value": "Auto", "active": true},
+  {"key": "home", "value": "Hogar", "active": true},
+  {"key": "life", "value": "Vida", "active": true},
+  {"key": "health", "value": "Salud", "active": true},
+  {"key": "business", "value": "Comercio", "active": true},
+  {"key": "other", "value": "Otro", "active": true}
+]
+```
+
+#### Followup Types
+```json
+[
+  {"key": "call", "value": "Llamada", "active": true},
+  {"key": "email", "value": "Email", "active": true},
+  {"key": "meeting", "value": "Reunión", "active": true},
+  {"key": "renewal", "value": "Renovación", "active": true},
+  {"key": "claim", "value": "Siniestro", "active": true}
+]
+```
+
+## 🔧 Uso en UI
+
+### Agregar Nuevo Item
 
 1. Ir a **Configuración** → **Variables**
-2. Completar formulario:
-   - **Clave**: Identificador único (snake_case recomendado)
-   - **Valor**: Texto, número o JSON
-3. Clic en **Crear Variable**
+2. Seleccionar la sección (Modos de Pago, Tipos de Póliza, etc.)
+3. Clic en **"Agregar..."**
+4. Ingresar el **nombre** (ej: "Pago Único")
+5. El sistema auto-genera el `key` (ej: "pago_unico")
+6. Clic en **Agregar**
 
-### Ejemplos de Variables
+### Editar Item Existente
 
-#### Variable Simple (texto)
-```
-Clave: default_currency
-Valor: EUR
-```
+1. Clic en el icono de **editar (✏️)**
+2. Modificar el **nombre** (el `key` no se puede cambiar)
+3. Clic en **guardar (✓)**
 
-#### Variable Numérica
-```
-Clave: commission_rate
-Valor: 0.05
-```
+**Nota:** El `key` es inmutable para mantener referencias en pólizas existentes.
 
-#### Variable JSON (objeto)
-```
-Clave: email_settings
-Valor: {"from": "noreply@empresa.com", "reply_to": "soporte@empresa.com"}
-```
+### Desactivar Item
 
-#### Variable JSON (array)
-```
-Clave: priority_levels
-Valor: ["baja", "media", "alta", "crítica"]
-```
+1. Clic en el icono de **eliminar (🗑️)**
+2. Confirmar la desactivación
+3. El item se marca como `active: false`
+4. No aparece en formularios nuevos
+5. Las pólizas existentes mantienen su referencia
 
-### Editar Variable
+### Reactivar Item
 
-1. Clic en icono de editar (✏️) en la tabla
-2. Modificar el **Valor** (la clave no se puede cambiar)
-3. Clic en **Actualizar**
-
-### Eliminar Variable
-
-1. Clic en icono de eliminar (🗑️) en la tabla
-2. Confirmar eliminación
-3. ⚠️ Variables del sistema no se pueden eliminar
-
-## 🔐 Permisos
-
-| Rol | Ver Variables | Crear | Editar | Eliminar |
-|-----|--------------|-------|--------|----------|
-| **Admin** | ✅ | ✅ | ✅ | ✅ |
-| **User** | ✅ | ❌ | ❌ | ❌ |
+1. Marcar checkbox **"Mostrar items inactivos"**
+2. Clic en el icono de **activar (✓)** en el item inactivo
+3. El item vuelve a aparecer en formularios
 
 ## 📝 API Endpoints
 
 ### GET /api/config
-Obtiene todas las variables de configuración de la empresa.
+
+Obtiene **toda** la configuración de la empresa.
 
 **Response:**
 ```json
 {
-  "configs": [
-    {
-      "id": "uuid",
-      "company_id": "uuid",
-      "config_key": "commission_rate",
-      "config_value": 0.05,
-      "created_at": "2025-01-10T10:00:00Z",
-      "updated_at": "2025-01-10T10:00:00Z",
-      "updated_by": "uuid"
-    }
-  ]
+  "config": {
+    "company_id": "uuid",
+    "currency": "ARS",
+    "date_format": "DD/MM/YYYY",
+    "timezone": "America/Argentina/Buenos_Aires",
+    "default_alert_days": 30,
+    "payment_modes": [
+      {"key": "monthly", "value": "Mensual", "active": true},
+      {"key": "quarterly", "value": "Trimestral", "active": true}
+    ],
+    "policy_types": [...],
+    "followup_types": [...],
+    "alert_settings": {...},
+    "email_settings": null,
+    "created_at": "2025-01-17T00:00:00Z",
+    "updated_at": "2025-01-17T00:00:00Z"
+  }
 }
 ```
 
-### POST /api/config
-Crea una nueva variable de configuración.
+### PATCH /api/config
+
+Actualiza campos específicos de la configuración.
 
 **Request:**
 ```json
 {
-  "config_key": "default_currency",
-  "config_value": "EUR"
+  "currency": "USD",
+  "default_alert_days": 45
 }
 ```
 
 **Response:**
 ```json
 {
-  "config": { ... },
-  "message": "Configuración creada exitosamente"
-}
-```
-
-### PUT /api/config/[id]
-Actualiza una variable existente.
-
-**Request:**
-```json
-{
-  "config_key": "default_currency",  // opcional
-  "config_value": "USD"              // opcional
-}
-```
-
-**Response:**
-```json
-{
-  "config": { ... },
+  "config": {...},
   "message": "Configuración actualizada exitosamente"
 }
 ```
 
-### DELETE /api/config/[id]
-Elimina una variable de configuración.
+### POST /api/config/[field]
+
+Agrega o actualiza un item en un array de configuración.
+
+**Ejemplo:** `POST /api/config/payment_modes`
+
+**Request:**
+```json
+{
+  "value": "Pago Único",
+  "active": true
+}
+```
 
 **Response:**
 ```json
 {
-  "message": "Configuración eliminada exitosamente"
+  "config": {...},
+  "item": {"key": "pago_unico", "value": "Pago Único", "active": true},
+  "message": "Item agregado exitosamente"
 }
 ```
 
-**Error (variable protegida):**
+### DELETE /api/config/[field]?itemKey=xxx
+
+Soft-delete (toggle) del estado activo de un item.
+
+**Ejemplo:** `DELETE /api/config/payment_modes?itemKey=monthly`
+
+**Response:**
 ```json
 {
-  "message": "No se puede eliminar esta configuración del sistema"
-}
-```
-
-## 🎨 UI/UX
-
-### Formulario
-- Campo de clave con validación única
-- Campo de valor con soporte para JSON multilínea
-- Ayuda contextual para formato de valores
-- Validación en tiempo real
-
-### Tabla
-- Claves mostradas en formato `monospace`
-- Valores truncados si son muy largos
-- Fecha de última actualización
-- Botones de acción (editar/eliminar)
-
-### Estados
-- Loading skeleton durante carga
-- Empty state cuando no hay variables
-- Mensajes de éxito/error con toasts
-- Confirmación antes de eliminar
-
-## 💡 Casos de Uso
-
-### 1. Tasas y Comisiones
-```json
-{
-  "config_key": "commission_rates",
-  "config_value": {
-    "auto": 0.05,
-    "home": 0.03,
-    "life": 0.08
-  }
-}
-```
-
-### 2. Configuración de Email
-```json
-{
-  "config_key": "email_templates",
-  "config_value": {
-    "welcome": "template_001",
-    "renewal_reminder": "template_002",
-    "policy_expiry": "template_003"
-  }
-}
-```
-
-### 3. Umbrales de Alertas
-```json
-{
-  "config_key": "alert_thresholds",
-  "config_value": {
-    "days_before_expiry": 30,
-    "days_critical": 7,
-    "max_pending_policies": 100
-  }
-}
-```
-
-### 4. Configuración Regional
-```json
-{
-  "config_key": "regional_settings",
-  "config_value": {
-    "currency": "EUR",
-    "locale": "es-ES",
-    "timezone": "Europe/Madrid",
-    "date_format": "DD/MM/YYYY"
-  }
+  "config": {...},
+  "message": "Item desactivado exitosamente"
 }
 ```
 
 ## 🔄 Integración con Código
 
-### Ejemplo: Leer configuración en el frontend
+### Frontend: Obtener configuración
 
 ```typescript
-// Cargar todas las variables
-const response = await fetch('/api/config');
-const { configs } = await response.json();
+import { getActiveItems } from '$lib/utils/configHelpers';
 
-// Buscar variable específica
-const commissionRate = configs.find(c => c.config_key === 'commission_rate');
-const rate = commissionRate?.config_value || 0.05; // valor por defecto
+// Cargar toda la configuración
+const response = await fetch('/api/config');
+const { config } = await response.json();
+
+// Obtener solo items activos
+const activePaymentModes = getActiveItems(config.payment_modes);
+// [{"key": "monthly", "value": "Mensual", "active": true}, ...]
+
+// Convertir a options para Select
+const paymentOptions = activePaymentModes.map(item => ({
+  value: item.key,
+  label: item.value
+}));
 ```
 
-### Ejemplo: Usar configuración en el backend
+### Backend: Usar configuración
 
 ```typescript
-// En un endpoint
+// Obtener configuración de la empresa
 const { data: config } = await supabase
-  .from('configuration')
-  .select('config_value')
+  .from('company_config')
+  .select('*')
   .eq('company_id', companyId)
-  .eq('config_key', 'commission_rate')
   .single();
 
-const rate = config?.config_value || 0.05;
+// Acceder a campos simples
+const currency = config.currency || 'ARS';
+
+// Filtrar items activos
+const activePolicyTypes = config.policy_types?.filter(t => t.active) || [];
 ```
 
-## ✅ Testing
+## 🔐 Permisos
 
-### Manual Testing Checklist
+| Rol | Ver Config | Editar | Agregar Items | Desactivar Items |
+|-----|------------|--------|---------------|------------------|
+| **Admin** | ✅ | ✅ | ✅ | ✅ |
+| **Agent** | ✅ | ❌ | ❌ | ❌ |
+| **Guest** | ✅ | ❌ | ❌ | ❌ |
 
-- [ ] Crear variable con texto simple
-- [ ] Crear variable con número
-- [ ] Crear variable con JSON válido
-- [ ] Crear variable con JSON inválido (debe mostrar error)
-- [ ] Crear variable con clave duplicada (debe fallar)
-- [ ] Editar variable existente
-- [ ] Intentar editar clave de variable (debe estar deshabilitado)
-- [ ] Eliminar variable custom
-- [ ] Intentar eliminar variable protegida (debe fallar)
-- [ ] Ver variables como usuario no-admin (solo lectura)
-- [ ] Intentar crear/editar como usuario no-admin (debe fallar)
+## 💡 Ventajas del Nuevo Sistema
+
+### ✅ vs Sistema Anterior (EAV)
+
+| Aspecto | Anterior (EAV) | Actual (Normalizado) |
+|---------|----------------|----------------------|
+| **Consultas** | Múltiples filas por empresa | 1 sola fila por empresa |
+| **Performance** | Joins necesarios | Acceso directo |
+| **Type Safety** | Tipos dinámicos | Tipos conocidos |
+| **Código** | Más complejo | Más simple |
+| **Flexibilidad** | Alta (cualquier campo) | Media (campos definidos) |
+
+### Estructura de Keys
+
+- **Automático**: El `key` se genera automáticamente desde el `value`
+- **Inmutable**: No se puede cambiar para mantener integridad referencial
+- **Slug-ificado**: Sin espacios, acentos ni caracteres especiales
+- **Lowercase**: Todo en minúsculas para consistencia
+
+**Ejemplo:**
+- Input: `"Seguros Personales"`
+- Key generado: `"seguros_personales"`
 
 ## 📚 Próximas Mejoras
 
-- [ ] Editor JSON con syntax highlighting
-- [ ] Validación de esquema para variables del sistema
-- [ ] Historial de cambios en variables
-- [ ] Importar/exportar configuraciones
-- [ ] Variables con tipos definidos (string, number, boolean, json)
-- [ ] Búsqueda y filtrado de variables
-- [ ] Agrupación de variables por categoría
-- [ ] Documentación inline para cada variable
+- [ ] UI para editar configuraciones simples (moneda, zona horaria, etc.)
+- [ ] Validación de unicidad de `value` al agregar items
+- [ ] Historial de cambios en configuración
+- [ ] Importar/exportar configuración
+- [ ] Reordenar items (drag & drop)
+- [ ] Iconos personalizados por tipo
+- [ ] Colores personalizados por item
 
 ## 🐛 Troubleshooting
 
-### Error: "Esta clave ya existe"
-- La clave debe ser única por empresa
-- Usa una clave diferente o edita la existente
+### El item no aparece en los formularios
 
-### Error: "No se puede eliminar esta configuración del sistema"
-- Las variables protegidas no se pueden eliminar
-- Solo puedes editar su valor
+- Verifica que el item esté marcado como `active: true`
+- Refresca la página para cargar la configuración actualizada
 
-### JSON inválido al guardar
-- Verifica que el JSON esté bien formado
-- Usa comillas dobles `"` para strings
-- No olvides comas entre elementos
+### No puedo cambiar el "key" de un item
 
-### No veo el botón de crear/editar
-- Solo administradores pueden gestionar variables
-- Verifica tu rol en la pestaña "Usuarios"
+- El `key` es inmutable por diseño para mantener referencias
+- Solo puedes cambiar el `value` (label mostrado)
+
+### Los items desactivados siguen apareciendo
+
+- Los items desactivados se mantienen para pólizas existentes
+- En formularios nuevos solo aparecen items activos
+- Usa "Mostrar items inactivos" en la UI para verlos
 
 ---
 
-**Última actualización:** 2025-01-13  
-**Versión:** 1.0
+**Última actualización:** 2025-01-17
+**Versión:** 2.0 (Sistema Normalizado)

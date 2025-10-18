@@ -2,17 +2,14 @@ import { a3 as sanitize_props, _ as spread_props, a4 as slot, a6 as head, W as a
 import { g as goto } from "../../../../../chunks/client.js";
 import { B as Button } from "../../../../../chunks/Button.js";
 import { C as Card } from "../../../../../chunks/Card.js";
-import { B as Badge } from "../../../../../chunks/Badge.js";
-import { T as Tabs } from "../../../../../chunks/Tabs.js";
-import { E as EmptyState, T as Table } from "../../../../../chunks/Table.js";
+import { S as Square_pen, T as Tabs, B as Badge } from "../../../../../chunks/Tabs.js";
+import { P as Plus, E as EmptyState, T as Table } from "../../../../../chunks/Table.js";
 import { P as Phone, i as isMobileNumber, g as getWhatsAppUrl, M as Message_circle } from "../../../../../chunks/phone.js";
 import { A as Arrow_left } from "../../../../../chunks/arrow-left.js";
-import { S as Square_pen } from "../../../../../chunks/square-pen.js";
 import { M as Mail } from "../../../../../chunks/mail.js";
 import { F as File_text } from "../../../../../chunks/file-text.js";
 import { C as Calendar } from "../../../../../chunks/calendar.js";
 import { I as Icon } from "../../../../../chunks/Icon.js";
-import { P as Plus } from "../../../../../chunks/plus.js";
 import { e as escape_html } from "../../../../../chunks/context.js";
 function Map_pin($$renderer, $$props) {
   const $$sanitized_props = sanitize_props($$props);

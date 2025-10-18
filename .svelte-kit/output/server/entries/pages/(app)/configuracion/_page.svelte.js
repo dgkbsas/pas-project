@@ -1,21 +1,17 @@
 import { a3 as sanitize_props, _ as spread_props, a4 as slot, Y as ensure_array_like, W as attr, V as attr_class, a0 as stringify, a6 as head } from "../../../../chunks/index2.js";
 import { C as Card } from "../../../../chunks/Card.js";
-import { T as Tabs } from "../../../../chunks/Tabs.js";
+import { B as Badge, T as Tabs, S as Square_pen } from "../../../../chunks/Tabs.js";
 import { B as Button } from "../../../../chunks/Button.js";
 import { I as Input } from "../../../../chunks/Input.js";
-import { B as Badge } from "../../../../chunks/Badge.js";
-import { E as EmptyState, T as Table } from "../../../../chunks/Table.js";
+import { P as Plus, E as EmptyState, T as Table } from "../../../../chunks/Table.js";
 import { s as showToast } from "../../../../chunks/notifications.js";
 import { I as Icon } from "../../../../chunks/Icon.js";
 import { F as File_text } from "../../../../chunks/file-text.js";
 import { C as Calendar } from "../../../../chunks/calendar.js";
 import { X } from "../../../../chunks/x.js";
-import { P as Pen } from "../../../../chunks/pen.js";
-import { T as Trash } from "../../../../chunks/trash.js";
-import { P as Plus } from "../../../../chunks/plus.js";
+import { P as Pen, T as Trash } from "../../../../chunks/trash.js";
 import { e as escape_html } from "../../../../chunks/context.js";
 import { U as User } from "../../../../chunks/user.js";
-import { S as Square_pen } from "../../../../chunks/square-pen.js";
 import { M as Mail } from "../../../../chunks/mail.js";
 import { U as Users } from "../../../../chunks/users.js";
 function Building_2($$renderer, $$props) {
@@ -368,8 +364,8 @@ function ConfigurationManager($$renderer, $$props) {
       }
     ];
     let editingItem = null;
-    let newItemLabel = "";
-    let editItemLabel = "";
+    let newItemValue = "";
+    let editItemValue = "";
     let activeSectionKey = null;
     let showInactive = false;
     async function loadAllConfigurations() {
@@ -377,19 +373,10 @@ function ConfigurationManager($$renderer, $$props) {
       try {
         const response = await fetch("/api/config");
         const result = await response.json();
-        if (response.ok && result.configs) {
+        if (response.ok && result.config) {
           sections = sections.map((section) => {
-            const config = result.configs.find((c) => c.config_key === section.key);
-            if (config) {
-              let items = [];
-              if (Array.isArray(config.config_value)) {
-                items = config.config_value.map((label) => ({ value: generateValue(label), label, active: true }));
-              } else if (typeof config.config_value === "object" && config.config_value.items) {
-                items = config.config_value.items;
-              }
-              return { ...section, items };
-            }
-            return section;
+            const items = result.config[section.key] || [];
+            return { ...section, items };
           });
         }
       } catch (err) {
@@ -399,63 +386,47 @@ function ConfigurationManager($$renderer, $$props) {
         loading = false;
       }
     }
-    function generateValue(label) {
-      return label.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
-    }
     async function addItem(sectionKey) {
-      if (!newItemLabel.trim()) {
+      if (!newItemValue.trim()) {
         showToast({ type: "error", message: "El nombre no puede estar vacío" });
         return;
       }
       const section = sections.find((s) => s.key === sectionKey);
       if (!section) return;
-      if (section.items.some((item) => item.label.toLowerCase() === newItemLabel.trim().toLowerCase())) {
+      if (section.items.some((item) => item.value.toLowerCase() === newItemValue.trim().toLowerCase())) {
         showToast({ type: "error", message: "Este item ya existe" });
         return;
       }
-      const newItem = {
-        value: generateValue(newItemLabel),
-        label: newItemLabel.trim(),
-        active: true
-      };
-      const updatedItems = [...section.items, newItem];
-      await saveConfiguration(sectionKey, updatedItems);
-      newItemLabel = "";
-      activeSectionKey = null;
-    }
-    async function saveConfiguration(sectionKey, items) {
       try {
-        const config_value = {
-          items: items.map((item) => ({
-            value: item.value,
-            label: item.label,
-            active: item.active ?? true
-          }))
-        };
-        const response = await fetch("/api/config", {
+        const response = await fetch(`/api/config/${sectionKey}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ config_key: sectionKey, config_value })
+          body: JSON.stringify({ value: newItemValue.trim(), active: true })
         });
         if (response.ok) {
-          showToast({ type: "success", message: "Configuración guardada" });
+          showToast({ type: "success", message: "Item agregado exitosamente" });
           await loadAllConfigurations();
+          newItemValue = "";
+          activeSectionKey = null;
         } else {
           const result = await response.json();
-          showToast({ type: "error", message: result.message || "Error al guardar" });
+          showToast({
+            type: "error",
+            message: result.message || "Error al agregar item"
+          });
         }
       } catch (err) {
-        showToast({ type: "error", message: "Error al guardar configuración" });
+        showToast({ type: "error", message: "Error al agregar item" });
       }
     }
     function getVisibleItems(items) {
-      return items.filter((item) => item.active ?? true);
+      return items.filter((item) => item.active);
     }
     function getActiveCount(items) {
-      return items.filter((item) => item.active ?? true).length;
+      return items.filter((item) => item.active).length;
     }
     function getInactiveCount(items) {
-      return items.filter((item) => !(item.active ?? true)).length;
+      return items.filter((item) => !item.active).length;
     }
     let $$settled = true;
     let $$inner_renderer;
@@ -509,21 +480,20 @@ function ConfigurationManager($$renderer, $$props) {
               }
               $$renderer4.push(`<!--]--> <div class="items-list svelte-131nf9n"><!--[-->`);
               const each_array_1 = ensure_array_like(getVisibleItems(section.items));
-              for (let index = 0, $$length2 = each_array_1.length; index < $$length2; index++) {
-                let item = each_array_1[index];
-                const actualIndex = section.items.findIndex((it) => it.value === item.value);
-                $$renderer4.push(`<div${attr_class("item-row svelte-131nf9n", void 0, { "inactive": !(item.active ?? true) })}>`);
-                if (editingItem?.sectionKey === section.key && editingItem?.index === actualIndex) {
+              for (let $$index = 0, $$length2 = each_array_1.length; $$index < $$length2; $$index++) {
+                let item = each_array_1[$$index];
+                $$renderer4.push(`<div${attr_class("item-row svelte-131nf9n", void 0, { "inactive": !item.active })}>`);
+                if (editingItem?.sectionKey === section.key && editingItem?.itemKey === item.key) {
                   $$renderer4.push("<!--[-->");
                   $$renderer4.push(`<div class="item-edit-form svelte-131nf9n">`);
                   Input($$renderer4, {
                     placeholder: "Nombre del item",
                     autofocus: true,
                     get value() {
-                      return editItemLabel;
+                      return editItemValue;
                     },
                     set value($$value) {
-                      editItemLabel = $$value;
+                      editItemValue = $$value;
                       $$settled = false;
                     }
                   });
@@ -534,8 +504,8 @@ function ConfigurationManager($$renderer, $$props) {
                   $$renderer4.push(`<!----></button></div></div>`);
                 } else {
                   $$renderer4.push("<!--[!-->");
-                  $$renderer4.push(`<div class="item-content svelte-131nf9n"><div class="item-label-wrapper svelte-131nf9n"><span class="item-label svelte-131nf9n">${escape_html(item.label)}</span> `);
-                  if (!(item.active ?? true)) {
+                  $$renderer4.push(`<div class="item-content svelte-131nf9n"><div class="item-label-wrapper svelte-131nf9n"><span class="item-label svelte-131nf9n">${escape_html(item.value)}</span> `);
+                  if (!item.active) {
                     $$renderer4.push("<!--[-->");
                     Badge($$renderer4, {
                       variant: "default",
@@ -546,10 +516,10 @@ function ConfigurationManager($$renderer, $$props) {
                   } else {
                     $$renderer4.push("<!--[!-->");
                   }
-                  $$renderer4.push(`<!--]--></div> <code class="item-value svelte-131nf9n">${escape_html(item.value)}</code></div> <div class="item-actions svelte-131nf9n"><button class="action-btn svelte-131nf9n" title="Editar"${attr("disabled", !(item.active ?? true), true)}>`);
+                  $$renderer4.push(`<!--]--></div> <code class="item-value svelte-131nf9n">${escape_html(item.key)}</code></div> <div class="item-actions svelte-131nf9n"><button class="action-btn svelte-131nf9n" title="Editar"${attr("disabled", !item.active, true)}>`);
                   Pen($$renderer4, { size: 16 });
-                  $$renderer4.push(`<!----></button> <button${attr_class(`action-btn ${stringify(item.active ?? true ? "warning" : "success")}`, "svelte-131nf9n")}${attr("title", item.active ?? true ? "Desactivar" : "Activar")}>`);
-                  if (item.active ?? true) {
+                  $$renderer4.push(`<!----></button> <button${attr_class(`action-btn ${stringify(item.active ? "warning" : "success")}`, "svelte-131nf9n")}${attr("title", item.active ? "Desactivar" : "Activar")}>`);
+                  if (item.active) {
                     $$renderer4.push("<!--[-->");
                     Trash($$renderer4, { size: 16 });
                   } else {
@@ -589,14 +559,14 @@ function ConfigurationManager($$renderer, $$props) {
                       addItem(section.key);
                     } else if (e.key === "Escape") {
                       activeSectionKey = null;
-                      newItemLabel = "";
+                      newItemValue = "";
                     }
                   },
                   get value() {
-                    return newItemLabel;
+                    return newItemValue;
                   },
                   set value($$value) {
-                    newItemLabel = $$value;
+                    newItemValue = $$value;
                     $$settled = false;
                   }
                 });
@@ -617,7 +587,7 @@ function ConfigurationManager($$renderer, $$props) {
                   size: "sm",
                   onclick: () => {
                     activeSectionKey = null;
-                    newItemLabel = "";
+                    newItemValue = "";
                   },
                   children: ($$renderer5) => {
                     $$renderer5.push(`<!---->Cancelar`);

@@ -703,7 +703,8 @@
             description="Comienza agregando tu primera compañía de seguros"
           />
         {:else}
-          <div class="insurers-table">
+          <!-- Desktop view -->
+          <div class="insurers-table desktop-view">
             <Table>
               <thead>
                 <tr>
@@ -763,6 +764,76 @@
                 {/each}
               </tbody>
             </Table>
+          </div>
+
+          <!-- Mobile view -->
+          <div class="mobile-view">
+            <div class="insurers-cards">
+              {#each insurers as insurer}
+                <div class="insurer-card">
+                  <div class="card-header">
+                    <div class="insurer-card-name">
+                      <Building2 size={18} />
+                      {insurer.name}
+                    </div>
+                    <div class="card-actions">
+                      <button
+                        class="action-btn"
+                        onclick={() => editInsurer(insurer)}
+                        title="Editar"
+                      >
+                        <Edit size={16} />
+                      </button>
+                      <button
+                        class="action-btn danger"
+                        onclick={() => deleteInsurer(insurer.id, insurer.name)}
+                        title="Eliminar"
+                      >
+                        <Trash size={16} />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="card-body">
+                    {#if insurer.code}
+                      <div class="card-row">
+                        <span class="label">Código:</span>
+                        <span class="code-badge">{insurer.code}</span>
+                      </div>
+                    {/if}
+
+                    {#if insurer.contact_email}
+                      <div class="card-row">
+                        <span class="label">Email:</span>
+                        <span class="value">{insurer.contact_email}</span>
+                      </div>
+                    {/if}
+
+                    {#if insurer.contact_phone}
+                      <div class="card-row">
+                        <span class="label">Teléfono:</span>
+                        <span class="value">{insurer.contact_phone}</span>
+                      </div>
+                    {/if}
+
+                    {#if insurer.website}
+                      <div class="card-row">
+                        <span class="label">Web:</span>
+                        <a
+                          href={insurer.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="link-value"
+                          onclick={(e) => e.stopPropagation()}
+                        >
+                          {insurer.website}
+                        </a>
+                      </div>
+                    {/if}
+                  </div>
+                </div>
+              {/each}
+            </div>
           </div>
         {/if}
       </Card>
@@ -857,28 +928,57 @@
             description="No hay usuarios registrados"
           />
         {:else}
-          <Table>
-            <thead>
-              <tr>
-                <th>Email</th>
-                <th>Rol</th>
-                <th>Fecha de Registro</th>
-              </tr>
-            </thead>
-            <tbody>
-              {#each data.users as user}
+          <!-- Desktop view -->
+          <div class="desktop-view">
+            <Table>
+              <thead>
                 <tr>
-                  <td>{user.email}</td>
-                  <td>
+                  <th>Email</th>
+                  <th>Rol</th>
+                  <th>Fecha de Registro</th>
+                </tr>
+              </thead>
+              <tbody>
+                {#each data.users as user}
+                  <tr>
+                    <td>{user.email}</td>
+                    <td>
+                      <Badge variant={getRoleBadge(user.role)}>
+                        {getRoleLabel(user.role)}
+                      </Badge>
+                    </td>
+                    <td>{formatDate(user.created_at)}</td>
+                  </tr>
+                {/each}
+              </tbody>
+            </Table>
+          </div>
+
+          <!-- Mobile view -->
+          <div class="mobile-view">
+            <div class="users-cards">
+              {#each data.users as user}
+                <div class="user-card">
+                  <div class="card-header">
+                    <div class="user-card-name">
+                      <User size={18} />
+                      {user.email}
+                    </div>
                     <Badge variant={getRoleBadge(user.role)}>
                       {getRoleLabel(user.role)}
                     </Badge>
-                  </td>
-                  <td>{formatDate(user.created_at)}</td>
-                </tr>
+                  </div>
+
+                  <div class="card-body">
+                    <div class="card-row">
+                      <span class="label">Registrado:</span>
+                      <span class="value">{formatDate(user.created_at)}</span>
+                    </div>
+                  </div>
+                </div>
               {/each}
-            </tbody>
-          </Table>
+            </div>
+          </div>
         {/if}
       </Card>
     {/if}
@@ -1060,6 +1160,14 @@
     }
   }
 
+  .desktop-view {
+    display: block;
+  }
+
+  .mobile-view {
+    display: none;
+  }
+
   @media (max-width: 768px) {
     .page-header h1 {
       font-size: var(--text-2xl);
@@ -1077,6 +1185,24 @@
       flex-direction: column;
       align-items: flex-start;
       gap: var(--space-3);
+    }
+
+    .desktop-view {
+      display: none;
+    }
+
+    .mobile-view {
+      display: block;
+    }
+
+    .section-header {
+      flex-direction: column;
+      gap: var(--space-3);
+
+      .icon-wrapper {
+        width: 40px;
+        height: 40px;
+      }
     }
   }
 
@@ -1127,5 +1253,93 @@
     text-align: center;
     color: var(--text-secondary);
     font-size: var(--text-sm);
+  }
+
+  /* Mobile card styles */
+  .insurers-cards,
+  .users-cards {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .insurer-card,
+  .user-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    transition: all var(--transition-fast);
+
+    &:hover {
+      border-color: var(--primary-300);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-3);
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--border-primary);
+    }
+
+    .insurer-card-name,
+    .user-card-name {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-weight: var(--font-semibold);
+      color: var(--text-primary);
+      font-size: var(--text-base);
+      flex: 1;
+      min-width: 0; /* Allow text truncation */
+
+      :global(svg) {
+        color: var(--primary-600);
+        flex-shrink: 0;
+      }
+    }
+
+    .card-actions {
+      display: flex;
+      gap: var(--space-2);
+      flex-shrink: 0;
+    }
+
+    .card-body {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .card-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-sm);
+
+      .label {
+        color: var(--text-tertiary);
+        font-weight: var(--font-medium);
+        min-width: 80px;
+      }
+
+      .value {
+        color: var(--text-secondary);
+        word-break: break-word;
+      }
+
+      .link-value {
+        color: var(--primary-600);
+        text-decoration: none;
+        word-break: break-all;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
   }
 </style>

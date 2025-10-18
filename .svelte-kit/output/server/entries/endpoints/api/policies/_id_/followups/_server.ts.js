@@ -27,7 +27,7 @@ const POST = async ({ params, request, locals }) => {
   try {
     const policyId = params.id;
     const body = await request.json();
-    const { followup_type, date, description, status } = body;
+    const { followup_type, date, description, status, alert_date } = body;
     if (!followup_type) {
       return json({ message: "El tipo de seguimiento es requerido" }, { status: 400 });
     }
@@ -54,6 +54,7 @@ const POST = async ({ params, request, locals }) => {
       date,
       description: description || null,
       status: status || null,
+      alert_date: alert_date || null,
       created_by: session.user.id
     }).select().single();
     if (insertError) {

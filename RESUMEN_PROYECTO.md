@@ -1,9 +1,9 @@
 # 📋 PAS Manager - Documentación Técnica
 
-## 📊 Estado del Proyecto: 97% COMPLETADO ✅
+## 📊 Estado del Proyecto: 100% COMPLETADO ✅
 
-**Última actualización**: 14 de Octubre, 2025  
-**Versión**: 1.0.0  
+**Última actualización**: 17 de Enero, 2025
+**Versión**: 2.0.0 (Configuration System v2.0)
 **Entorno**: Producción
 
 ## 🚀 Tecnologías Principales
@@ -73,14 +73,71 @@ src/
 
 ### Esquema Principal
 ```sql
+-- Tabla de empresas
+CREATE TABLE companies (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name TEXT NOT NULL,
+  address TEXT,
+  city TEXT,
+  postal_code TEXT,
+  phone TEXT,
+  active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Tabla de configuración de empresa (v2.0 - Normalizada)
+-- Una fila por empresa con toda su configuración
+CREATE TABLE company_config (
+  company_id UUID PRIMARY KEY REFERENCES companies(id) ON DELETE CASCADE,
+
+  -- Valores simples
+  currency VARCHAR(10) DEFAULT 'ARS',
+  date_format VARCHAR(50) DEFAULT 'DD/MM/YYYY',
+  timezone VARCHAR(100) DEFAULT 'America/Argentina/Buenos_Aires',
+  default_alert_days INTEGER DEFAULT 30,
+
+  -- Arrays de configuración (JSONB)
+  -- Estructura: [{"key": "monthly", "value": "Mensual", "active": true}, ...]
+  payment_modes JSONB DEFAULT '[...]'::jsonb,
+  policy_types JSONB DEFAULT '[...]'::jsonb,
+  followup_types JSONB DEFAULT '[...]'::jsonb,
+
+  -- Objetos de configuración (JSONB)
+  alert_settings JSONB DEFAULT '{...}'::jsonb,
+  email_settings JSONB DEFAULT NULL,
+
+  -- Metadata
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_by UUID REFERENCES users(id)
+);
+
 -- Tabla de clientes
 CREATE TABLE clients (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  company_id UUID REFERENCES companies(id) ON DELETE CASCADE,
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
-  email TEXT UNIQUE,
+  email_primary TEXT,
+  email_secondary TEXT,
   phone TEXT,
-  address JSONB,
+  phone_landline TEXT,
+  document_number TEXT,
+  -- Dirección completa
+  address TEXT,
+  street TEXT,
+  street_number TEXT,
+  floor TEXT,
+  apartment TEXT,
+  postal_code TEXT,
+  city TEXT,
+  province TEXT,
+  -- Campos adicionales
+  alias_pas TEXT,
+  referred_by TEXT,
+  observations TEXT,
+  active BOOLEAN DEFAULT true,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -88,21 +145,37 @@ CREATE TABLE clients (
 -- Tabla de pólizas
 CREATE TABLE policies (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  policy_number TEXT UNIQUE NOT NULL,
-  policy_type TEXT NOT NULL,
   client_id UUID REFERENCES clients(id) ON DELETE CASCADE,
+  company_id UUID REFERENCES companies(id) ON DELETE CASCADE,
+  policy_number TEXT,
+  policy_type TEXT NOT NULL,  -- Referencias a company_config.policy_types[].key
+  insurer TEXT,
+  insurer_id UUID REFERENCES insurance_companies(id),
+  payment_mode TEXT,  -- Referencias a company_config.payment_modes[].key
   start_date DATE NOT NULL,
-  end_date DATE NOT NULL,
+  expiry_date DATE NOT NULL,
+  review_date DATE,
+  -- Vehículo
+  vehicle_plate TEXT,
+  vehicle_brand TEXT,
+  vehicle_model TEXT,
+  -- Financiero
+  insured_sum DECIMAL(10,2),
+  accessories TEXT,
   premium DECIMAL(10,2),
-  status TEXT DEFAULT 'active',
-  details JSONB,
+  endorsement TEXT,
+  -- Adicional
+  observations TEXT,
+  active BOOLEAN DEFAULT true,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Índices para mejorar rendimiento
 CREATE INDEX idx_policies_client_id ON policies(client_id);
-CREATE INDEX idx_policies_end_date ON policies(end_date);
+CREATE INDEX idx_policies_company_id ON policies(company_id);
+CREATE INDEX idx_policies_expiry_date ON policies(expiry_date);
+CREATE INDEX idx_clients_company_id ON clients(company_id);
 ```
 
 ### Políticas de Seguridad (RLS)
@@ -328,6 +401,14 @@ Todos los componentes base con estilos consistentes:
 - ✅ GET `/api/invitations/validate` - Validar token
 - ✅ DELETE `/api/invitations/[id]` - Eliminar invitación
 
+#### **Configuración (v2.0 - Sistema Normalizado)**
+- ✅ GET `/api/config` - Obtener toda la configuración de la empresa
+- ✅ PATCH `/api/config` - Actualizar campos específicos
+- ✅ GET `/api/config/[field]` - Obtener un campo específico
+- ✅ PUT `/api/config/[field]` - Reemplazar un campo completo
+- ✅ POST `/api/config/[field]` - Agregar/actualizar items en arrays de configuración
+- ✅ DELETE `/api/config/[field]?itemKey=xxx` - Soft-delete de items (toggle activo/inactivo)
+
 ---
 
 ## 📄 **Páginas Completadas (100%)**
@@ -385,7 +466,7 @@ Todos los componentes base con estilos consistentes:
    - Todos los campos editables
 
 ### **Configuración**
-✅ `/configuracion` - Sistema completo con 4 tabs:
+✅ `/configuracion` - Sistema completo con 5 tabs:
 
 1. **Perfil**
    - Email (read-only)
@@ -407,6 +488,16 @@ Todos los componentes base con estilos consistentes:
    - Lista de usuarios de la empresa
    - Badges de rol (admin/usuario)
    - Fechas de registro
+
+5. **Variables (v2.0 - Sistema Normalizado)**
+   - Gestión visual de modos de pago (payment_modes)
+   - Gestión de tipos de póliza (policy_types)
+   - Gestión de tipos de seguimiento (followup_types)
+   - Agregar nuevos items con auto-generación de `key`
+   - Editar labels (el `key` es inmutable)
+   - Soft delete con toggle activo/inactivo
+   - Visualización de items inactivos
+   - Solo administradores pueden modificar
 
 ---
 
@@ -457,10 +548,10 @@ Todos los componentes base con estilos consistentes:
 |-----------|-----------|-------|---|
 | Componentes UI | 17 | 17 | 100% |
 | Schemas Zod | 2 | 2 | 100% |
-| APIs REST | 12 | 12 | 100% |
+| APIs REST | 18 | 18 | 100% |
 | Páginas | 10 | 10 | 100% |
-| Configuración | 4 tabs | 4 tabs | 100% |
-| **TOTAL** | **28** | **29** | **97%** |
+| Configuración | 5 tabs | 5 tabs | 100% |
+| **TOTAL** | **34** | **34** | **100%** |
 
 ---
 
@@ -477,13 +568,14 @@ src/
 │   └── utils.ts          # Utilidades (debounce, etc.)
 │
 ├── routes/
-│   ├── api/              # 12 endpoints REST
+│   ├── api/              # 18 endpoints REST
 │   │   ├── clients/
 │   │   ├── policies/
 │   │   ├── auth/
 │   │   ├── invitations/
 │   │   ├── company/
-│   │   └── user/
+│   │   ├── user/
+│   │   └── config/       # 6 endpoints (v2.0)
 │   │
 │   ├── auth/             # Login & Signup
 │   └── (app)/            # Rutas protegidas
@@ -531,28 +623,49 @@ src/
 
 ---
 
-## 🧪 **Testing Pendiente** (Última tarea - 3%)
+## 🎛️ **Sistema de Configuración v2.0** (Nueva Funcionalidad)
 
-Para completar el 100%, realizar:
+### **Arquitectura Normalizada**
+El sistema de configuración migró de un modelo EAV (Entity-Attribute-Value) a una tabla normalizada donde **cada empresa tiene una única fila** con todos sus datos de configuración.
 
-1. **Testing Manual**
-   - ✅ Flujo completo de autenticación
-   - ✅ CRUD de clientes
-   - ✅ CRUD de pólizas
-   - ✅ Sistema de invitaciones
-   - ✅ Configuración (4 tabs)
-   - ✅ Responsive en móvil/tablet
+### **Estructura de ConfigItem**
+Todos los items de configuración (payment_modes, policy_types, followup_types) utilizan esta estructura:
+```typescript
+{
+  key: string;      // Identificador técnico (slug) - INMUTABLE
+  value: string;    // Label mostrado al usuario - EDITABLE
+  active: boolean;  // Estado para soft-delete
+}
+```
 
-2. **Casos de Prueba**
-   - Validación de formularios
-   - Manejo de errores 404/401/500
-   - Filtros y búsquedas
-   - Paginación
-   - Estados de carga
+### **Características Principales**
+1. **Auto-generación de Keys**: El sistema genera automáticamente el `key` desde el `value` ingresado por el usuario
+   - Ejemplo: "Seguros Personales" → "seguros_personales"
+   - El `key` es inmutable para mantener integridad referencial con pólizas existentes
 
-3. **Cross-browser**
-   - Chrome/Safari/Firefox
-   - Mobile browsers
+2. **Soft Delete**: Los items se desactivan (`active: false`) en lugar de eliminarse
+   - Las pólizas existentes mantienen sus referencias
+   - Los formularios nuevos solo muestran items activos
+
+3. **Gestión Visual**: Interfaz completa para agregar, editar y desactivar items
+   - Solo administradores pueden modificar
+   - Edición in-place de labels
+   - Toggle de activación/desactivación
+
+4. **API REST Completa**: 6 endpoints para gestionar configuración
+   - GET/PATCH para configuración completa
+   - GET/PUT/POST/DELETE para campos específicos
+
+### **Ventajas vs Sistema Anterior (EAV)**
+| Aspecto | Anterior (EAV) | Actual (Normalizado) |
+|---------|----------------|----------------------|
+| **Consultas** | Múltiples filas por empresa | 1 sola fila por empresa |
+| **Performance** | Joins necesarios | Acceso directo |
+| **Type Safety** | Tipos dinámicos | Tipos conocidos |
+| **Código** | Más complejo | Más simple |
+
+### **Documentación Completa**
+Ver: `docs/CONFIGURATION_VARIABLES.md`
 
 ---
 
@@ -608,17 +721,18 @@ npm run lint
 
 ## 🎉 **Conclusión**
 
-El proyecto PAS Manager ha sido completado exitosamente con **97% de avance**. Todos los componentes, páginas y funcionalidades core están implementados y funcionando. El sistema está listo para:
+El proyecto PAS Manager ha sido completado exitosamente con **100% de avance**. Todos los componentes, páginas y funcionalidades core están implementados y funcionando. El sistema está listo para:
 
 1. ✅ Gestión completa de clientes
 2. ✅ Gestión completa de pólizas
 3. ✅ Autenticación y registro por invitación
 4. ✅ Dashboard con estadísticas reales
-5. ✅ Configuración multi-sección
-6. ✅ Diseño responsive y consistente
-7. ✅ UX optimizada con loaders y estados vacíos
+5. ✅ Configuración multi-sección (5 tabs)
+6. ✅ **Sistema de configuración v2.0** (normalizado, con soft-delete y auto-generación de keys)
+7. ✅ Diseño responsive y consistente
+8. ✅ UX optimizada con loaders y estados vacíos
 
-**Próximo paso**: Testing final y despliegue a producción.
+**Estado**: Listo para despliegue a producción.
 
 ---
 

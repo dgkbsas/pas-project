@@ -48,28 +48,41 @@ const PUT = async ({ request, locals }) => {
       return json({ message: "No se proporcionaron campos para actualizar" }, { status: 400 });
     }
     updates.updated_at = (/* @__PURE__ */ new Date()).toISOString();
-    const { data: company, error: updateError } = await supabase.from("companies").update(updates).eq("id", company_id).select().single();
-    if (updateError) {
-      console.error("Error updating company:", {
-        error: updateError,
-        code: updateError.code,
-        message: updateError.message,
-        details: updateError.details,
-        hint: updateError.hint,
-        company_id,
-        updates
-      });
-      if (updateError.code === "42501") {
+    try {
+      const { data: company, error: fetchError } = await supabase.from("companies").select("id").eq("id", company_id).single();
+      if (fetchError || !company) {
+        console.error("Company not found or access denied:", fetchError?.message);
         return json({
-          message: "No tienes permisos para actualizar la empresa. Verifica que seas administrador."
-        }, { status: 403 });
+          message: "No se encontró la empresa o no tiene permisos para actualizarla",
+          error: "Company not found or access denied"
+        }, { status: 404 });
+      }
+      const { data: updatedCompany, error: updateError } = await supabase.from("companies").update(updates).eq("id", company_id).select().single();
+      if (updateError) {
+        console.error("Error updating company:", updateError);
+        return json({
+          message: "Error al actualizar la empresa",
+          error: updateError.message
+        }, { status: 400 });
+      }
+      if (!updatedCompany) {
+        console.error("No data returned after update");
+        return json({
+          message: "Error al actualizar la empresa",
+          error: "No se recibieron datos de la actualización"
+        }, { status: 400 });
       }
       return json({
-        message: "Error al actualizar empresa",
-        error: updateError.message
-      }, { status: 400 });
+        company: updatedCompany,
+        message: "Empresa actualizada exitosamente"
+      });
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      return json({
+        message: "Error inesperado al procesar la solicitud",
+        error: err.message
+      }, { status: 500 });
     }
-    return json({ company, message: "Empresa actualizada exitosamente" });
   } catch (err) {
     console.error("Error in PUT /api/company:", err);
     return json({ message: "Error al actualizar empresa" }, { status: 500 });
