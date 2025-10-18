@@ -270,9 +270,7 @@
               bind:value={filters.search}
               placeholder="Buscar en tipo, descripción o estado..."
               onkeydown={(e) => e.key === "Enter" && applyFilters()}
-            >
-              <Search slot="icon" size={18} />
-            </Input>
+            />
           </div>
 
           <div class="filter-group">
@@ -570,18 +568,13 @@
 </div>
 
 <!-- Followup Form Modal -->
-{#if showFollowupModal}
-  <div class="modal-overlay" onclick={closeFollowupModal}>
-    <div class="modal-content" onclick={(e) => e.stopPropagation()}>
-      <FollowupForm
-        followup={editingFollowup}
-        policyId={editingFollowup?.policy_id}
-        onclose={closeFollowupModal}
-        onsave={handleFollowupSaved}
-      />
-    </div>
-  </div>
-{/if}
+<FollowupForm
+  bind:open={showFollowupModal}
+  followup={editingFollowup}
+  followupTypes={data.followupTypes}
+  policyId={editingFollowup?.policy_id || ""}
+  on:success={handleFollowupSaved}
+/>
 
 <style lang="scss">
   .page {

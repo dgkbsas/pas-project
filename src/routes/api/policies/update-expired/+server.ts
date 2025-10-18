@@ -37,6 +37,7 @@ export const POST: RequestHandler = async ({ locals }) => {
 		// Buscar y actualizar pólizas vencidas que aún están activas
 		const { data: expiredPolicies, error } = await supabase
 			.from('policies')
+			// @ts-expect-error - Supabase type inference issue with update
 			.update({
 				active: false,
 				updated_at: new Date().toISOString()

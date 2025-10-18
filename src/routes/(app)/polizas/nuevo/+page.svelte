@@ -20,8 +20,9 @@
 
     if (renewFrom && data.renewData) {
       // Pre-populate with renewal data
+      const renewData = data.renewData as Record<string, any>;
       initialData = {
-        ...data.renewData,
+        ...renewData,
         // Override client_id if provided in URL
         ...(clientId ? { client_id: clientId } : {})
       };

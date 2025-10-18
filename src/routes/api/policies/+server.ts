@@ -30,6 +30,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 		const today = new Date().toISOString().split('T')[0];
 		await supabase
 			.from('policies')
+			// @ts-expect-error - Supabase type inference issue with update
 			.update({
 				active: false,
 				updated_at: new Date().toISOString()

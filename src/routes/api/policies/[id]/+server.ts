@@ -169,6 +169,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
 		// Soft delete: marcar como inactiva
 		const { data: policy, error } = await supabase
 			.from('policies')
+			// @ts-expect-error - Supabase type inference issue with update
 			.update({
 				active: false,
 				updated_at: new Date().toISOString()

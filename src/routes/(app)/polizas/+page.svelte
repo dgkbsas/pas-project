@@ -35,6 +35,7 @@
 
   type PolicyWithClient = Policy & {
     client?: Client;
+    followups_count?: Array<{ count: number }>;
   };
 
   let { data } = $props();
